@@ -20,6 +20,8 @@ def colorizer(c):
         return Back.YELLOW + c
     elif c in 'HY':
         return Back.CYAN + c
+    elif c in "*!":
+        return Back.BLACK + Fore.WHITE + Style.BRIGHT + c + Fore.BLACK + Style.NORMAL
     else:
         return Back.WHITE + c
 

@@ -1,0 +1,4 @@
+#!/usr/bin/env python
+
+import alv
+alv.main()

@@ -1,3 +1,4 @@
+import itertools
 
 class BaseAlignment:
     '''
@@ -22,6 +23,14 @@ class BaseAlignment:
         Accessions in alphabetical order.
         '''
         return sorted(self.accessions())
+
+    def sort_by_identity(self, acc):
+        pivot_sequence_record = self.al[self.seq_indices[acc]]
+        sorted_accessions = map(lambda rec: rec.id,
+                                sorted(self.al,
+                                       key=lambda rec: percent_identity(pivot_sequence_record.seq, rec),
+                                       reverse=True))
+        return sorted_accessions
 
     def accession_widths(self):
         '''
@@ -101,7 +110,6 @@ class codonAlignment(BaseAlignment):
         super().__init__(alignment)
         self.type = 'codon'
         self.column_width = 3
-        self.frameshift_positions = [] # In a 'regular' codon alignment, we do not recognize frameshift columns. See the class macseAlignment!
 
     def block_width(self, terminal_width, args):
         '''
@@ -119,68 +127,15 @@ class codonAlignment(BaseAlignment):
         '''
         idx = self.seq_indices[acc]
         seq_record = self.al[idx, block.start:block.end]
+        seq = str(seq_record.seq)
         colored_seq = ''
-        for c in self._codon_split(seq_record.seq):
+
+        for pos in range(0, len(seq), 3):
+            c = seq[pos:pos+3]
             colored_seq += painter.colorizer(c)
         return colored_seq + painter.eol()
         
-    def _codon_split(self, s):
-        pos = 0
-        while pos < len(s):
-            if pos in self.frameshift_positions:
-                yield str(s[pos])
-                pos += 1
-            else:
-                yield str(s[pos:pos+3])
-                pos += 3
     
-
-class macseAlignment(codonAlignment):
-    '''
-    This class refines the generic codon alignment to handle columns that are not
-    of width 3. This is because the MACSE aligner handles frameshifts nicely, 
-    indicated with single column exclamantion marks. The attribute 'frameshift_positions'
-    collects these columns. 
-    '''
-    def __init__(self, alignment):
-        super().__init__(alignment)
-        self.type = 'codon'
-        self.frameshift_positions = self._find_frameshift_columns()
-
-
-    def _find_frameshift_columns(self):
-        '''
-        Identifies columns containing the character "!". These represents
-        '''
-        frameshifts = []
-        for col in range(len(self.al)):
-            if '!' in self.al[:, col]:
-                frameshifts.append(col)
-        return frameshifts
-    
-    def blocks(self, block_width, args):
-        '''
-        Some columns will be more narrow than three characters, due to frameshifts.
-        This refinement of the superclass' method ensures that the blocks have the correct start and end
-        points to handle that restriction.
-        '''
-        pos = 0
-        end = self.al.get_alignment_length()
-        while pos < end:        # Loop to collect blocks
-            block_start = pos
-            complete_block = False  # A flag
-            while not complete_block: # Loop to find start and stop of a block
-                if pos in self.frameshift_positions:  # Hm, this is slow. Maybe use a dict instead? But we shouldn't have that many frameshifts though.
-                    if pos == block_start + block_width:
-                        complete_block = True
-                        yield AlignmentBlock(block_start, pos)
-                    pos += 1
-                else:
-                    if pos >= block_start + block_width:
-                        complete_block = True
-                        yield AlignmentBlock(block_start, pos)
-                    pos += 3
-                
 
 
 class AlignmentBlock:
@@ -188,3 +143,10 @@ class AlignmentBlock:
         self.start = start
         self.end = end
         
+
+def percent_identity(seq1, seq2):
+    identical = 0
+    for c1, c2 in zip(seq1, seq2):
+        if c1 == c2:
+            identical +=1
+    return identical / len(seq1)

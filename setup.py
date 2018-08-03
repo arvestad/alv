@@ -3,9 +3,12 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+with open('alv/version.py') as fh:
+    exec(fh.read())
+    
 setuptools.setup(
     name="alv",
-    version="1.0.0",
+    version=__version__,
     author="Lars Arvestad",
     author_email="arve@math.su.se",
     description="An alignment viewer",

@@ -1,5 +1,5 @@
 from Bio import AlignIO
-from .alignment import aaAlignment, dnaAlignment, codonAlignment, macseAlignment
+from .alignment import aaAlignment, dnaAlignment, codonAlignment
 from .colorize import aaPainter, dnaPainter, codonPainter
 
 def read_alignment(filename, args):
@@ -9,9 +9,6 @@ def read_alignment(filename, args):
     '''
     seqtype = args.type
     input_format = args.format
-    if input_format == 'macse':
-        input_format = 'fasta'  # The MACSE codon alignments are using the Fasta format
-        seqtype = 'macse_codon' # Overriding whater the user says -- the macse option has precedence
 
     alignment = AlignIO.read(args.infile, input_format)
     if seqtype == 'aa':
@@ -20,8 +17,6 @@ def read_alignment(filename, args):
         return dnaAlignment(alignment), dnaPainter(args)
     elif seqtype == 'codon':
         return codonAlignment(alignment), codonPainter(args)
-    elif seqtype == 'macse_codon':
-        return macseAlignment(alignment), codonPainter(args)
     elif seqtype == 'guess':
         raise Exception('Not implemented yet')
     else:

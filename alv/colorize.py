@@ -12,6 +12,15 @@ class Painter:
         else:
             colorama_init()
 
+    def color_for_bad_data(self):
+        return Back.WHITE + Fore.RED, Fore.BLACK + Back.WHITE
+
+    def color_for_stop(self):
+        return Back.BLACK + Fore.RED, Fore.BLACK
+
+    def indel_color(self):
+        return Back.WHITE, None
+
     def eol(self):
         return Style.RESET_ALL
 
@@ -40,8 +49,14 @@ class aaPainter(Painter):
             return Back.YELLOW, None
         elif c in 'HY':
             return Back.CYAN, None
-        elif c in "*!":
-            return Back.BLACK + Fore.RED, Back.WHITE + Fore.BLACK
+        elif c in 'X':
+            return Back.WHITE, None
+        elif c in "!?":
+            return self.color_for_bad_data()
+        elif c in "*":
+            return self.color_for_stop()
+        elif c in '-_.:':
+            return self.indel_color()
         else:
             return Back.WHITE, None
 
@@ -49,7 +64,7 @@ class aaPainter(Painter):
         before_color, after_color = self._color_lookup(c)
         colored_item = before_color + c
         if after_color:
-            return c + after_color
+            return colored_item + after_color
         else:
             return colored_item
         
@@ -91,12 +106,17 @@ class codonPainter(Painter):
         try:
             if len(c) != 3:
                 return Back.WHITE + Fore.RED + Style.BRIGHT + c + Fore.BLACK + Style.NORMAL
+            elif '!' in c:
+                before_color, after_color = self.color_for_bad_data()
+                assert after_color # Weird if we don't have a color reset.
+                return before_color + c + after_color
             else:
                 if c == '---':
                     aa = '-'
+                    before_color, after_color = self.indel_color()
                 else:
                     aa = Bio.Seq.translate(c)
-                before_color, after_color = self.aa_painter._color_lookup(aa)
+                    before_color, after_color = self.aa_painter._color_lookup(aa)
                 colored_item = before_color + c
                 if after_color:
                     return colored_item + after_color

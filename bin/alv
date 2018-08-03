@@ -13,8 +13,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('infile')
     ap.add_argument('-c', '--color-scheme', choices=['clustal', 'zappo', 'taylor', 'hydrophobicity'], default='clustal', help='Color scheme for AA and coding DNA/RNA. The clustal coloring scheme is an approximation of the original, due to the limited color choices for consoles.')
-    ap.add_argument('-f', '--format', choices=['fasta', 'clustal', 'phylip', 'stockholm', 'macse'], default='fasta', help="Specify what sequence type to assume. With the 'macse' option (which refers to MACSE alignment software), coding DNA/RNA sequences in FASTA format are assumed, and frameshifts are assumed to be indicated with exclamation points. For the other formats, you may want to suggest a sequence type (see the '-t' option).")
-    ap.add_argument('-k', '--keep-colors-when-redirecting', action='store_true', help='Do not strip colors when redirecting to stdout, or similar.')
+    ap.add_argument('-f', '--format', choices=['fasta', 'clustal', 'phylip', 'stockholm'], default='fasta', help="Specify what sequence type to assume.")
+    ap.add_argument('-k', '--keep-colors-when-redirecting', action='store_true', help="Do not strip colors when redirecting to stdout, or similar. In particular useful with the command 'less -R'")
+    ap.add_argument('-s', '--sorting', choices=['infile', 'alpha'], default='infile', help="Sort the sequences as given in the infile or alphabteically (by accession)")
+    ap.add_argument('-si', '--sort-by-id', type=str, help='Sort the output alignment by similarity (%id) to named sequence. Overrides -s')
+    ap.add_argument('-so', '--sorting_order', type=str, help='Comma-separated list of accessions. Sequences will be presented in this order. Also note that one can choose which sequences to present with this opion. Overrides -s and -si.')
     ap.add_argument('-t', '--type', choices=['aa', 'dna', 'rna', 'codon', 'guess'], default='guess', help="Specify what sequence type to assume. Coding DNA/RNA is assumed with the 'codon' option. Guessing the format only chooses between 'aa' and 'dna'.")
     ap.add_argument('--version', action='version', version='%(prog)s ' + __version__)
     ap.add_argument('-w', '--width', type=int, default=0, help='Width of alignment blocks. Defaults to terminal width minus accession width, essentially.')
@@ -23,7 +26,7 @@ def main():
 
     alignment, painter = read_alignment(args.infile, args)
 
-    terminal = AlignmentTerminal()
+    terminal = AlignmentTerminal(args)
     terminal.output_alignment(alignment, painter, args)
     
 

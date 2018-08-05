@@ -1,4 +1,6 @@
+import Bio.Seq
 import itertools
+from collections import Counter
 
 class BaseAlignment:
     '''
@@ -11,6 +13,7 @@ class BaseAlignment:
         self.type = None
         self.column_width = 1
         self.seq_indices = { r.id : i for i, r in enumerate(alignment)} # Get a dictionary mapping accession to row index in alignment
+        self.columns = self._summarize_columns()
 
     def accessions(self):
         '''
@@ -25,6 +28,9 @@ class BaseAlignment:
         return sorted(self.accessions())
 
     def sort_by_identity(self, acc):
+        '''
+        Return accessions in order by similarity (as percent identity) to sequence 'acc'.
+        '''
         pivot_sequence_record = self.al[self.seq_indices[acc]]
         sorted_accessions = map(lambda rec: rec.id,
                                 sorted(self.al,
@@ -87,10 +93,18 @@ class BaseAlignment:
         idx = self.seq_indices[acc]
         seq_record = self.al[idx, block.start:block.end]
         colored_seq = ''
-        for c in seq_record.seq:
-            colored_seq += painter.colorizer(c)
+        for col_no, c in enumerate(seq_record.seq):
+            colored_seq += painter.colorizer(c, self.columns[block.start + col_no])
         return colored_seq + painter.eol()
         
+    def _summarize_columns(self):
+        '''
+        Count the different elements in each column.
+        '''
+        columns = []
+        for col_no in range(self.al.get_alignment_length()):
+            columns.append(Counter(self.al[:, col_no]))
+        return columns
 
 class aaAlignment(BaseAlignment):
     def __init__(self, alignment):
@@ -130,12 +144,35 @@ class codonAlignment(BaseAlignment):
         seq = str(seq_record.seq)
         colored_seq = ''
 
-        for pos in range(0, len(seq), 3):
+        for codon_col, pos in enumerate(range(0, len(seq), 3)):
             c = seq[pos:pos+3]
-            colored_seq += painter.colorizer(c)
+            colored_seq += painter.colorizer(c, self.columns[block.start // 3 + codon_col])
         return colored_seq + painter.eol()
         
-    
+    def _summarize_columns(self):
+        '''
+        Specialization of base method for codon columns. Do not focus on the amino acids, but look at
+        amino acid columns.
+        '''
+        columns = []
+        for pos in range(0, self.al.get_alignment_length(), 3):
+            codon_column = map(lambda r: str(r.seq), self.al[:, pos:pos+3])
+            aa_column = map(lambda codon: self._translate(codon), codon_column)
+            columns.append(Counter(aa_column))
+            #columns.append(Counter(codon_column))
+        return columns
+
+    def _translate(self, codon):
+        try:
+            if codon == '---':
+                return '-'
+            else:
+                aa = Bio.Seq.translate(codon)
+                return aa
+        except:
+            # For when we have weird codons/alignments
+            return 'X'
+            
 
 
 class AlignmentBlock:

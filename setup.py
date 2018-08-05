@@ -11,11 +11,12 @@ setuptools.setup(
     version=__version__,
     author="Lars Arvestad",
     author_email="arve@math.su.se",
-    description="An alignment viewer",
+    description="A console-based sequence alignment viewer",
     scripts = ['bin/alv'],
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/arvestad/alv",
+    test_suite = "tests",
     packages=setuptools.find_packages(),
     install_requires=[
         'argparse',
@@ -29,3 +30,5 @@ setuptools.setup(
         "Topic :: Scientific/Engineering :: Bio-Informatics",
     ),
 )
+
+

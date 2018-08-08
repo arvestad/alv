@@ -17,8 +17,8 @@ def main():
                     help="Specify what sequence type to assume.")
     ap.add_argument('-t', '--type', choices=['aa', 'dna', 'rna', 'codon', 'guess'], default='guess',
                     help="Specify what sequence type to assume. Coding DNA/RNA is assumed with the 'codon' option. Guessing the format only chooses between 'aa' and 'dna'.")
-    ap.add_argument('-c', '--color-scheme', choices=['clustal', 'zappo', 'taylor', 'hydrophobicity'], default='clustal',
-                    help='Color scheme for AA and coding DNA/RNA. The clustal coloring scheme is an approximation of the original, due to the limited color choices for consoles.')
+    ap.add_argument('-c', '--color-scheme', choices=['clustal', 'taylor', 'hydrophobicity'], default='clustal',
+                    help='Color scheme for AA and coding DNA/RNA. The clustal coloring scheme is an approximation of the original, due to the limited color choices for consoles. The "hydrophobicity" gives red to hydrophobic, blue to polar, and green to charged residues.')
     ap.add_argument('-w', '--width', type=int, default=0,
                     help='Width of alignment blocks. Defaults to terminal width minus accession width, essentially.')
     ap.add_argument('-k', '--keep-colors-when-redirecting', action='store_true',

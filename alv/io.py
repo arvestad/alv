@@ -1,7 +1,7 @@
 from Bio import AlignIO
 from math import log
 from .alignment import aaAlignment, dnaAlignment, codonAlignment
-from .colorize import aaPainter, dnaPainter, codonPainter
+from .colorize import aaPainter, dnaPainter, codonPainter, aaHydrophobicity, aaTaylorPainter
 
 
 def read_alignment(filename, args):
@@ -16,12 +16,19 @@ def read_alignment(filename, args):
     if seqtype == 'guess':
         seqtype = guess_seq_type(alignment)
         
+    if args.color_scheme == 'taylor':
+        painter = aaTaylorPainter(args)
+    elif args.color_scheme == 'hydrophobicity':
+        painter = aaHydrophobicity(args)
+    else:
+        painter = aaPainter(args)
+        
     if seqtype == 'aa':
-        return aaAlignment(alignment), aaPainter(args)
+        return aaAlignment(alignment), painter
     if seqtype == 'dna':
         return dnaAlignment(alignment), dnaPainter(args)
     elif seqtype == 'codon':
-        return codonAlignment(alignment), codonPainter(args)
+        return codonAlignment(alignment), codonPainter(args, painter)
     else:
         raise Exception('Unknown option')
 

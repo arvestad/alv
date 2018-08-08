@@ -28,6 +28,7 @@ def read_alignment(filename, args):
     if seqtype == 'dna':
         return dnaAlignment(alignment), dnaPainter(args)
     elif seqtype == 'codon':
+        al = codonAlignment(alignment, genetic_code=args.code)
         return codonAlignment(alignment), codonPainter(args, painter)
     else:
         raise Exception('Unknown option')

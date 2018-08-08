@@ -106,7 +106,7 @@ class aaTaylorPainter(aaPainter):
             return Back.GREEN, Back.WHITE
         elif c in 'KRHkrh':
             return Back.BLUE, Back.WHITE
-        elif c in 'EDSeds':
+        elif c in 'EDSTedst':
             return Back.RED, Back.WHITE
         elif c in 'NQnq':
             return Back.MAGENTA, Back.WHITE

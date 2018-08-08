@@ -54,21 +54,21 @@ class aaPainter(Painter):
         super().__init__(args)
         
     def _color_lookup(self, c):
-        if c in 'AILMFWVC':
+        if c in 'AILMFWVCailmfwvc':
             return Back.BLUE, Back.WHITE
-        elif c in 'KR':
+        elif c in 'KRkr':
             return Back.RED, Back.WHITE
-        elif c in 'ED':
+        elif c in 'EDed':
             return Back.MAGENTA, Back.WHITE
-        elif c in 'NQST':
+        elif c in 'NQSTnqst':
             return Back.GREEN, Back.WHITE
-        elif c in 'G':
+        elif c in 'Gg':
             return Back.YELLOW, Back.WHITE
-        elif c in 'P':
+        elif c in 'Pp':
             return Back.YELLOW, Back.WHITE
-        elif c in 'HY':
+        elif c in 'HYhy':
             return Back.CYAN, Back.WHITE
-        elif c in 'X':
+        elif c in 'Xx':
             return Back.WHITE, Back.WHITE
         elif c in "!?":
             return self.color_for_bad_data()
@@ -94,6 +94,62 @@ class aaPainter(Painter):
             else:
                 return before_color + c
         
+class aaTaylorPainter(aaPainter):
+    '''
+    Put paint to amino acids, an approximation of the "Taylor" style.
+    '''
+    def __init__(self, args):
+        super().__init__(args)
+        
+    def _color_lookup(self, c):
+        if c in 'AILMFVCailMFVC':
+            return Back.GREEN, Back.WHITE
+        elif c in 'KRHkrh':
+            return Back.BLUE, Back.WHITE
+        elif c in 'EDSeds':
+            return Back.RED, Back.WHITE
+        elif c in 'NQnq':
+            return Back.MAGENTA, Back.WHITE
+        elif c in 'CGPcgp':
+            return Back.YELLOW, Back.WHITE
+        elif c in 'Yy':
+            return Back.CYAN, Back.WHITE
+        elif c in 'X':
+            return Back.WHITE, Back.WHITE
+        elif c in "!?":
+            return self.color_for_bad_data()
+        elif c in "*":
+            return self.color_for_stop()
+        elif c in '-_.:':
+            return self.indel_color()
+        else:
+            return Back.WHITE, None
+
+class aaHydrophobicity(aaPainter):
+    '''
+    Put paint to amino acids, indicating hydrophobicity.
+    '''
+    def __init__(self, args):
+        super().__init__(args)
+        
+    def _color_lookup(self, c):
+        if c in 'AILMFVPGailmfvpg':
+            return Back.RED, Back.WHITE
+        elif c in 'QNHSTYCWqnhstycw':
+            return Back.BLUE, Back.WHITE
+        elif c in 'RKDErkde':
+            return Back.GREEN, Back.WHITE
+        elif c in 'X':
+            return Back.WHITE, Back.WHITE
+        elif c in "!?":
+            return self.color_for_bad_data()
+        elif c in "*":
+            return self.color_for_stop()
+        elif c in '-_.:':
+            return self.indel_color()
+        else:
+            return Back.WHITE, None
+
 
 class dnaPainter(Painter):
     '''
@@ -123,13 +179,38 @@ class dnaPainter(Painter):
         else:
             return Back.WHITE + c
 
+class dnaClassPainter(Painter):
+    '''
+    Put paint of nucleotides.
+    '''
+    def __init__(self, args):
+        super().__init__(args)
+        
+    def colorizer(self, c, column):
+        if c in 'TUtuCcYy':           # Handles RNA too
+            return Back.Cyan + c
+        elif c in 'AaGgRr':
+            return Back.Magenta + c
+        elif c in '!*':
+            before, after = self.color_for_bad_data()
+            return before + c + after
+        elif c in '-.:':
+            before, after = self.indel_color()
+            if after:
+                return before + c + after
+            else:
+                return before + c
+        else:
+            return Back.WHITE + c
+
+
 class codonPainter(Painter):
     '''
     Put paint of codons.
     '''
-    def __init__(self, args):
+    def __init__(self, args, aa_painter):
         super().__init__(args)
-        self.aa_painter = aaPainter(args)
+        self.aa_painter = aa_painter
 
     def colorizer(self, c, column):
         '''
@@ -146,16 +227,16 @@ class codonPainter(Painter):
                     return before_color + c + after_color
                 else:
                     if c == '---':
-                        aa = '-'
                         before_color, after_color = self.indel_color()
                     else:
+                        
                         aa = Bio.Seq.translate(c)
                         before_color, after_color = self.aa_painter._color_lookup(aa)
-                        colored_item = before_color + c
-                        if after_color:
-                            return colored_item + after_color
-                        else:
-                            return colored_item
+                    colored_item = before_color + c
+                    if after_color:
+                        return colored_item + after_color
+                    else:
+                        return colored_item
             else:
                 before_color, after_color = self.indel_color()
                 if after_color:

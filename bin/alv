@@ -8,24 +8,61 @@ from alv.alignmentterminal import AlignmentTerminal
 from alv.io import read_alignment
 #from alv.colorize import print_one_sequence_block
 
+def list_genetic_codes():
+    additional_help_text='''
+The genetic codes are implemented using BioPython, which reflect what is 
+available at https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi .
+
+The following is the list, with numbers, of known genetic codes:
+   1. The Standard Code
+   2. The Vertebrate Mitochondrial Code
+   3. The Yeast Mitochondrial Code
+   4. The Mold, Protozoan, and Coelenterate Mitochondrial Code and the Mycoplasma/Spiroplasma Code
+   5. The Invertebrate Mitochondrial Code
+   6. The Ciliate, Dasycladacean and Hexamita Nuclear Code
+   9. The Echinoderm and Flatworm Mitochondrial Code
+   10. The Euplotid Nuclear Code
+   11. The Bacterial, Archaeal and Plant Plastid Code
+   12. The Alternative Yeast Nuclear Code
+   13. The Ascidian Mitochondrial Code
+   14. The Alternative Flatworm Mitochondrial Code
+   16. Chlorophycean Mitochondrial Code
+   21. Trematode Mitochondrial Code
+   22. Scenedesmus obliquus Mitochondrial Code
+   23. Thraustochytrium Mitochondrial Code
+   24. Pterobranchia Mitochondrial Code
+   25. Candidate Division SR1 and Gracilibacteria Code
+   26. Pachysolen tannophilus Nuclear Code
+   27. Karyorelict Nuclear
+   28. Condylostoma Nuclear
+   29. Mesodinium Nuclear
+   30. Peritrich Nuclear
+   31. Blastocrithidia Nuclear
+'''
+    print(additional_help_text)
+
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('infile')
+    ap.add_argument('infile', nargs='?')
     ap.add_argument('--version', action='version', version='%(prog)s ' + __version__)
     ap.add_argument('-f', '--format', choices=['fasta', 'clustal', 'phylip', 'stockholm'], default='fasta',
-                    help="Specify what sequence type to assume.")
+                    help="Specify what sequence type to assume. Default: %(default)s")
     ap.add_argument('-t', '--type', choices=['aa', 'dna', 'rna', 'codon', 'guess'], default='guess',
-                    help="Specify what sequence type to assume. Coding DNA/RNA is assumed with the 'codon' option. Guessing the format only chooses between 'aa' and 'dna'.")
+                    help="Specify what sequence type to assume. Coding DNA/RNA is assumed with the 'codon' option. Guessing the format only chooses between 'aa' and 'dna', but assumes the standard genetic code.  Default: %(default)s")
     ap.add_argument('-c', '--color-scheme', choices=['clustal', 'taylor', 'hydrophobicity'], default='clustal',
-                    help='Color scheme for AA and coding DNA/RNA. The clustal coloring scheme is an approximation of the original, due to the limited color choices for consoles. The "hydrophobicity" gives red to hydrophobic, blue to polar, and green to charged residues.')
+                    help='Color scheme for AA and coding DNA/RNA. The clustal coloring scheme is an approximation of the original, due to the limited color choices for consoles. The "hydrophobicity" gives red to hydrophobic, blue to polar, and green to charged residues.  Default: %(default)s')
+    ap.add_argument('--code', choices=[1,2,3,4,5,6,10,11, 12, 13, 14, 16,21,22,23,24,25,26,27,28,29,30,31], type=int, default=1,
+                    help="Genetic code to use, based on NCBI's code list, see details below. Show alternatives with the --list-codes option. Default: %(default)s.")
+    ap.add_argument('-lc', '--list-codes', action='store_true',
+                    help="List the available genetic codes and exit.")
     ap.add_argument('-w', '--width', type=int, default=0,
                     help='Width of alignment blocks. Defaults to terminal width minus accession width, essentially.')
     ap.add_argument('-k', '--keep-colors-when-redirecting', action='store_true',
                     help="Do not strip colors when redirecting to stdout, or similar. In particular useful with the command 'less -R'.")
     ordering_args = ap.add_argument_group('Sequence ordering')
     ordering_args.add_argument('-s', '--sorting', choices=['infile', 'alpha'], default='infile',
-                    help="Sort the sequences as given in the infile or alphabetically (by accession).")
+                    help="Sort the sequences as given in the infile or alphabetically (by accession). Default: %(default)s")
     ordering_args.add_argument('-si', '--sort-by-id', metavar='ACCESSION', type=str,
                     help='Sort the output alignment by similarity (percent identity) to named sequence. Overrides -s.')
     ordering_args.add_argument('-so', '--sorting_order', metavar='ACCESSIONS', type=str,
@@ -39,11 +76,15 @@ def main():
     
 #    ap.add_argument('-p', '--prefix', type=int, default=0, help='Number of characters to remove from the beggining of the accession. Note: PHYLIP format allows max 10 character accessions.')
     args = ap.parse_args()
-
-    alignment, painter = read_alignment(args.infile, args)
-
-    terminal = AlignmentTerminal(args)
-    terminal.output_alignment(alignment, painter, args)
+    if args.list_codes:
+        list_genetic_codes()
+    elif not args.infile:
+        ap.print_usage()
+        ap.exit()
+    else:
+        alignment, painter = read_alignment(args.infile, args)
+        terminal = AlignmentTerminal(args)
+        terminal.output_alignment(alignment, painter, args)
     
 
 if __name__ == '__main__':

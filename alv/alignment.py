@@ -124,6 +124,7 @@ class codonAlignment(BaseAlignment):
         super().__init__(alignment)
         self.type = 'codon'
         self.column_width = 3
+        self.genetic_code = 1   # The standard code
 
     def block_width(self, terminal_width, args):
         '''
@@ -167,12 +168,14 @@ class codonAlignment(BaseAlignment):
             if codon == '---':
                 return '-'
             else:
-                aa = Bio.Seq.translate(codon)
+                aa = Bio.Seq.translate(codon, table = self.genetic_code)
                 return aa
         except:
             # For when we have weird codons/alignments
             return 'X'
-            
+
+    def set_genetic_code(self, code):
+        self.genetic_code = code
 
 
 class AlignmentBlock:

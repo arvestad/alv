@@ -71,10 +71,11 @@ def main():
     restriction_args = ap.add_argument_group('Restricting colorization')
     restriction_args.add_argument('--majority', action='store_true',
                                   help='Only color those column where the most common amino acid is found in 50 percent of sequences.')
-    restriction_args.add_argument('--no_indels', action='store_true',
+    restriction_args.add_argument('--no-indels', action='store_true',
                                   help='Only color column without indels.')
     
-#    ap.add_argument('-p', '--prefix', type=int, default=0, help='Number of characters to remove from the beggining of the accession. Note: PHYLIP format allows max 10 character accessions.')
+# Feature to add:
+#    ap.add_argument('-p', '--prefix', type=int, default=0, help='Number of characters to remove from the beggining of the accession.')
     args = ap.parse_args()
     if args.list_codes:
         list_genetic_codes()

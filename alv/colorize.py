@@ -6,12 +6,14 @@ class Painter:
     '''
     Base class for all painters
     '''
-    def __init__(self, args):
+    def __init__(self):
+        self.restrictions = []
+
+    def set_options(self, args):
         if args.keep_colors_when_redirecting:
             colorama_init(strip=False)
         else:
             colorama_init()
-        self.restrictions = []
         if args.majority:
             self.restrictions.append(restrict_to_majority)
         if args.no_indels:
@@ -50,8 +52,8 @@ class aaPainter(Painter):
     '''
     Put paint of amino acids.
     '''
-    def __init__(self, args):
-        super().__init__(args)
+    def __init__(self):
+        super().__init__()
         
     def _color_lookup(self, c):
         if c in 'AILMFWVCailmfwvc':
@@ -98,8 +100,8 @@ class aaTaylorPainter(aaPainter):
     '''
     Put paint to amino acids, an approximation of the "Taylor" style.
     '''
-    def __init__(self, args):
-        super().__init__(args)
+    def __init__(self):
+        super().__init__()
         
     def _color_lookup(self, c):
         if c in 'AILMFVCailMFVC':
@@ -129,8 +131,8 @@ class aaHydrophobicity(aaPainter):
     '''
     Put paint to amino acids, indicating hydrophobicity.
     '''
-    def __init__(self, args):
-        super().__init__(args)
+    def __init__(self):
+        super().__init__()
         
     def _color_lookup(self, c):
         if c in 'AILMFVPGailmfvpg':
@@ -155,8 +157,8 @@ class dnaPainter(Painter):
     '''
     Put paint of nucleotides.
     '''
-    def __init__(self, args):
-        super().__init__(args)
+    def __init__(self):
+        super().__init__()
         
     def colorizer(self, c, column):
         if c in 'TUtu':           # Handles RNA too
@@ -183,8 +185,8 @@ class dnaClassPainter(Painter):
     '''
     Put paint of nucleotides.
     '''
-    def __init__(self, args):
-        super().__init__(args)
+    def __init__(self):
+        super().__init__()
         
     def colorizer(self, c, column):
         if c in 'TUtuCcYy':           # Handles RNA too
@@ -208,8 +210,8 @@ class codonPainter(Painter):
     '''
     Put paint of codons.
     '''
-    def __init__(self, args, aa_painter):
-        super().__init__(args)
+    def __init__(self, aa_painter):
+        super().__init__()
         self.aa_painter = aa_painter
 
     def colorizer(self, c, column):

@@ -4,33 +4,30 @@ from .alignment import aaAlignment, dnaAlignment, codonAlignment
 from .colorize import aaPainter, dnaPainter, codonPainter, aaHydrophobicity, aaTaylorPainter
 
 
-def read_alignment(filename, args):
+def read_alignment(filename, seqtype, input_format, color_scheme, genetic_code):
     '''
     Factory function. Read the alignment with BioPython's support, and 
-    return an appropriate alv alignment, by looking at input options.
+    return an appropriate alv alignment.
     '''
-    seqtype = args.type
-    input_format = args.format
-
-    alignment = AlignIO.read(args.infile, input_format)
+    alignment = AlignIO.read(filename, input_format)
     if seqtype == 'guess':
         seqtype = guess_seq_type(alignment)
         
-    if args.color_scheme == 'taylor':
-        painter = aaTaylorPainter(args)
-    elif args.color_scheme == 'hydrophobicity':
-        painter = aaHydrophobicity(args)
+    if color_scheme == 'taylor':
+        painter = aaTaylorPainter()
+    elif color_scheme == 'hydrophobicity':
+        painter = aaHydrophobicity()
     else:
-        painter = aaPainter(args)
+        painter = aaPainter()
         
     if seqtype == 'aa':
         return aaAlignment(alignment), painter
     if seqtype == 'dna':
-        return dnaAlignment(alignment), dnaPainter(args)
+        return dnaAlignment(alignment), dnaPainter()
     elif seqtype == 'codon':
         al = codonAlignment(alignment)
-        al.set_genetic_code(args.code)
-        return codonAlignment(alignment), codonPainter(args, painter)
+        al.set_genetic_code(genetic_code)
+        return codonAlignment(alignment), codonPainter(painter)
     else:
         raise Exception('Unknown option')
 

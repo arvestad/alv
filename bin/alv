@@ -82,7 +82,8 @@ def main():
         ap.print_usage()
         ap.exit()
     else:
-        alignment, painter = read_alignment(args.infile, args)
+        alignment, painter = read_alignment(args.infile, args.type, args.format, args.color_scheme, args.code)
+        painter.set_options(args)
         terminal = AlignmentTerminal(args)
         terminal.output_alignment(alignment, painter, args)
     

@@ -25,7 +25,7 @@ class TestAlignment(unittest.TestCase):
             self.assertEqual(len(acc), 5)
 
     def test_basic_info(self):
-        info = self.al.get_basic_info()
+        info = list(self.al.get_basic_info())
         self.assertEqual(info[0][1], 3)
         self.assertEqual(info[1][1], 2)
         

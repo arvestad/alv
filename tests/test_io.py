@@ -7,6 +7,7 @@ from Bio.Align import MultipleSeqAlignment
 import alv.io
 from alv.alignment import aaAlignment, dnaAlignment, codonAlignment, BaseAlignment
 import alv.colorize
+import alv.exceptions
 
 class TestIO_etc(unittest.TestCase):
     def test_guess_seq_type(self):
@@ -35,17 +36,45 @@ class TestFormats(unittest.TestCase):
     def setUp(self):
         self.dna_filename = 'tests/t1.fa'
         self.aa_filename = 'tests/t4.fa'
+        self.sthlm_filename= 'tests/t4.sthlm'
+        self.pfam_file = 'tests/PF00005_seed.txt'
 
-    def test_reading_files(self):
+    def test_reading_fasta_files(self):
         al, painter = alv.io.read_alignment(self.dna_filename, 'dna', 'fasta', '', 'standard')
         self.assertIsInstance(al, dnaAlignment)
         self.assertIsInstance(painter, alv.colorize.dnaPainter)
+
         al, painter = alv.io.read_alignment(self.dna_filename, 'aa', 'fasta', 'clustal', 'standard')
         self.assertIsInstance(al, aaAlignment)
         self.assertIsInstance(painter, alv.colorize.aaPainter)
+
         al, painter = alv.io.read_alignment(self.dna_filename, 'codon', 'fasta', 'clustal', 'standard')
         self.assertIsInstance(al, codonAlignment)
         self.assertIsInstance(painter, alv.colorize.codonPainter)
+
+    def test_reading_stockholm_files(self):
+        al, painter = alv.io.read_alignment(self.sthlm_filename, 'aa', 'stockholm', '', 'standard')
+        self.assertIsInstance(al, aaAlignment)
+        self.assertIsInstance(painter, alv.colorize.aaPainter)
+        al, painter = alv.io.read_alignment(self.pfam_file, 'aa', 'stockholm', '', 'standard')
+        self.assertIsInstance(al, aaAlignment)
+        self.assertIsInstance(painter, alv.colorize.aaPainter)
+
+
+    def test_reading_wrong_format(self):
+        with self.assertRaises(alv.exceptions.AlvPossibleFormatError):
+            al, painter = alv.io.read_alignment(self.aa_filename, 'aa', 'clustal', '', 'standard')
+        with self.assertRaises(alv.exceptions.AlvPossibleFormatError):
+            al, painter = alv.io.read_alignment(self.aa_filename, 'aa', 'phylip', '', 'standard')
+        with self.assertRaises(alv.exceptions.AlvPossibleFormatError):
+            al, painter = alv.io.read_alignment(self.aa_filename, 'aa', 'stockholm', '', 'standard')
+        with self.assertRaises(alv.exceptions.AlvPossibleFormatError):
+            al, painter = alv.io.read_alignment(self.sthlm_filename, 'aa', 'fasta', '', 'standard')
+        with self.assertRaises(alv.exceptions.AlvPossibleFormatError):
+            al, painter = alv.io.read_alignment(self.sthlm_filename, 'aa', 'clustal', '', 'standard')
+        with self.assertRaises(alv.exceptions.AlvPossibleFormatError):
+            al, painter = alv.io.read_alignment(self.sthlm_filename, 'aa', 'phylip', '', 'standard')
+        
 
     def test_guessing_seq_type(self):
         '''

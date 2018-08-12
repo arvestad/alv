@@ -65,7 +65,7 @@ def main():
                     help="Sort the sequences as given in the infile or alphabetically (by accession). Default: %(default)s")
     ordering_args.add_argument('-si', '--sort-by-id', metavar='ACCESSION', type=str,
                     help='Sort the output alignment by similarity (percent identity) to named sequence. Overrides -s.')
-    ordering_args.add_argument('-so', '--sorting_order', metavar='ACCESSIONS', type=str,
+    ordering_args.add_argument('-so', '--sorting-order', metavar='ACCESSIONS', type=str,
                     help='Comma-separated list of accessions. Sequences will be presented in this order. Also note that one can choose which sequences to present with this opion. Overrides -s and -si.')
 
     restriction_args = ap.add_argument_group('Restricting colorization')

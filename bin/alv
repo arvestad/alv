@@ -2,11 +2,12 @@
 
 import alv
 import argparse
+import sys
 
 from alv.version import __version__
 from alv.alignmentterminal import AlignmentTerminal
 from alv.io import read_alignment
-#from alv.colorize import print_one_sequence_block
+from alv.exceptions import AlvPossibleFormatError
 
 def list_genetic_codes():
     additional_help_text='''
@@ -83,7 +84,16 @@ def main():
         ap.print_usage()
         ap.exit()
     else:
-        alignment, painter = read_alignment(args.infile, args.type, args.format, args.color_scheme, args.code)
+        try:
+            alignment, painter = read_alignment(args.infile, args.type, args.format, args.color_scheme, args.code)
+        except AlvPossibleFormatError as e:
+            print('Alv error: probably wrong input format in '+ args.infile+'. Try option -f.', file=sys.stderr)
+            ap.print_usage()
+            ap.exit()
+        except Exception as e:
+            print('Alv: Unknown error when reading input.', file=sys.stderr)
+            ap.exit()
+            
         painter.set_options(args)
         terminal = AlignmentTerminal(args)
         terminal.output_alignment(alignment, painter, args)

@@ -45,4 +45,5 @@ Run `python setup.py develop test` for development install and to execute tests.
 ## Screenshot
 
 Ten peptide sequences from PF00005.
-![Sample screenshot](https://github.com/arvestad/alv/tree/master/doc/screenshot_1.png)
+![Sample screenshot]
+(https://github.com/arvestad/alv/tree/master/doc/screenshot_1.png)

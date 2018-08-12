@@ -19,9 +19,8 @@ setuptools.setup(
     test_suite = "tests",
     packages=setuptools.find_packages(),
     install_requires=[
-        'argparse',
-        'biopython',
-        'colorama',
+        'biopython>=1.70',
+        'colorama>=0.3.8',
     ],
     classifiers=(
         "Programming Language :: Python :: 3",

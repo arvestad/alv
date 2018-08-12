@@ -19,7 +19,8 @@ Quick viewing of a small alignment:
 ```
 alf msa.fa
 ```
-This autodetects sequence type (DNA or AA), colors the sequences, and formats the alignment for easy viewing in your terminal.
+This autodetects sequence type (AA, DNA, RNA, coding DNA), colors the sequences, and formats the
+alignment for easy viewing in your terminal.
 
 View three sequences, accessions `a`, `b`, and `c`, from an alignment:
 ```
@@ -39,4 +40,4 @@ Recommended installation is with `pip install alv`.
 
 ## For developers
 
-Run `python setup.py develop test` to execute tests.
+Run `python setup.py develop test` for development install and to execute tests.

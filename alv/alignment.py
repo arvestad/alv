@@ -14,6 +14,8 @@ class BaseAlignment:
         self.column_width = 1
         self.seq_indices = { r.id : i for i, r in enumerate(alignment)} # Get a dictionary mapping accession to row index in alignment
         self.columns = self._summarize_columns()
+        self.basic_info = {'Number of sequences': len(self.al),
+                           'Alignment width': self.al.get_alignment_length()}        
 
     def accessions(self):
         '''
@@ -107,8 +109,11 @@ class BaseAlignment:
         return columns
 
     def get_basic_info(self):
-        return [('Number ofsequences', len(self.al)),
-                ('Alignment width', self.al.get_alignment_length())]
+        '''
+        Generator for pairs of description and value, e.g., "alignment width" and an integer.
+        '''
+        for descr, val in self.basic_info.items():
+            yield descr, val
 
 class aaAlignment(BaseAlignment):
     def __init__(self, alignment):
@@ -129,6 +134,7 @@ class codonAlignment(BaseAlignment):
         self.type = 'codon'
         self.column_width = 3
         self.genetic_code = 1   # The standard code
+        self.basic_info['Genetic code'] = self.genetic_code
 
     def block_width(self, terminal_width, args):
         '''
@@ -180,6 +186,7 @@ class codonAlignment(BaseAlignment):
 
     def set_genetic_code(self, code):
         self.genetic_code = code
+        self.basic_info['Genetic code'] = code
 
 
 class AlignmentBlock:

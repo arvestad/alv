@@ -112,19 +112,19 @@ def main():
     try:
         if args.just_info:
             for headline, data in alignment.get_basic_info():
-                print(headline, data)
+                print(headline+':', data)
             ap.exit()
 
         terminal.output_alignment(alignment, painter, args)
         if args.info:
             for headline, data in alignment.get_basic_info():
-                print(headline, data)
+                print(headline + ':', data)
     except BrokenPipeError:
         # This should not cause any specific error at all: correct behaviour is to end the program.
         sys.stderr.close()  # Without this line, python will sometimes give an error
         ap.exit()
     except Exception as e:
-        print('Alv bug! Please report\n!', file=sys.stderr)
+        print('Alv bug! Please report!\n', file=sys.stderr)
         print(e, file=sys.stderr)
         ap.exit(2)
     

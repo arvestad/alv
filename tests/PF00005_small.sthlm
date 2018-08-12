@@ -1,0 +1,27 @@
+# STOCKHOLM 1.0
+#=GS ARAG_ECOLI/23-172         AC P0AAF3.1
+#=GS YTFR_ECOLI/25-174         AC Q6BEX0.1
+#=GS THIQ_ECOLI/15-158         AC P31548.2
+#=GS MODC_ECOLI/14-157         AC P09833.4
+#=GS ARTP_ECOLI/18-170         AC P0AAF6.1
+#=GS PHNL_ECOLI/24-178         AC P16679.1
+#=GS ABCA_AERSA/41-174         AC Q07698.1
+#=GS NODI_AZOC5/30-174         AC Q07756.1
+#=GS H7EQI2_PSEST/19-157       AC H7EQI2.1
+ARAG_ECOLI/23-172                    LTDISFDCYAGQVHALMGENGAGKSTLLKILSGNYAP.....TTGSV.....................VIN.GQEMSF.......SDTTAALNAGVAIIYQE..LHLVPEMT.VAENIYLGQLP.....................................HKGGIVNRSLLNYE........AGLQLKHLGMDI..........................DPDTPL..............KYLSIGQWQ..MVEIAKALARNAKIIAFDEPTS
+#=GR ARAG_ECOLI/23-172         pAS   ..............................................................................................................................................................................................................................................................................*...
+YTFR_ECOLI/25-174                    LDNVDFSLRRGEIMALLGENGAGKSTLIKALTGVYHA.....DRGTI.....................WLE.GQAISP.......KNTAHAQQLGIGTVYQE..VNLLPNMS.VADNLFIGREP.....................................KRFGLLRRKEMEKR........ATELMASYGFSL..........................DVREPL..............NRFSVAMQQ..IVAICRAIDLSAKVLILDEPTA
+#=GR YTFR_ECOLI/25-174         pAS   ..............................................................................................................................................................................................................................................................................*...
+THIQ_ECOLI/15-158                    PMRFSLTVERGEQVAILGPSGAGKSTLLNLIAGFLTP.....ASGSL.....................TID.GVDHTT..........MPPSRRPVSMLFQE..NNLFSHLT.VAQNIGLGLN........................................PGLKLNAVQQGK........MHAIARQMGIDN..........................LMARLP..............GELSGGQRQ..RVALARCLVREQPILLLDEPFS
+#=GR THIQ_ECOLI/15-158         pAS   ..............................................................................................................................................................................................................................................................................*...
+MODC_ECOLI/14-157                    CLTINETLPANGITAIFGVSGAGKTSLINAISGLTRP.....QKGRI.....................VLN.GRVLNDAE....KGICLTPEKRRVGYVFQD..ARLFPHYK.VRGNLRYG..............................................MSKSMVDQ........FDKLVALLGIEP..........................LLDRLP..............GSLSGGEKQ..RVAIGRALLTAPELLLLDEPLA
+#=GR MODC_ECOLI/14-157         pAS   ..............................................................................................................................................................................................................................................................................*...
+ARTP_ECOLI/18-170                    LFDITLDCPQGETLVLLGPSGAGKSSLLRVLNLLEMP.....RSGTL.....................NIA.GNHFDFTKT..PSDKAIRDLRRNVGMVFQQ..YNLWPHLT.VQQNLIEAPC.......................................RVLGLSKDQALAR........AEKLLERLRLKP..........................YSDRYP..............LHLSGGQQQ..RVAIARALMMEPQVLLFDEPTA
+#=GR ARTP_ECOLI/18-170         pAS   ..............................................................................................................................................................................................................................................................................*...
+PHNL_ECOLI/24-178                    LNRASLTVNAGECVVLHGHSGSGKSTLLRSLYANYLP.....DEGQI.....................QIKHGDEWVDLVT.APARKVVEIRKTTVGWVSQF..LRVIPRIS.ALEVVMQPLL........................................DTGVPREACAAK........AARLLTRLNVPE.............................RLWHLAP..........STFSGGEQQ..RVNIARGFIVDYPILLLDEPTA
+#=GR PHNL_ECOLI/24-178         pAS   ..............................................................................................................................................................................................................................................................................*...
+ABCA_AERSA/41-174                    LRDIELTVYRGETIGIVGHNGAGKSTLLQLITGVMQP.....DCGQI..........................................TRTGRVVGLLELG..SGFNPEFT.GRENIFFNGA........................................ILGMSQREMDDR........LERILSFAAIGD..........................FIDQPV..............KNYSSGMMV..RLAFSVIINTDPDVLIIDEALA
+NODI_AZOC5/30-174                    LRGLDMYVRRGERYGIMGTNGAGKSSLINIILGLTPP.....DRGTV.....................TVF.GKDMRR.........QGHLARARIGVVPQD..DCLEQNMT.PYENVMLYGR........................................LCRMTASEARKR........ADQIFEKFSMMD..........................CANRPV..............RLLSGGMRR..LTMVARALVNDPYVIILDEATV
+#=GR NODI_AZOC5/30-174         pAS   ..............................................................................................................................................................................................................................................................................*...
+H7EQI2_PSEST/19-157                  LHDLNLNLGEGEVLGLFGHNGAGKTTSMKLILGLLSP.....SEGQV.....................KVL.GRAPND...........PQVRRQLGYLPEN..VTFYPQLS.GRETLR............................................HFARLKGAALTQ........VDELLEQVGLAH..........................AADRRV..............KTYSKGMRQ..RLGLAQALLGEPRLLLLDEPTV
+//

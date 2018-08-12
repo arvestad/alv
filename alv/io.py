@@ -2,14 +2,18 @@ from Bio import AlignIO
 from math import log
 from .alignment import aaAlignment, dnaAlignment, codonAlignment
 from .colorize import aaPainter, dnaPainter, codonPainter, aaHydrophobicity, aaTaylorPainter
-
+from .exceptions import AlvPossibleFormatError
 
 def read_alignment(filename, seqtype, input_format, color_scheme, genetic_code):
     '''
     Factory function. Read the alignment with BioPython's support, and 
     return an appropriate alv alignment.
     '''
-    alignment = AlignIO.read(filename, input_format)
+    try:
+        alignment = AlignIO.read(filename, input_format)
+    except ValueError:
+        raise AlvPossibleFormatError('reading input', filename)
+
     if seqtype == 'guess':
         seqtype = guess_seq_type(alignment)
         
@@ -19,7 +23,7 @@ def read_alignment(filename, seqtype, input_format, color_scheme, genetic_code):
         painter = aaHydrophobicity()
     else:
         painter = aaPainter()
-        
+
     if seqtype == 'aa':
         return aaAlignment(alignment), painter
     if seqtype == 'dna':

@@ -37,8 +37,8 @@ class Painter:
 # should be colored or not. Returns True for 'color it', or False for 'dont color it'.
 #
 def restrict_to_majority(column):
-    maj = column.most_common(1) # Single most common
-    if maj >= 0.5 * len(column.elements()):
+    maj = column.most_common(1)[0] # Single most common
+    if maj[0] != '-' and maj[1] >= 0.5 * len(list(column.elements())):
         return True
     else:
         return False
@@ -82,7 +82,10 @@ class aaPainter(Painter):
             return Back.WHITE, None
 
     def colorizer(self, c, column):
-        if all(map(lambda r: r(column), self.restrictions)): # True also if the list self.restrictions is empty
+        if c == '!?':
+            before_color, after_color = self.color_for_bad_data()
+            return before_color + c + after_color
+        elif all(map(lambda r: r(column), self.restrictions)): # True also if the list self.restrictions is empty
             before_color, after_color = self._color_lookup(c)
             colored_item = before_color + c
             if after_color:
@@ -220,25 +223,23 @@ class codonPainter(Painter):
         Single letters may occur in MACSE alignments, due to frameshifts.
         '''
         try:
-            if all(map(lambda r: r(column), self.restrictions)): # True also if the list self.restrictions is empty
+            if '!' in c:
+                before_color, after_color = self.color_for_bad_data()
+                assert after_color # Weird if we don't have a color reset.
+                return before_color + c + after_color
+            elif all(map(lambda r: r(column), self.restrictions)): # True also if the list self.restrictions is empty
                 if len(c) != 3:
                     return Back.WHITE + Fore.RED + Style.BRIGHT + c + Fore.BLACK + Style.NORMAL
-                elif '!' in c:
-                    before_color, after_color = self.color_for_bad_data()
-                    assert after_color # Weird if we don't have a color reset.
-                    return before_color + c + after_color
+                elif c == '---':
+                    before_color, after_color = self.indel_color()
                 else:
-                    if c == '---':
-                        before_color, after_color = self.indel_color()
-                    else:
-                        
-                        aa = Bio.Seq.translate(c)
-                        before_color, after_color = self.aa_painter._color_lookup(aa)
-                    colored_item = before_color + c
-                    if after_color:
-                        return colored_item + after_color
-                    else:
-                        return colored_item
+                    aa = Bio.Seq.translate(c)
+                    before_color, after_color = self.aa_painter._color_lookup(aa)
+                colored_item = before_color + c
+                if after_color:
+                    return colored_item + after_color
+                else:
+                    return colored_item
             else:
                 before_color, after_color = self.indel_color()
                 if after_color:
@@ -246,11 +247,10 @@ class codonPainter(Painter):
                 else:
                     return before_color + c
                 
-                
         except Bio.Data.CodonTable.TranslationError:
             return c
         except Exception as e:
-            print('Warning:', str(e), file=sys.stderr)
+            print('Alv warning:', str(e), file=sys.stderr)
             return c                # Temporarily. Adding colors later
 
 

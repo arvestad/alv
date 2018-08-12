@@ -46,5 +46,4 @@ Run `python setup.py develop test` for development install and to execute tests.
 
 Ten peptide sequences from PF00005.
 
-![Sample screenshot]
-(https://stockholmuniversity.box.com/s/tyrhzn2n9hvw7svq9atob3e2nyrnmkrp/screenshot_1.png)
+![Sample screenshot](https://stockholmuniversity.box.com/s/tyrhzn2n9hvw7svq9atob3e2nyrnmkrp/screenshot_1.png)

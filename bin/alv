@@ -42,8 +42,10 @@ The following is the list, with numbers, of known genetic codes:
 '''
     print(additional_help_text)
 
-
-def main():
+def setup_argument_parsing():
+    '''
+    Create an argument parser, parse and return args.
+    '''
     ap = argparse.ArgumentParser()
     ap.add_argument('infile', nargs='?')
     ap.add_argument('--version', action='version', version='%(prog)s ' + __version__)
@@ -57,6 +59,10 @@ def main():
                     help="Genetic code to use, based on NCBI's code list, see details below. Show alternatives with the --list-codes option. Default: %(default)s.")
     ap.add_argument('-lc', '--list-codes', action='store_true',
                     help="List the available genetic codes and exit.")
+    ap.add_argument('-i', '--info', action='store_true',
+                    help="Append basic information about the alignment at the end.")
+    ap.add_argument('-j', '--just-info', action='store_true',
+                    help="Write basic information about the alignment and exit.")
     ap.add_argument('-w', '--width', type=int, default=0,
                     help='Width of alignment blocks. Defaults to terminal width minus accession width, essentially.')
     ap.add_argument('-k', '--keep-colors-when-redirecting', action='store_true',
@@ -74,29 +80,53 @@ def main():
                                   help='Only color those column where the most common amino acid is found in 50 percent of sequences.')
     restriction_args.add_argument('--no-indels', action='store_true',
                                   help='Only color column without indels.')
-    
+    return ap
 # Feature to add:
 #    ap.add_argument('-p', '--prefix', type=int, default=0, help='Number of characters to remove from the beggining of the accession.')
+
+
+def main():
+
+    ap = setup_argument_parsing()
     args = ap.parse_args()
+
     if args.list_codes:
         list_genetic_codes()
+        ap.exit()
     elif not args.infile:
         ap.print_usage()
         ap.exit()
-    else:
-        try:
-            alignment, painter = read_alignment(args.infile, args.type, args.format, args.color_scheme, args.code)
-        except AlvPossibleFormatError as e:
-            print('Alv error: probably wrong input format in '+ args.infile+'. Try option -f.', file=sys.stderr)
-            ap.print_usage()
-            ap.exit()
-        except Exception as e:
-            print('Alv: Unknown error when reading input.', file=sys.stderr)
-            ap.exit()
+
+    try:
+        alignment, painter = read_alignment(args.infile, args.type, args.format, args.color_scheme, args.code)
+    except AlvPossibleFormatError as e:
+        print('Alv error: probably wrong input format in '+ args.infile+'. Try option -f.', file=sys.stderr)
+        ap.print_usage()
+        ap.exit()
+    except Exception as e:
+        print('Alv: Unknown error when reading input.', file=sys.stderr)
+        ap.exit()
             
-        painter.set_options(args)
-        terminal = AlignmentTerminal(args)
+    painter.set_options(args)
+    terminal = AlignmentTerminal(args)
+    try:
+        if args.just_info:
+            for headline, data in alignment.get_basic_info():
+                print(headline, data)
+            ap.exit()
+
         terminal.output_alignment(alignment, painter, args)
+        if args.info:
+            for headline, data in alignment.get_basic_info():
+                print(headline, data)
+    except BrokenPipeError:
+        # This should not cause any specific error at all: correct behaviour is to end the program.
+        sys.stderr.close()  # Without this line, python will sometimes give an error
+        ap.exit()
+    except Exception as e:
+        print('Alv bug! Please report\n!', file=sys.stderr)
+        print(e, file=sys.stderr)
+        ap.exit(2)
     
 
 if __name__ == '__main__':

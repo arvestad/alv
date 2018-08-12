@@ -106,6 +106,10 @@ class BaseAlignment:
             columns.append(Counter(self.al[:, col_no]))
         return columns
 
+    def get_basic_info(self):
+        return [('Number ofsequences', len(self.al)),
+                ('Alignment width', self.al.get_alignment_length())]
+
 class aaAlignment(BaseAlignment):
     def __init__(self, alignment):
        	super().__init__(alignment)

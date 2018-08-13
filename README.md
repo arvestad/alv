@@ -49,4 +49,7 @@ Run `python setup.py develop test` for development install and to execute tests.
 ![Sample screenshot](https://github.com/arvestad/alv/blob/master/doc/screenshot_1.png)
 
 ### Seven coding DNA sequences
+
+`alv` is autodetecting that the given DNA sequences are coding and therefore colors codons instead
+of nucleotides.
 ![Sample screenshot](https://github.com/arvestad/alv/blob/master/doc/screenshot_2.png)

@@ -44,9 +44,15 @@ Run `python setup.py develop test` for development install and to execute tests.
 
 ## Screenshot
 
+## Full PFAM domain
+
+All of the sequences in PFAM's seed alignment for PF00005
+
+![PF00005 seed MSA](https://github.com/arvestad/alv/blob/master/doc/screenshot_PF00005.png)
+
 ### Ten peptide sequences from PF00005
 
-![Sample screenshot](https://github.com/arvestad/alv/blob/master/doc/screenshot_1.png)
+![MSA from PF00005](https://github.com/arvestad/alv/blob/master/doc/screenshot_1.png)
 
 ### Seven coding DNA sequences
 

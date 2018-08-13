@@ -1,8 +1,9 @@
 # Planned fixes and features
 
-* Remove the `args` argument to Alignment.blocks()
-* Add support for restricting to a sub-alignment
-* Add option --glimpse
+* Remove the `args` argument to Alignment.blocks().
+* Add support for restricting to a sub-alignment.
+* Add option --glimpse.
+* Implement format guessing and make it the default.
 
 # Considered features
 

@@ -44,7 +44,7 @@ Run `python setup.py develop test` for development install and to execute tests.
 
 ## Screenshot
 
-## Full PFAM domain
+### Full PFAM domain
 
 All of the sequences in PFAM's seed alignment for PF00005
 

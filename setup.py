@@ -1,10 +1,20 @@
 import setuptools
+import sys 
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 with open('alv/version.py') as fh:
     exec(fh.read())
+    
+if sys.version_info.major < 3:
+    sys.exit('\n'
+             'Sorry, Python 2 is not supported\n'
+             'Did you run pip install alv?\n'
+             'Try \'pip3 install alv\'')
+
+elif sys.version_info.minor < 2:
+    sys.exit('\nSorry, Python < 3.2 is not supported\n')
     
 setuptools.setup(
     name="alv",
@@ -18,7 +28,7 @@ setuptools.setup(
     url="https://github.com/arvestad/alv",
     test_suite = "tests",
     packages=setuptools.find_packages(),
-    python_requires='>=3',
+    python_requires='>=3.2',
     install_requires=[
         'biopython>=1.70',
         'colorama>=0.3.8',

@@ -18,6 +18,7 @@ setuptools.setup(
     url="https://github.com/arvestad/alv",
     test_suite = "tests",
     packages=setuptools.find_packages(),
+    python_requires='>=3',
     install_requires=[
         'biopython>=1.70',
         'colorama>=0.3.8',

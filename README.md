@@ -3,6 +3,8 @@
 View you DNA or protein multiple-sequence alignments right at your command line. No need to launch a
 GUI!
 
+Note: `alv` requires Python v3.x.
+
 Features:
 
 * Command-line based, no GUI, so easy to script viewing of many (typically small) MSAs.

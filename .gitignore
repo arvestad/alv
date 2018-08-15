@@ -9,3 +9,6 @@
 
 # Emacs
 *~
+
+# MacOS
+.DS_Store

@@ -5,7 +5,6 @@
 * Remove the `args` argument to Alignment.blocks().
 * Add support for restricting to a sub-alignment.
 * Add option --glimpse.
-* Implement format guessing and make it the default.
 * Read from stdin
 * Explicitly choose parts of an alignment to view/color.
 * Coloring of motifs

@@ -62,17 +62,17 @@ class TestFormats(unittest.TestCase):
 
 
     def test_reading_wrong_format(self):
-        with self.assertRaises(alv.exceptions.AlvPossibleFormatError):
+        with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.aa_filename, 'aa', 'clustal', '', 'standard')
-        with self.assertRaises(alv.exceptions.AlvPossibleFormatError):
+        with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.aa_filename, 'aa', 'phylip', '', 'standard')
-        with self.assertRaises(alv.exceptions.AlvPossibleFormatError):
+        with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.aa_filename, 'aa', 'stockholm', '', 'standard')
-        with self.assertRaises(alv.exceptions.AlvPossibleFormatError):
+        with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.sthlm_filename, 'aa', 'fasta', '', 'standard')
-        with self.assertRaises(alv.exceptions.AlvPossibleFormatError):
+        with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.sthlm_filename, 'aa', 'clustal', '', 'standard')
-        with self.assertRaises(alv.exceptions.AlvPossibleFormatError):
+        with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.sthlm_filename, 'aa', 'phylip', '', 'standard')
         
 

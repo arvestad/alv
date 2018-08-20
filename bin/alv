@@ -3,11 +3,12 @@
 import alv
 import argparse
 import sys
+from traceback import print_last
 
 from alv.version import __version__
 from alv.alignmentterminal import AlignmentTerminal
-from alv.io import read_alignment
-from alv.exceptions import AlvPossibleFormatError
+import alv.io as io
+from alv.exceptions import AlvPossibleFormatError, AlvEmptyAlignment
 
 def list_genetic_codes():
     additional_help_text='''
@@ -49,8 +50,8 @@ def setup_argument_parsing():
     ap = argparse.ArgumentParser()
     ap.add_argument('infile', nargs='?')
     ap.add_argument('--version', action='version', version='%(prog)s ' + __version__)
-    ap.add_argument('-f', '--format', choices=['fasta', 'clustal', 'phylip', 'stockholm'], default='fasta',
-                    help="Specify what sequence type to assume. Default: %(default)s")
+    ap.add_argument('-f', '--format', choices=['guess', 'fasta', 'clustal', 'phylip', 'stockholm'], default='guess',
+                    help="Specify what sequence type to assume. Be specific if the file is not recognized automatically. Default: %(default)s")
     ap.add_argument('-t', '--type', choices=['aa', 'dna', 'rna', 'codon', 'guess'], default='guess',
                     help="Specify what sequence type to assume. Coding DNA/RNA is assumed with the 'codon' option. Guessing the format only chooses between 'aa' and 'dna', but assumes the standard genetic code.  Default: %(default)s")
     ap.add_argument('-c', '--color-scheme', choices=['clustal', 'taylor', 'hydrophobicity'], default='clustal',
@@ -63,10 +64,14 @@ def setup_argument_parsing():
                     help="Append basic information about the alignment at the end.")
     ap.add_argument('-j', '--just-info', action='store_true',
                     help="Write basic information about the alignment and exit.")
+    ap.add_argument('--method', action='store_true',
+                    help="Write a suggested text to add to a methods section.")
     ap.add_argument('-w', '--width', type=int, default=0,
                     help='Width of alignment blocks. Defaults to terminal width minus accession width, essentially.')
     ap.add_argument('-k', '--keep-colors-when-redirecting', action='store_true',
                     help="Do not strip colors when redirecting to stdout, or similar. In particular useful with the command 'less -R'.")
+
+    # Options for changing sequence order
     ordering_args = ap.add_argument_group('Sequence ordering')
     ordering_args.add_argument('-s', '--sorting', choices=['infile', 'alpha'], default='infile',
                     help="Sort the sequences as given in the infile or alphabetically (by accession). Default: %(default)s")
@@ -75,11 +80,20 @@ def setup_argument_parsing():
     ordering_args.add_argument('-so', '--sorting-order', metavar='ACCESSIONS', type=str,
                     help='Comma-separated list of accessions. Sequences will be presented in this order. Also note that one can choose which sequences to present with this opion. Overrides -s and -si.')
 
+    # Options for limiting colorization
     restriction_args = ap.add_argument_group('Restricting colorization')
     restriction_args.add_argument('--majority', action='store_true',
                                   help='Only color those column where the most common amino acid is found in 50 percent of sequences.')
     restriction_args.add_argument('--no-indels', action='store_true',
                                   help='Only color column without indels.')
+
+    # Options for removing parts of the accession
+    accession_args = ap.add_argument_group('Accession trimming')
+    accession_args.add_argument('-as', '--acc-substring', nargs=2, metavar='INT', type=int,
+                                help="Specify what substring of an accession to keep. '-as 10 15' discards all but position 10 to 14 in any accession.")
+    accession_args.add_argument('-aa', '--acc-abbreviate', type=int, metavar='N',
+                                help="Keep only the first N and last N characters of the accession")
+    
     return ap
 # Feature to add:
 #    ap.add_argument('-p', '--prefix', type=int, default=0, help='Number of characters to remove from the beggining of the accession.')
@@ -98,35 +112,65 @@ def main():
         ap.exit()
 
     try:
-        alignment, painter = read_alignment(args.infile, args.type, args.format, args.color_scheme, args.code)
-    except AlvPossibleFormatError as e:
-        print('Alv error: probably wrong input format in '+ args.infile+'. Try option -f.', file=sys.stderr)
-        ap.print_usage()
-        ap.exit()
+        if args.format == 'guess':
+            format = io.guess_format(args.infile)
+        else:
+            format = args.format
+        alignment, painter = io.read_alignment(args.infile, args.type, format, args.color_scheme, args.code)
+    except AlvPossibleFormatError:
+        print('alv: cannot guess the format of input.', file=sys.stderr)
+        ap.exit(1)
+    except FileNotFoundError:
+        print("alv: file '" + args.infile + "' not found.")
+        ap.exit(4)
+    except ValueError as e:
+        # Bio.AlignIO uses ValueError for a number of reading problems
+        if str(e) == 'No records found in handle':
+            msg = 'probably wrong input format in '+ args.infile+'. Try option -f.'
+        elif str(e) == 'Sequences must all be the same length':
+            msg = 'unequal sequence lengths. Maybe not aligned input in '+args.infile+'?'
+        else:
+            msg = str(e)
+        print('alv error:', msg, file=sys.stderr)
+        ap.exit(2)
     except Exception as e:
-        print('Alv: Unknown error when reading input.', file=sys.stderr)
-        ap.exit()
+        print('alv bug: Unknown error when reading input.', file=sys.stderr)
+        ap.exit(3)
+
+    if args.acc_substring:
+        start = args.acc_substring[0]
+        stop = args.acc_substring[1]
+        if start >= stop or start<0:
+            print("alv: bad indices for option '-as'!", file=sys.stderr)
+            ap.exit(5)
+        alignment.trim_accessions(start, stop)
+    elif args.acc_abbreviate:
+        alignment.abbreviate_accessions(args.acc_abbreviate)
             
     painter.set_options(args)
     terminal = AlignmentTerminal(args)
     try:
         if args.just_info:
-            for headline, data in alignment.get_basic_info():
-                print(headline+':', data)
+            io.output_al_info(alignment)
+            ap.exit()
+        elif args.method:
+            print('Alignments were viewed using alv (github.com/arvestad/alv).')
             ap.exit()
 
         terminal.output_alignment(alignment, painter, args)
         if args.info:
-            for headline, data in alignment.get_basic_info():
-                print(headline + ':', data)
+            io.output_al_info(alignment)
+    except AlvEmptyAlignment:
+        print('alv: input contains no sequence data?', file=sys.stderr)
+        ap.exit(4)
     except BrokenPipeError:
         # This should not cause any specific error at all: correct behaviour is to end the program.
         sys.stderr.close()  # Without this line, python will sometimes give an error
         ap.exit()
-    except Exception as e:
-        print('Alv bug! Please report!\n', file=sys.stderr)
-        print(e, file=sys.stderr)
-        ap.exit(2)
+    # except Exception as e:
+    #     print('Alv bug! Please report!\n', file=sys.stderr)
+    #     print(e, file=sys.stderr)
+    #     ap.exit(2)
     
 
 if __name__ == '__main__':

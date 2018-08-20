@@ -1,7 +1,11 @@
 class AlvPossibleFormatError(Exception):
     '''
-    When reading a file yields no records, so probably wrong format.
+    Cannot recognize the input format
     '''
-    def __init__(self, expression, filename):
+    def __init__(self, expression):
         self.expression = 'HUBBA'
-        self.message = 'No sequence records in ' + filename
+        self.message = 'File format not recognized.'
+
+class AlvEmptyAlignment(Exception):
+    def __init__(self):
+        self.message = 'Input alignment contains no sequences.'

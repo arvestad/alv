@@ -1,6 +1,7 @@
 import Bio.Seq
 import itertools
 from collections import Counter
+from .exceptions import AlvEmptyAlignment
 
 class BaseAlignment:
     '''
@@ -12,11 +13,29 @@ class BaseAlignment:
         self.al = alignment   # Holder of the BioPython alignment object
         self.type = None
         self.column_width = 1
-        self.seq_indices = { r.id : i for i, r in enumerate(alignment)} # Get a dictionary mapping accession to row index in alignment
+        self._update_seq_index()
         self.columns = self._summarize_columns()
         self.basic_info = {'Number of sequences': len(self.al),
                            'Alignment width': self.al.get_alignment_length()}        
 
+
+    def _update_seq_index(self):
+        self.seq_indices = { r.id : i for i, r in enumerate(self.al)} # Get a dictionary mapping accession to row index in alignment
+        
+    def trim_accessions(self, start, stop):
+        for record in self.al:
+            acc = record.id
+            new_acc = acc[start:stop]
+            record.id = new_acc
+        self._update_seq_index()
+
+    def abbreviate_accessions(self, n_chars):
+        for record in self.al:
+            acc = record.id
+            new_acc = acc[0:n_chars] + '*' + acc[-n_chars:]
+            record.id = new_acc
+        self._update_seq_index()
+        
     def accessions(self):
         '''
         The accessions in arbitrary order?
@@ -84,8 +103,12 @@ class BaseAlignment:
             return terminal_width - left_margin - sacrifice
 
     def blocks(self, block_width, args):
-        for start in range(0, self.al.get_alignment_length(), block_width):
-            yield AlignmentBlock(start, start + block_width)
+        al_width = self.al.get_alignment_length()
+        if al_width == 0:
+            raise AlvEmptyAlignment()
+        else:
+            for start in range(0, al_width, block_width):
+                yield AlignmentBlock(start, start + block_width)
 
     def apply_painter(self, acc, block, painter):
         '''

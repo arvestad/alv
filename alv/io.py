@@ -1,18 +1,43 @@
 from Bio import AlignIO
 from math import log
+
 from .alignment import aaAlignment, dnaAlignment, codonAlignment
 from .colorize import aaPainter, dnaPainter, codonPainter, aaHydrophobicity, aaTaylorPainter
 from .exceptions import AlvPossibleFormatError
+
+
+def guess_format(filename):
+    '''
+    Returns a string that guesses the MSA format used in filename.
+    '''
+    with open(filename) as h:
+        first_line = h.readline()
+        if first_line[:15] == '# STOCKHOLM 1.0':
+            return 'stockholm'
+        elif first_line == 'CLUSTAL':
+            return 'clustal'
+        elif first_line[0] == '>':
+            return 'fasta'
+        else:
+            tokens = first_line.split()
+            if len(tokens) != 2:
+                raise AlvPossibleFormatError(filename) # Don't recognize the format
+            else:
+                try:
+                    a = int(tokens[0])
+                    b = int(tokens[1])
+                except:
+                    raise AlvPossibleFormatError(filename)
+                # Came this far? Success!
+                return 'phylip'
+            
 
 def read_alignment(filename, seqtype, input_format, color_scheme, genetic_code):
     '''
     Factory function. Read the alignment with BioPython's support, and 
     return an appropriate alv alignment.
     '''
-    try:
-        alignment = AlignIO.read(filename, input_format)
-    except ValueError:
-        raise AlvPossibleFormatError('reading input', filename)
+    alignment = AlignIO.read(filename, input_format)
 
     if seqtype == 'guess':
         seqtype = guess_seq_type(alignment)
@@ -36,6 +61,12 @@ def read_alignment(filename, seqtype, input_format, color_scheme, genetic_code):
         raise Exception('Unknown option')
 
     return alignment, painter
+
+
+
+def output_al_info(alignment):
+    for headline, data in alignment.get_basic_info():
+        print(headline+':', data)
 
 
 

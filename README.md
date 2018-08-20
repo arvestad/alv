@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/arvestad/alv.svg?branch=devel)](https://travis-ci.org/arvestad/alv)
+Devel: [![Build Status](https://travis-ci.org/arvestad/alv.svg?branch=devel)](https://travis-ci.org/arvestad/alv)
 # alv: a command-line alignment viewer
 
 View you DNA or protein multiple-sequence alignments right at your command line. No need to launch a

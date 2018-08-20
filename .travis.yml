@@ -1,4 +1,5 @@
 language: python
-python: "3.4"
+python:
+  - "3.4"
 install:
-	python setup.py develop test
+  - python setup.py develop test

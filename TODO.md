@@ -5,7 +5,7 @@
 * Add support for restricting to a sub-alignment.
 * Add option --glimpse.
 * Explicitly choose parts of an alignment to view/color.
-
+* Pypi.org does not handle MarkDown in the README. Should look for a solution. 
 
 # Considered features
 

@@ -99,24 +99,20 @@ def setup_argument_parsing():
 #    ap.add_argument('-p', '--prefix', type=int, default=0, help='Number of characters to remove from the beggining of the accession.')
 
 
-def main():
-
-    ap = setup_argument_parsing()
-    args = ap.parse_args()
-
-    if args.list_codes:
-        list_genetic_codes()
-        ap.exit()
-    elif not args.infile:
-        ap.print_usage()
-        ap.exit()
-
+def input_and_option_adaption(args):
+    '''
+    Read data, and handle some of the program options.
+    Return a pair of an alv.Alignment and an alv.Painter instance.
+    Exits on error.
+    '''
     try:
         if args.format == 'guess':
             format = io.guess_format(args.infile)
         else:
             format = args.format
         alignment, painter = io.read_alignment(args.infile, args.type, format, args.color_scheme, args.code)
+        return alignment, painter
+    
     except AlvPossibleFormatError:
         print('alv: cannot guess the format of input.', file=sys.stderr)
         ap.exit(1)
@@ -137,6 +133,36 @@ def main():
         print('alv bug: Unknown error when reading input.', file=sys.stderr)
         ap.exit(3)
 
+    
+
+def main():
+
+    ap = setup_argument_parsing()
+    args = ap.parse_args()
+
+    # Handle option that do not require an infile
+    if args.list_codes:
+        list_genetic_codes()
+        ap.exit()
+
+    if args.method:
+        print('Alignments were viewed using alv (github.com/arvestad/alv).')
+        ap.exit()
+
+    # From here on, we need data from an infile
+    if not args.infile:
+        ap.print_usage()
+        ap.exit()
+
+    # Read the data        
+    alignment, painter = input_and_option_adaption(args)
+
+    # In case we just want to know the basics:
+    if args.just_info:
+        io.output_al_info(alignment)
+        ap.exit()
+
+    # Shorten accessions, if requested
     if args.acc_substring:
         start = args.acc_substring[0]
         stop = args.acc_substring[1]
@@ -146,17 +172,11 @@ def main():
         alignment.trim_accessions(start, stop)
     elif args.acc_abbreviate:
         alignment.abbreviate_accessions(args.acc_abbreviate)
-            
+
+    # Prepare for output
     painter.set_options(args)
     terminal = AlignmentTerminal(args)
     try:
-        if args.just_info:
-            io.output_al_info(alignment)
-            ap.exit()
-        elif args.method:
-            print('Alignments were viewed using alv (github.com/arvestad/alv).')
-            ap.exit()
-
         terminal.output_alignment(alignment, painter, args)
         if args.info:
             io.output_al_info(alignment)

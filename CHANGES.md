@@ -12,3 +12,5 @@
 * Implemented format guessing. By default, `alv` tries to identify the alignment format. You can still override if there are parsing problems.
 * You can specify what part of accessions to view with -as. This way you can avoid common prefixes and easily shorten long accessions.
 * View only the first and last N characters of accessions with option -aa.
+* Read from stdin with the magic file name "-".
+

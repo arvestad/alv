@@ -1,5 +1,6 @@
 from Bio import AlignIO
 from math import log
+import sys
 
 from .alignment import aaAlignment, dnaAlignment, codonAlignment
 from .colorize import aaPainter, dnaPainter, codonPainter, aaHydrophobicity, aaTaylorPainter
@@ -32,12 +33,14 @@ def guess_format(filename):
                 return 'phylip'
             
 
-def read_alignment(filename, seqtype, input_format, color_scheme, genetic_code):
+def read_alignment(file, seqtype, input_format, color_scheme, genetic_code):
     '''
     Factory function. Read the alignment with BioPython's support, and 
     return an appropriate alv alignment.
     '''
-    alignment = AlignIO.read(filename, input_format)
+    if file == '-':
+        file = sys.stdin        # Start reading from stdin if "magic filename"
+    alignment = AlignIO.read(file, input_format)
 
     if seqtype == 'guess':
         seqtype = guess_seq_type(alignment)

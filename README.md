@@ -1,3 +1,4 @@
+[![PyPI version](https://badge.fury.io/py/alv.svg)](https://badge.fury.io/py/alv) 
 Devel: [![Build Status](https://travis-ci.org/arvestad/alv.svg?branch=devel)](https://travis-ci.org/arvestad/alv)
 # alv: a command-line alignment viewer
 

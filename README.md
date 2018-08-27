@@ -6,7 +6,7 @@ Devel: [![Build Status](https://travis-ci.org/arvestad/alv.svg?branch=devel)](ht
 View you DNA or protein multiple-sequence alignments right at your command line. No need to launch a
 GUI!
 
-Note: `alv` requires Python v3.x.
+Note: `alv` requires Python v3.4 or later. Earlier versions may also work, but this have not been tested.
 
 Features:
 
@@ -42,6 +42,10 @@ and redirection removes colors), and the `-R` option instructs `less` to interpr
 ## Install
 
 Recommended installation is with `pip install alv`.
+
+If you have a half-modern BioPython installed, 3.4 _should_ work. 
+BioPython is a dependency and will only get installed automatially with `pip install alv`
+if you are using Python v3.6 or later, because BioPython was apparently not on PyPi before that.
 
 ## For developers
 

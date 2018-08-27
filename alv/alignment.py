@@ -102,7 +102,7 @@ class BaseAlignment:
             sacrifice = max([1, (10 - last_block_width) // n_blocks])
             return terminal_width - left_margin - sacrifice
 
-    def blocks(self, block_width, args):
+    def blocks(self, block_width):
         al_width = self.al.get_alignment_length()
         if al_width == 0:
             raise AlvEmptyAlignment()

@@ -34,7 +34,7 @@ class AlignmentTerminal:
         accessions = list(accessions)
             
         columns_per_block = al.block_width(self.width, args)
-        for block in al.blocks(columns_per_block, args):
+        for block in al.blocks(columns_per_block):
             for acc in accessions:
                 colored_subseq = al.apply_painter(acc, block, painter)
                 print("{0:{width}}{1}".format(acc, colored_subseq, width=self.left_margin))

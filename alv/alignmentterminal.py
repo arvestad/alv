@@ -46,13 +46,4 @@ class AlignmentTerminal:
         print("{0:{width}}{1}".format(rec.id, colored_string, width=left_margin))
 
 
-    #
-    # Needs reimplementation: Loop over columns until a block is full
-    # 
-
-    # for start in range(0, al_width, block_width):
-    #     for record in alignment:
-    #         painter.print_one_sequence_block(record, left_margin, start, block_width)
-    #     print(' ' * left_margin, start, sep='')
-
         

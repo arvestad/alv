@@ -138,7 +138,6 @@ def input_and_option_adaption(args):
     
 
 def main():
-
     ap = setup_argument_parsing()
     args = ap.parse_args()
 

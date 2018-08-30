@@ -1,5 +1,6 @@
 # Planned fixes and features
 
+* Better screenshots
 * Add support for restricting to a sub-alignment.
 * Add option --glimpse.
 * Explicitly choose parts of an alignment to view/color.

@@ -58,6 +58,8 @@ class BaseAlignment:
         '''
         Return accessions in order by similarity (as percent identity) to sequence 'acc'.
         '''
+        if acc not in self.seq_indices:
+            raise ValueError('Accession "' + acc + '" not found in the alignment')
         pivot_sequence_record = self.al[self.seq_indices[acc]]
         sorted_accessions = map(lambda rec: rec.id,
                                 sorted(self.al,

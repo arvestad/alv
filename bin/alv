@@ -201,8 +201,11 @@ def main():
         # This should not cause any specific error at all: correct behaviour is to end the program.
         sys.stderr.close()  # Without this line, python will sometimes give an error
         ap.exit(6)
+    except ValueError as e:
+        print('alv:', e, file=sys.stderr)
+        ap.exit(3)
     except Exception as e:
-        print('Alv bug! Please report!\n', file=sys.stderr)
+        print('Alv bug! Please report!', file=sys.stderr)
         print(e, file=sys.stderr)
         ap.exit(2)
     

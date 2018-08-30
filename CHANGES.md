@@ -16,6 +16,7 @@
 
 ## v1.2.0
 
-* The option -l colors the alignment but does not break it into blocks. Suitable for piping to "less -RS",
+* The option `-l` colors the alignment but does not break it into blocks. Suitable for piping to `less -RS`,
   as suggested by Mark McMullan <Mark.McMullan@earlham.ac.uk>.
 * More indices indicated below alignments, and with an up-arrow as a tick mark.
+* Added option `-sm` to allow restricting output to sequences with accessions containing a given string. 

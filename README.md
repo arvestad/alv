@@ -1,5 +1,6 @@
 [![PyPI version](https://badge.fury.io/py/alv.svg)](https://badge.fury.io/py/alv) 
 [![Build Status](https://travis-ci.org/arvestad/alv.svg?branch=master)](https://travis-ci.org/arvestad/alv)
+
 # alv: a command-line alignment viewer
 
 View you DNA or protein multiple-sequence alignments right at your command line. No need to launch a
@@ -56,14 +57,16 @@ Run `python setup.py develop test` for development install and to execute tests.
 
 All of the sequences in PFAM's seed alignment for PF00005
 
-![PF00005 seed MSA](https://github.com/arvestad/alv/blob/master/doc/screenshot_PF00005.png)
+![PF00005 seed MSA](https://github.com/arvestad/alv/raw/master/doc/screenshot_PF00005.png)
 
-### Ten peptide sequences from PF00005
+### Yeast sequences from PF00005
 
-![MSA from PF00005](https://github.com/arvestad/alv/blob/master/doc/screenshot_1.png)
+Using the option `-sm YEAST`, we reduce the alignment to the ones with a matching accession.
+
+![MSA from PF00005](https://github.com/arvestad/alv/raw/master/doc/PF00005_yeast.png)
 
 ### Seven coding DNA sequences
 
 `alv` is autodetecting that the given DNA sequences are coding and therefore colors codons instead
 of nucleotides.
-![Sample screenshot](https://github.com/arvestad/alv/blob/master/doc/screenshot_2.png)
+![Sample screenshot](https://github.com/arvestad/alv/raw/master/doc/screenshot_2.png)

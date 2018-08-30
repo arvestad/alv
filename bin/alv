@@ -2,6 +2,7 @@
 
 import alv
 import argparse
+import os
 import sys
 from traceback import print_last
 
@@ -9,6 +10,7 @@ from alv.version import __version__
 from alv.alignmentterminal import AlignmentTerminal
 import alv.io as io
 from alv.exceptions import AlvPossibleFormatError, AlvEmptyAlignment
+
 
 def list_genetic_codes():
     additional_help_text='''
@@ -70,15 +72,18 @@ def setup_argument_parsing():
                     help='Width of alignment blocks. Defaults to terminal width minus accession width, essentially.')
     ap.add_argument('-k', '--keep-colors-when-redirecting', action='store_true',
                     help="Do not strip colors when redirecting to stdout, or similar. In particular useful with the command 'less -R'.")
-
+    ap.add_argument('-l', '--pipe-to-less', action='store_true',
+                    help="Do not break the alignment into blocks. Implies -k. Suitable when piping to commands like 'less -RS'.")
     # Options for changing sequence order
-    ordering_args = ap.add_argument_group('Sequence ordering')
+    ordering_args = ap.add_argument_group('Sequence selection and ordering')
     ordering_args.add_argument('-s', '--sorting', choices=['infile', 'alpha'], default='infile',
-                    help="Sort the sequences as given in the infile or alphabetically (by accession). Default: %(default)s")
+                               help="Sort the sequences as given in the infile or alphabetically (by accession). Default: %(default)s")
     ordering_args.add_argument('-si', '--sort-by-id', metavar='ACCESSION', type=str,
-                    help='Sort the output alignment by similarity (percent identity) to named sequence. Overrides -s.')
+                               help='Sort the output alignment by similarity (percent identity) to named sequence. Overrides -s.')
     ordering_args.add_argument('-so', '--sorting-order', metavar='ACCESSIONS', type=str,
-                    help='Comma-separated list of accessions. Sequences will be presented in this order. Also note that one can choose which sequences to present with this opion. Overrides -s and -si.')
+                               help='Comma-separated list of accessions. Sequences will be presented in this order. Also note that one can choose which sequences to present with this opion. Overrides -s and -si.')
+    ordering_args.add_argument('-sm', '--select-matching', metavar='ACCESSION_PATTERN', type=str,
+                               help='Only show sequences with accessions containing ACCESSION_PATTERN.')
 
     # Options for limiting colorization
     restriction_args = ap.add_argument_group('Restricting colorization')
@@ -115,6 +120,8 @@ def input_and_option_adaption(args):
         alignment, painter = io.read_alignment(args.infile, args.type, format, args.color_scheme, args.code)
         return alignment, painter
     
+    except KeyboardInterrupt:
+        sys.exit()
     except AlvPossibleFormatError:
         print('alv: cannot guess the format of input.', file=sys.stderr)
         sys.exit(1)
@@ -135,11 +142,11 @@ def input_and_option_adaption(args):
         print('alv bug: Unknown error when reading input.', file=sys.stderr)
         sys.exit(3)
 
-    
 
 def main():
     ap = setup_argument_parsing()
     args = ap.parse_args()
+
 
     # Handle option that do not require an infile
     if args.list_codes:
@@ -175,19 +182,26 @@ def main():
         alignment.abbreviate_accessions(args.acc_abbreviate)
 
     # Prepare for output
-    painter.set_options(args)
+    if args.pipe_to_less:
+        args.width = alignment.al_width()
+        args.keep_colors_when_redirecting = True
+
     terminal = AlignmentTerminal(args)
+    painter.set_options(args)
     try:
-        terminal.output_alignment(alignment, painter, args)
+        terminal.output_alignment(alignment, painter, args.width)
         if args.info:
             io.output_al_info(alignment)
+    except KeyboardInterrupt:
+        ap.exit()
     except AlvEmptyAlignment:
         print('alv: input contains no sequence data?', file=sys.stderr)
         ap.exit(4)
     except BrokenPipeError:
         # This should not cause any specific error at all: correct behaviour is to end the program.
         sys.stderr.close()  # Without this line, python will sometimes give an error
-        ap.exit()
+        ap.exit(6)
+
     except ValueError as e:
         print('alv:', e, file=sys.stderr)
         ap.exit(3)
@@ -195,8 +209,6 @@ def main():
         print('Alv bug! Please report!', file=sys.stderr)
         print(e, file=sys.stderr)
         ap.exit(2)
-
-    
 
 if __name__ == '__main__':
     main()

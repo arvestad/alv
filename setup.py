@@ -2,7 +2,15 @@ import setuptools
 import sys 
 
 with open("README.md", "r") as fh:
-    long_description = fh.read()
+    at_top = True
+    long_description = ''
+    for line in fh:
+        if at_top and line[:3] == '[![':
+            pass                # Skipping the badge-lines in the github README.md
+        else:
+            at_top = False      # Now starts the "real" README.md
+        long_description += line
+
 
 with open('alv/version.py') as fh:
     exec(fh.read())

@@ -22,6 +22,12 @@ class BaseAlignment:
     def _update_seq_index(self):
         self.seq_indices = { r.id : i for i, r in enumerate(self.al)} # Get a dictionary mapping accession to row index in alignment
         
+    def al_width(self):
+        '''
+        The number of columns in the alignment.
+        '''
+        return self.al.get_alignment_length()
+
     def trim_accessions(self, start, stop):
         for record in self.al:
             acc = record.id
@@ -61,19 +67,20 @@ class BaseAlignment:
                                        reverse=True))
         return sorted_accessions
 
-    def accession_widths(self):
+    def accession_widths(self, accessions=None):
         '''
         Compute the space needed for all accessions, plus one for
         a delimiter.
         '''
         max_accession_length = 5        # initial guess, or minimum
         for record in self.al:
-            if len(record.id) > max_accession_length:
-                  max_accession_length = len(record.id)
+            if not accessions or record.id in accessions:
+                if len(record.id) > max_accession_length:
+                    max_accession_length = len(record.id)
         return max_accession_length
 
 
-    def block_width(self, terminal_width, args):
+    def block_width(self, terminal_width, args_width):
         '''
         For wide alignments, we need to break it up in blocks.
         This method calculates how many characters to output in a block.
@@ -81,12 +88,12 @@ class BaseAlignment:
         Take the margin size (for accessions) into account and avoid ending up
         with blocks of size 1.
         '''
-        if args.width == 0:
+        if args_width == 0:
             al_width = self.al.get_alignment_length()
             left_margin = 1 + self.accession_widths() # Add 1 for a space to the right of the accessions
             return self._compute_block_width(terminal_width, al_width, left_margin)
         else:
-            return args.width
+            return args_width
 
     def _compute_block_width(self, terminal_width, al_width, left_margin):
         '''
@@ -110,7 +117,8 @@ class BaseAlignment:
             raise AlvEmptyAlignment()
         else:
             for start in range(0, al_width, block_width):
-                yield AlignmentBlock(start, start + block_width)
+                end = min(al_width, start + block_width)
+                yield AlignmentBlock(start, end)
 
     def apply_painter(self, acc, block, painter):
         '''

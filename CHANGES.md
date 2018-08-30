@@ -14,3 +14,9 @@
 * View only the first and last N characters of accessions with option -aa.
 * Read from stdin with the magic file name "-".
 
+## v1.2.0
+
+* The option `-l` colors the alignment but does not break it into blocks. Suitable for piping to `less -RS`,
+  as suggested by Mark McMullan <Mark.McMullan@earlham.ac.uk>.
+* More indices indicated below alignments, and with an up-arrow as a tick mark.
+* Added option `-sm` to allow restricting output to sequences with accessions containing a given string. 

@@ -1,5 +1,5 @@
 [![PyPI version](https://badge.fury.io/py/alv.svg)](https://badge.fury.io/py/alv) 
-Devel: [![Build Status](https://travis-ci.org/arvestad/alv.svg?branch=devel)](https://travis-ci.org/arvestad/alv)
+[![Build Status](https://travis-ci.org/arvestad/alv.svg?branch=devel)](https://travis-ci.org/arvestad/alv)
 # alv: a command-line alignment viewer
 
 View you DNA or protein multiple-sequence alignments right at your command line. No need to launch a
@@ -60,7 +60,7 @@ All of the sequences in PFAM's seed alignment for PF00005
 
 ### Ten peptide sequences from PF00005
 
-![MSA from PF00005](https://github.com/arvestad/alv/blob/master/doc/screenshot_1.png)
+![MSA from PF00005](https://github.com/arvestad/alv/raw/master/doc/screenshot_1.png)
 
 ### Seven coding DNA sequences
 

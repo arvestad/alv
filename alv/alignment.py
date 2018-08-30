@@ -65,15 +65,16 @@ class BaseAlignment:
                                        reverse=True))
         return sorted_accessions
 
-    def accession_widths(self):
+    def accession_widths(self, accessions=None):
         '''
         Compute the space needed for all accessions, plus one for
         a delimiter.
         '''
         max_accession_length = 5        # initial guess, or minimum
         for record in self.al:
-            if len(record.id) > max_accession_length:
-                  max_accession_length = len(record.id)
+            if not accessions or record.id in accessions:
+                if len(record.id) > max_accession_length:
+                    max_accession_length = len(record.id)
         return max_accession_length
 
 

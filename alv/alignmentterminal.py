@@ -15,14 +15,15 @@ class AlignmentTerminal:
             self.order = args.sorting_order.split(',')
             if len(self.order) == 0:
                 raise Exception('Bad order specification: no accessions in input')
+        if args.select_matching:
+            self.selection = args.select_matching
+        else:
+            self.selection = False
 
-    def output_alignment(self, al, painter, args):
+    def output_alignment(self, al, painter, width):
         '''
         Output alignment al to stdout in blocks of width at most w with colors from painter.
         '''
-        self.left_margin = 1 + al.accession_widths()
-        assert self.left_margin < self.width - 10
-
         if self.sorting == 'alpha':
             accessions = al.sorted_accessions()
         elif self.sorting == 'fixed':
@@ -31,11 +32,21 @@ class AlignmentTerminal:
             accessions = al.sort_by_identity(self.order)
         else:
             accessions = al.accessions()
-        accessions = list(accessions)
-            
-        columns_per_block = al.block_width(self.width, args.width)
-        for block in al.blocks(columns_per_block):
+
+        if self.selection:
+            chosen_accessions = []
             for acc in accessions:
+                if self.selection in acc:
+                    chosen_accessions.append(acc)
+        else:
+            chosen_accessions = list(accessions)
+
+        self.left_margin = 1 + al.accession_widths(chosen_accessions)
+        assert self.left_margin < self.width - 10
+            
+        columns_per_block = al.block_width(self.width, width)
+        for block in al.blocks(columns_per_block):
+            for acc in chosen_accessions:
                 colored_subseq = al.apply_painter(acc, block, painter)
                 print("{0:{width}}{1}".format(acc, colored_subseq, width=self.left_margin))
             print(make_tick_string(self.left_margin, block.start, block.end, 20, 7))

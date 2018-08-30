@@ -33,17 +33,67 @@ class AlignmentTerminal:
             accessions = al.accessions()
         accessions = list(accessions)
             
-        columns_per_block = al.block_width(self.width, args)
+        columns_per_block = al.block_width(self.width, args.width)
         for block in al.blocks(columns_per_block):
             for acc in accessions:
                 colored_subseq = al.apply_painter(acc, block, painter)
                 print("{0:{width}}{1}".format(acc, colored_subseq, width=self.left_margin))
-            print(' ' * self.left_margin, block.start, sep='')
+            print(make_tick_string(self.left_margin, block.start, block.end, 20, 7))
+
+#            print(' ' * self.left_margin, '↑',  block.start, sep='') # print index of first column
 
 
-    def print_one_sequence_block(self, record, left_margin, start, block_width):
-        colored_string = colorize_sequence_string(rec.seq[start : start + block_width])
-        print("{0:{width}}{1}".format(rec.id, colored_string, width=left_margin))
+    # def print_one_sequence_block(self, record, left_margin, start, block_width):
+    #     colored_string = colorize_sequence_string(rec.seq[start : start + block_width])
+    #     print("{0:{width}}{1}".format(rec.id, colored_string, width=left_margin))
 
 
         
+def calc_tick_indices(start, end, distance, min_distance):
+    '''
+    Return a list of indices for which we want a tick mark at the bottom of the alignment.
+    The goal is to have an index for the starting position of a block (leftmost column number),
+    and then a tick mark on even multiples of 20 (or what is given by 'distance'), for example:
+        53   60                  80                 100
+    Care is needed so that space is left between first and second indices, and min_distance indicates
+    how much.
+    '''
+    first_even_pos = (start // distance + 1) * distance
+    if first_even_pos - start < min_distance:
+        first_even_pos += distance # Compensate a bit
+    positions = range(first_even_pos, end, distance)
+    return positions
+
+def make_one_tick(position, space):
+    '''
+    Return a string which is 'space' wide and contains a number (the position)
+    followed by an up-arrow.
+    '''
+
+    return '{0:>{width}}↑'.format(position, width=space-1) 
+
+def make_tick_string(left_margin, start, end, distance, min_distance):
+    '''
+    Construct the index bar which is printed at the bottom of an alignment block.
+
+    left_margin is how much space is allowed for accessions.
+    start is the column number of the beginning of an alignment block.
+    end is the last column of an alignment block.
+    distance is the desired distance between up-arrows
+    min_distance is the space we allow for position numbers plus an up-arrow
+    '''
+    even_indices = calc_tick_indices(start, end, distance, min_distance)
+
+    # Initial space
+    index_bar = ' ' * (left_margin - min_distance + 1) # Account for space needed by indices
+
+    # Add first column index
+    index_bar += make_one_tick(start, min(left_margin+1, min_distance))
+
+    last_pos = start
+    for pos in even_indices:
+        spacer = pos - last_pos - 1
+        index_block = '{0:>{width}}↑'.format(pos, width=spacer)
+        index_bar += index_block
+        last_pos = pos
+    return index_bar

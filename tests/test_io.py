@@ -6,6 +6,7 @@ from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
 import alv.io
 from alv.alignment import aaAlignment, dnaAlignment, codonAlignment, BaseAlignment
+import alv.alignmentterminal as at
 import alv.colorize
 import alv.exceptions
 
@@ -85,6 +86,33 @@ class TestFormats(unittest.TestCase):
         al, painter = alv.io.read_alignment(self.aa_filename, 'guess', 'fasta', '', 'standard')
         self.assertIsInstance(al, aaAlignment)
         
+class TestIndexBar(unittest.TestCase):
+    def test_make_one_tick(self):
+        s = at.make_one_tick(5, 10)
+        self.assertEqual(len(s), 10)
+        self.assertEqual(s, '        5↑')
+
+    def test_calc_tick_indices(self):
+        indices = list(at.calc_tick_indices(33, 100, 10, 7))
+        self.assertEqual(indices, [40, 50, 60, 70, 80, 90])
+
+        indices = list(at.calc_tick_indices(50, 100, 10,10))
+        self.assertEqual(indices, [60, 70, 80, 90])
+
+    def test_make_tick_string(self):
+        s = at.make_tick_string(6, 0, 40, 40, 10)
+        self.assertEqual(s, '     0↑')
+
+        s = at.make_tick_string(6, 0, 40, 20, 10)
+        self.assertEqual(s, '     0↑                 20↑')
+
+        s = at.make_tick_string(5, 0, 50, 20, 7)
+        self.assertEqual(s, '    0↑                 20↑                 40↑')
+                            
+        s = at.make_tick_string(7, 35, 100, 20, 10)
+        self.assertEqual(s, '     35↑                      60↑                 80↑')
+
+
 if __name__ == '__main__':
     unittest.main()
     

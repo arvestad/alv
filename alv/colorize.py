@@ -164,6 +164,11 @@ class dnaPainter(Painter):
         super().__init__()
         
     def colorizer(self, c, column):
+        '''
+        Given a character, colorize it. 
+        '''
+        # I don't remember where I got the color choice from.
+        # Noticed on the web that some would prefer A: green, C: blue, G: yellow, T: red, as "classic Sanger coloring".
         if c in 'TUtu':           # Handles RNA too
             return Back.BLUE + c
         elif c in 'Aa':

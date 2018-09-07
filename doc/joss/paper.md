@@ -24,7 +24,7 @@ bibliography: paper.bib
 
 # Summary
 
-The multiple sequence alignment (MSA) is a common entity in comparative analysis of molecular
+The multiple sequence alignment (MSA) is a common entity in comparative analysis of 
 sequences representing molecules such as DNA, RNA, and proteins. An MSA lines up the sequence
 building blocks (letters representing nucleotides for DNA/RNA and amino acids for proteins) to form
 the basis for a hypothesis of how the molecules have evolved, and is computed using, for example,

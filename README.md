@@ -19,18 +19,36 @@ Features:
 * Order sequence explicitly, alphabetically, or by sequence similarity.
 * Restrict coloring to where you don't have indels or where there is a lot of conservation.
 
+## Install
+
+Recommended installation is:
+```
+pip install --upgrade pip
+pip install alv
+```
+
+If you have a half-modern BioPython installed, Python v3.4 _should_ work. 
+BioPython is a dependency and will only get installed automatially with `pip install alv`
+if you are using Python v3.6 or later, because BioPython was apparently not on PyPi before that.
+
+
 ## Examples
 
 Quick viewing of a small alignment:
 ```
-alf msa.fa
+alv msa.fa
 ```
 This autodetects sequence type (AA, DNA, RNA, coding DNA), colors the sequences, and formats the
 alignment for easy viewing in your terminal.
+When applying `alv` to an alignment of coding DNA, the coding property is autodetected and colors are therefore applied to codons instead
+of nucleotides.
+![Seven coding DNA sequences](https://github.com/arvestad/alv/raw/master/doc/screenshot_2.png)
+
+
 
 View three sequences, accessions `a`, `b`, and `c`, from an alignment:
 ```
-alf -so a,b,c msa.fa
+alv -so a,b,c msa.fa
 ```
 
 Feed alignment to `less`, for paging support.
@@ -39,14 +57,6 @@ alv -k msa.fa | less -R
 ```
 The `-k` option ensures that `alv` keeps coloring the alignment (by default, piping
 and redirection removes colors), and the `-R` option instructs `less` to interpret color codes.
-
-## Install
-
-Recommended installation is with `pip install alv`.
-
-If you have a half-modern BioPython installed, 3.4 _should_ work. 
-BioPython is a dependency and will only get installed automatially with `pip install alv`
-if you are using Python v3.6 or later, because BioPython was apparently not on PyPi before that.
 
 ## For developers
 
@@ -64,10 +74,6 @@ All of the sequences in PFAM's seed alignment for PF00005
 
 Using the option `-sm YEAST`, we reduce the alignment to the ones with a matching accession.
 
-![MSA from PF00005](https://github.com/arvestad/alv/raw/master/doc/PF00005_yeast.png)
+![Small MSA from PF00005](https://github.com/arvestad/alv/raw/master/doc/PF00005_yeast.png)
 
-### Seven coding DNA sequences
 
-`alv` is autodetecting that the given DNA sequences are coding and therefore colors codons instead
-of nucleotides.
-![Sample screenshot](https://github.com/arvestad/alv/raw/master/doc/screenshot_2.png)

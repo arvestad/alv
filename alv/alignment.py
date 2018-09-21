@@ -11,12 +11,13 @@ class BaseAlignment:
     '''
     def __init__(self, alignment):
         self.al = alignment   # Holder of the BioPython alignment object
+        self.al_length = alignment.get_alignment_length()
         self.type = None
         self.column_width = 1
         self._update_seq_index()
         self.columns = self._summarize_columns()
         self.basic_info = {'Number of sequences': len(self.al),
-                           'Alignment width': self.al.get_alignment_length()}        
+                           'Alignment width': self.al_length}
 
 
     def _update_seq_index(self):
@@ -26,7 +27,7 @@ class BaseAlignment:
         '''
         The number of columns in the alignment.
         '''
-        return self.al.get_alignment_length()
+        return self.al_length
 
     def trim_accessions(self, start, stop):
         for record in self.al:
@@ -89,7 +90,7 @@ class BaseAlignment:
         with blocks of size 1.
         '''
         if args_width == 0:
-            al_width = self.al.get_alignment_length()
+            al_width = self.al_length
             left_margin = 1 + self.accession_widths() # Add 1 for a space to the right of the accessions
             return self._compute_block_width(terminal_width, al_width, left_margin)
         else:
@@ -112,7 +113,7 @@ class BaseAlignment:
             return terminal_width - left_margin - sacrifice
 
     def blocks(self, block_width):
-        al_width = self.al.get_alignment_length()
+        al_width = self.al_length
         if al_width == 0:
             raise AlvEmptyAlignment()
         else:
@@ -137,7 +138,7 @@ class BaseAlignment:
         Count the different elements in each column.
         '''
         columns = []
-        for col_no in range(self.al.get_alignment_length()):
+        for col_no in range(self.al_length):
             columns.append(Counter(self.al[:, col_no]))
         return columns
 
@@ -145,6 +146,7 @@ class BaseAlignment:
         '''
         Generator for pairs of description and value, e.g., "alignment width" and an integer.
         '''
+        self.basic_info['Sequence type'] = self.type
         for descr, val in self.basic_info.items():
             yield descr, val
 
@@ -199,7 +201,7 @@ class codonAlignment(BaseAlignment):
         amino acid columns.
         '''
         columns = []
-        for pos in range(0, self.al.get_alignment_length(), 3):
+        for pos in range(0, self.al_length, 3):
             codon_column = map(lambda r: str(r.seq), self.al[:, pos:pos+3])
             aa_column = map(lambda codon: self._translate(codon), codon_column)
             columns.append(Counter(aa_column))

@@ -52,7 +52,7 @@ def setup_argument_parsing():
     ap = argparse.ArgumentParser()
     ap.add_argument('infile', nargs='?', help="The infile is the path to a file, or '-' if reading from stdin.")
     ap.add_argument('--version', action='version', version='%(prog)s ' + __version__)
-    ap.add_argument('-f', '--format', choices=['guess', 'fasta', 'clustal', 'phylip', 'stockholm'], default='guess',
+    ap.add_argument('-f', '--format', choices=['guess', 'fasta', 'clustal', 'nexus', 'phylip', 'stockholm'], default='guess',
                     help="Specify what sequence type to assume. Be specific if the file is not recognized automatically. When reading from stdin, the format is always guessed to be FASTA. Default: %(default)s")
     ap.add_argument('-t', '--type', choices=['aa', 'dna', 'rna', 'codon', 'guess'], default='guess',
                     help="Specify what sequence type to assume. Coding DNA/RNA is assumed with the 'codon' option. Guessing the format only chooses between 'aa' and 'dna', but assumes the standard genetic code.  Default: %(default)s")

@@ -39,7 +39,8 @@ class TestFormats(unittest.TestCase):
         self.aa_filename = 'tests/t4.fa'
         self.sthlm_filename= 'tests/t4.sthlm'
         self.pfam_file = 'tests/PF00005_seed.txt'
-
+        self.nexus_filename = 'tests/test.nex'
+            
     def test_reading_fasta_files(self):
         al, painter = alv.io.read_alignment(self.dna_filename, 'dna', 'fasta', '', 'standard')
         self.assertIsInstance(al, dnaAlignment)
@@ -61,6 +62,10 @@ class TestFormats(unittest.TestCase):
         self.assertIsInstance(al, aaAlignment)
         self.assertIsInstance(painter, alv.colorize.aaPainter)
 
+    def test_reading_nexus_files(self):
+        al, painter = alv.io.read_alignment(self.nexus_filename, 'aa', 'nexus', '', 'standard')
+        self.assertIsInstance(al, aaAlignment)
+        self.assertIsInstance(painter, alv.colorize.aaPainter)
 
     def test_reading_wrong_format(self):
         with self.assertRaises(ValueError):
@@ -70,11 +75,23 @@ class TestFormats(unittest.TestCase):
         with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.aa_filename, 'aa', 'stockholm', '', 'standard')
         with self.assertRaises(ValueError):
+            al, painter = alv.io.read_alignment(self.aa_filename, 'aa', 'nexus', '', 'standard')
+        with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.sthlm_filename, 'aa', 'fasta', '', 'standard')
         with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.sthlm_filename, 'aa', 'clustal', '', 'standard')
         with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.sthlm_filename, 'aa', 'phylip', '', 'standard')
+        with self.assertRaises(ValueError):
+            al, painter = alv.io.read_alignment(self.sthlm_filename, 'aa', 'nexus', '', 'standard')
+        with self.assertRaises(ValueError):
+            al, painter = alv.io.read_alignment(self.nexus_filename, 'aa', 'fasta', '', 'standard')
+        with self.assertRaises(ValueError):
+            al, painter = alv.io.read_alignment(self.nexus_filename, 'aa', 'phylip', '', 'standard')
+        with self.assertRaises(ValueError):
+            al, painter = alv.io.read_alignment(self.nexus_filename, 'aa', 'clustal', '', 'standard')
+        with self.assertRaises(ValueError):
+            al, painter = alv.io.read_alignment(self.nexus_filename, 'aa', 'stockholm', '', 'standard')
         
 
     def test_guessing_seq_type(self):
@@ -85,7 +102,10 @@ class TestFormats(unittest.TestCase):
         self.assertIsInstance(al, dnaAlignment)
         al, painter = alv.io.read_alignment(self.aa_filename, 'guess', 'fasta', '', 'standard')
         self.assertIsInstance(al, aaAlignment)
-        
+        al, painter = alv.io.read_alignment(self.nexus_filename, 'guess', 'nexus', '', 'standard')
+        self.assertIsInstance(al, codonAlignment)
+
+
 class TestIndexBar(unittest.TestCase):
     def test_make_one_tick(self):
         s = at.make_one_tick(5, 10)

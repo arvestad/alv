@@ -19,6 +19,8 @@ def guess_format(filename):
             return 'clustal'
         elif first_line[0] == '>':
             return 'fasta'
+        elif first_line.lower().startswith("#nexus"):
+            return 'nexus'
         else:
             tokens = first_line.split()
             if len(tokens) != 2:

@@ -4,10 +4,11 @@
 
 # alv: a command-line alignment viewer
 
-View you DNA or protein multiple-sequence alignments right at your command line. No need to launch a
+View your DNA or protein multiple-sequence alignments right at your command line. No need to launch a
 GUI!
 
-Note: `alv` requires Python v3.4 or later. Earlier versions may also work, but this have not been tested.
+Note: `alv` requires Python v3.4 or later. Earlier versions may also work, but this has not been
+tested.
 
 Features:
 

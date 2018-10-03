@@ -1,3 +1,4 @@
+import sys
 from alv.get_terminal_size import get_terminal_size
 
 class AlignmentTerminal:
@@ -51,8 +52,6 @@ class AlignmentTerminal:
                 print("{0:{width}}{1}".format(acc, colored_subseq, width=self.left_margin))
             print(make_tick_string(self.left_margin, block.start, block.end, 20, 7))
 
-#            print(' ' * self.left_margin, '↑',  block.start, sep='') # print index of first column
-
 
     # def print_one_sequence_block(self, record, left_margin, start, block_width):
     #     colored_string = colorize_sequence_string(rec.seq[start : start + block_width])
@@ -75,13 +74,12 @@ def calc_tick_indices(start, end, distance, min_distance):
     positions = range(first_even_pos, end, distance)
     return positions
 
-def make_one_tick(position, space):
+def make_one_tick(position, space, tickmark):
     '''
     Return a string which is 'space' wide and contains a number (the position)
     followed by an up-arrow.
     '''
-
-    return '{0:>{width}}↑'.format(position, width=space-1) 
+    return '{0:>{width}}{tickmark}'.format(position, width=space-1,tickmark=tickmark) 
 
 def make_tick_string(left_margin, start, end, distance, min_distance):
     '''
@@ -95,16 +93,21 @@ def make_tick_string(left_margin, start, end, distance, min_distance):
     '''
     even_indices = calc_tick_indices(start, end, distance, min_distance)
 
+    tickmark = '^'
+    if sys.stdout.encoding == 'UTF-8':
+        tickmark = '↑'
+
     # Initial space
     index_bar = ' ' * (left_margin - min_distance + 1) # Account for space needed by indices
 
     # Add first column index
-    index_bar += make_one_tick(start, min(left_margin+1, min_distance))
+    index_bar += make_one_tick(start, min(left_margin+1, min_distance), tickmark)
 
     last_pos = start
     for pos in even_indices:
         spacer = pos - last_pos - 1
-        index_block = '{0:>{width}}↑'.format(pos, width=spacer)
+        # Variable tickmark is stored globally, for convenience
+        index_block = '{0:>{width}}{tickmark}'.format(pos, width=spacer, tickmark=tickmark)
         index_bar += index_block
         last_pos = pos
     return index_bar

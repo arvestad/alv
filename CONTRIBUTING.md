@@ -12,7 +12,7 @@ example:
 * Code contributions
 
 This is a small project and it should not be hard to contribute. Still, you may be helped by 
-reading some suggestions below.
+reading some suggestions below. Also, have a look at THANKS.md for how some have contributed.
 
 /Lars Arvestad
 

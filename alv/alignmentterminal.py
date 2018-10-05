@@ -1,12 +1,12 @@
 import sys
-from alv.get_terminal_size import get_terminal_size
+import shutil
 
 class AlignmentTerminal:
     '''
     This class encapsulates knowledge about the terminal and how to draw on it.
     '''
     def __init__(self, args):
-        self.width = get_terminal_size()[0] # First item in this tuple is the width, the other is the height.
+        self.width = shutil.get_terminal_size()[0] # First item in this tuple is the width, the other is the height.
         self.sorting = args.sorting
         if args.sort_by_id:
             self.sorting = 'by identity'

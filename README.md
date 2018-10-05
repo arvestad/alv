@@ -10,7 +10,7 @@ GUI!
 Note: `alv` requires Python v3.4 or later. Earlier versions may also work, but this has not been
 tested.
 
-Features:
+### Features
 
 * Command-line based, no GUI, so easy to script viewing of many (typically small) MSAs.
 * Reads alignments in FASTA, Clustal, PHYLIP, and Stockholm formats. 
@@ -63,7 +63,7 @@ and redirection removes colors), and the `-R` option instructs `less` to interpr
 
 Run `python setup.py develop test` for development install and to execute tests.
 
-## Screenshot
+## Screenshots
 
 ### Full PFAM domain
 

@@ -1,11 +1,16 @@
 # Changes since last version
 
-## Introduced in version 1.0.5
+## v1.3
 
-* Explicitly start with "/usr/bin/env python3" instead of "/usr/bin/env python". Hoping that will
-  help users that have not yet migrated to v3.
-* Added v3 requirement in setup.py as well, using advice from Tobias Jakobi. Solves issue #1 on github.com.
+* Tick marks come out as ^ on non-UTF systems, instead of an up-arrow on UTF systems (decided by looking at $LANG).
+* Support for Nexus files added (thanks @SimonGreenhill)
 
+## v1.2.0
+
+* The option `-l` colors the alignment but does not break it into blocks. Suitable for piping to `less -RS`,
+  as suggested by Mark McMullan <Mark.McMullan@earlham.ac.uk>.
+* More indices indicated below alignments, and with an up-arrow as a tick mark.
+* Added option `-sm` to allow restricting output to sequences with accessions containing a given string.
 
 ## v1.1.0
 
@@ -14,9 +19,10 @@
 * View only the first and last N characters of accessions with option -aa.
 * Read from stdin with the magic file name "-".
 
-## v1.2.0
 
-* The option `-l` colors the alignment but does not break it into blocks. Suitable for piping to `less -RS`,
-  as suggested by Mark McMullan <Mark.McMullan@earlham.ac.uk>.
-* More indices indicated below alignments, and with an up-arrow as a tick mark.
-* Added option `-sm` to allow restricting output to sequences with accessions containing a given string. 
+## Introduced in version 1.0.5
+
+* Explicitly start with "/usr/bin/env python3" instead of "/usr/bin/env python". Hoping that will
+  help users that have not yet migrated to v3.
+* Added v3 requirement in setup.py as well, using advice from Tobias Jakobi. Solves issue #1 on github.com.
+

@@ -12,3 +12,4 @@
 
 * Automatic paging using (e.g.) `less -R` _if_ alignment does not fit in one screen and env variable `ALV_PAGER` is set.
 * Coloring of motifs
+* Option -st, --sort-by-tree: Sort sequences based on a simply estimated tree, à la Belvu. Should be easy to implement using Dendropy.

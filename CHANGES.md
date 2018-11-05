@@ -19,4 +19,11 @@
 * The option `-l` colors the alignment but does not break it into blocks. Suitable for piping to `less -RS`,
   as suggested by Mark McMullan <Mark.McMullan@earlham.ac.uk>.
 * More indices indicated below alignments, and with an up-arrow as a tick mark.
-* Added option `-sm` to allow restricting output to sequences with accessions containing a given string. 
+* Added option `-sm` to allow restricting output to sequences with accessions containing a given string.
+
+
+## v1.2.1
+
+* Better README
+* Added CONTRIBUTING.md, a text on how to help develop `alv`.
+* Tick marks are no longer up arrows on non-UTF8 systems.

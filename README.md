@@ -1,6 +1,7 @@
 [![PyPI version](https://badge.fury.io/py/alv.svg)](https://badge.fury.io/py/alv) 
 [![Downloads](http://pepy.tech/badge/alv)](http://pepy.tech/project/alv)
 [![Build Status](https://travis-ci.org/arvestad/alv.svg?branch=master)](https://travis-ci.org/arvestad/alv)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1477795.svg)](https://doi.org/10.5281/zenodo.1477795)
 
 # alv: a command-line alignment viewer
 

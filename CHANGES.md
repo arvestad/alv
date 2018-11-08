@@ -1,5 +1,10 @@
 # Changes since last version
 
+## v1.3.2
+
+* Ensured that alignment text color is black when starting. Helps for those other color preferences
+  in the terminal.
+
 ## v1.3.1
 
 * Adding self-promoting --cite and --methods options, noting that there is now a paper 

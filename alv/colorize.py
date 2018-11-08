@@ -30,6 +30,9 @@ class Painter:
 
     def eol(self):
         return Style.RESET_ALL
+    
+    def sol(self):
+        return Fore.BLACK
 
 # Restriction functions
 #

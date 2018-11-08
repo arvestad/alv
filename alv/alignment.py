@@ -131,7 +131,7 @@ class BaseAlignment:
         colored_seq = ''
         for col_no, c in enumerate(seq_record.seq):
             colored_seq += painter.colorizer(c, self.columns[block.start + col_no])
-        return colored_seq + painter.eol()
+        return painter.sol() + colored_seq + painter.eol()
         
     def _summarize_columns(self):
         '''
@@ -193,7 +193,7 @@ class codonAlignment(BaseAlignment):
         for codon_col, pos in enumerate(range(0, len(seq), 3)):
             c = seq[pos:pos+3]
             colored_seq += painter.colorizer(c, self.columns[block.start // 3 + codon_col])
-        return colored_seq + painter.eol()
+        return painter.sol() + colored_seq + painter.eol()
         
     def _summarize_columns(self):
         '''

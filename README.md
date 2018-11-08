@@ -1,4 +1,6 @@
 [![PyPI version](https://badge.fury.io/py/alv.svg)](https://badge.fury.io/py/alv) 
+[![DOI](http://joss.theoj.org/papers/10.21105/joss.00955/status.svg)](https://doi.org/10.21105/joss.00955)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1477804.svg)](https://doi.org/10.5281/zenodo.1477804)
 [![Downloads](http://pepy.tech/badge/alv)](http://pepy.tech/project/alv)
 [![Build Status](https://travis-ci.org/arvestad/alv.svg?branch=master)](https://travis-ci.org/arvestad/alv)
 

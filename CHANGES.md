@@ -1,5 +1,10 @@
 # Changes since last version
 
+## v1.3.1
+
+* Adding self-promoting --cite and --methods options, noting that there is now a paper 
+  about `alv` in J Open Source Software.
+
 ## v1.3
 
 * Tick marks come out as ^ on non-UTF systems, instead of an up-arrow on UTF systems (decided by looking at $LANG).

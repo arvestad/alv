@@ -1,8 +1,10 @@
 # Planned fixes and features
 
 * Better screenshots
-* Review how colors work in different terminals. The color scheme working for me looked strange when Vilde was
-  showing me her work.
+* Review how colors work in different terminals. 
+    - Need to differentiate between dark and bright backgrounds.
+    - Accession color should be explicit
+    - Differentiate between coloring of sequences and "context" (accessions, indices, etc).
 * Add support for restricting to a sub-alignment.
 * Add option --glimpse.
 * Explicitly choose parts of an alignment to view/color.

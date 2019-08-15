@@ -15,7 +15,7 @@ tested.
 ### Features
 
 * Command-line based, no GUI, so easy to script viewing of many (typically small) MSAs.
-* Reads alignments in FASTA, Clustal, PHYLIP, and Stockholm formats. 
+* Reads alignments in FASTA, Clustal, PHYLIP, NEXUS, and Stockholm formats. 
 * Output is formatted to suit your terminal. You can also set the alignment width with option `-w`.
 * Can color alignments of coding DNA by codon's translations to amino acids.
 * Guesses sequence type (DNA/RNA/AA/coding) by default. You can override with option `-t`.

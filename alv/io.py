@@ -56,7 +56,7 @@ def read_alignment(file, seqtype, input_format, color_scheme, genetic_code):
 
     if seqtype == 'aa':
         return aaAlignment(alignment), painter
-    if seqtype == 'dna':
+    if seqtype == 'dna' or seqtype == 'rna':
         return dnaAlignment(alignment), dnaPainter()
     elif seqtype == 'codon':
         al = codonAlignment(alignment)
@@ -90,6 +90,7 @@ def guess_seq_type(al):
         return 'aa'
     else:
         p_coding = _likelihood_of_codons(al)
+        print(p_dna, p_coding)
         if p_dna > p_coding:
             return 'dna'
         else:
@@ -97,20 +98,26 @@ def guess_seq_type(al):
         
 def _likelihood_of_seq(al, distr):
     log_p = 0.0
+    tiny_prob = 2*min(distr.values()) # For indels etc
     for rec in al:
         for c in rec.seq:
             if c in distr:
                 log_p += distr[c]
+            else:
+                log_p += tiny_prob # Need to penalize the indels, otherwise codons are never chosen
     return log_p
 
 def _likelihood_of_codons(al):
     log_p = 0.0
+    tiny_prob = 2*min(_codon_distr.values())
     l = len(str(al[0]))
     for rec in al:
         for pos in range(0,l,3):
             codon = str(rec.seq[pos:pos+3])
             if codon in _codon_distr:
                 log_p += _codon_distr[codon]
+            else:
+                log_p += tiny_prob # Need to penalize the lack of proper codon with a small penalty
     return log_p
 
 # Overkill: using amino acid frequencies given for vertebrates, found somewhere on the internet.

@@ -9,7 +9,7 @@ with open("README.md", "r") as fh:
             pass                # Skipping the badge-lines in the github README.md
         else:
             at_top = False      # Now starts the "real" README.md
-        long_description += line
+            long_description += line
 
 
 with open('alv/version.py') as fh:

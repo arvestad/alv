@@ -1,5 +1,10 @@
 # Changes since last version
 
+## v1.3.3
+
+* Removed bug in alignmnent-type guessing: An MSA without any full codon would be guessed to be
+  coding sequences.
+
 ## v1.3.2
 
 * Ensured that alignment text color is black when starting. Helps for those other color preferences

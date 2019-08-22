@@ -14,9 +14,9 @@ class TestIO_etc(unittest.TestCase):
     def test_guess_seq_type(self):
         
         coding = MultipleSeqAlignment([
-             SeqRecord(Seq("ACTGCTAGCTAG", generic_dna), id="Alpha"),
-             SeqRecord(Seq("ACT-CTAGCTAG", generic_dna), id="Beta"),
-             SeqRecord(Seq("ACTGCTAGDTAG", generic_dna), id="Gamma"),
+             SeqRecord(Seq("AAGCTGATCAGC", generic_dna), id="Alpha"),
+             SeqRecord(Seq("CTGAAGATCAGC", generic_dna), id="Beta"),
+             SeqRecord(Seq("AAGCTGATCAGG", generic_dna), id="Gamma"),
          ])
         noncoding = MultipleSeqAlignment([
              SeqRecord(Seq("CGTCGTCGTCGT", generic_dna), id="Alpha"),

@@ -160,7 +160,7 @@ def input_and_option_adaption(args):
             msg = str(e)
         print('alv error:', msg, file=sys.stderr)
         sys.exit(2)
-    except Exception as e:
+    except Exception:
         print('alv bug: Unknown error when reading input.', file=sys.stderr)
         sys.exit(3)
 

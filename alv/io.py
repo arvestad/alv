@@ -98,7 +98,7 @@ def guess_seq_type(al):
         
 def _likelihood_of_seq(al, distr):
     log_p = 0.0
-    tiny_prob = 2*min(distr.values()) # For indels etc
+    tiny_prob = min(distr.values()) # For indels etc
     for rec in al:
         for c in rec.seq:
             if c in distr:
@@ -110,7 +110,7 @@ def _likelihood_of_seq(al, distr):
 def _likelihood_of_codons(al):
     log_p = 0.0
     tiny_prob = 2*min(_codon_distr.values())
-    l = len(str(al[0]))
+    l = len(str(al[0].seq))
     for rec in al:
         for pos in range(0,l,3):
             codon = str(rec.seq[pos:pos+3])

@@ -1,11 +1,11 @@
 #NEXUS
 begin data;
-dimensions ntax=4 nchar=10;
+dimensions ntax=4 nchar=9;
 format datatype=dna interleave=no gap=-;
 matrix
-Homo_sapiens    ACCCCCCACT
-Pan             ACCCCCTACC
-Gorilla         ACCCCCCACC
-Pongo           ACCACCCACC
+Homo_sapiens    ACCCCCCAC
+Pan             ACCCCCTAC
+Gorilla         ACCCCCCAC
+Pongo           ACCACCCAC
 ;
 end;

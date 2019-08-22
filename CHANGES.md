@@ -1,5 +1,9 @@
 # Changes since last version
 
+## v1.3.4
+
+* For some reason, setup.py was/is not putting proper Markdown to PyPi. Solved it halfway. Weird issue.
+
 ## v1.3.3
 
 * Removed bug in alignmnent-type guessing: An MSA without any full codon would be guessed to be

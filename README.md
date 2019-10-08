@@ -1,8 +1,9 @@
-[![PyPI version](https://badge.fury.io/py/alv.svg)](https://badge.fury.io/py/alv) 
+[![PyPI version](https://badge.fury.io/py/alv.svg)](https://badge.fury.io/py/alv)
 [![DOI](http://joss.theoj.org/papers/10.21105/joss.00955/status.svg)](https://doi.org/10.21105/joss.00955)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1477804.svg)](https://doi.org/10.5281/zenodo.1477804)
 [![Downloads](http://pepy.tech/badge/alv)](http://pepy.tech/project/alv)
 [![Build Status](https://travis-ci.org/arvestad/alv.svg?branch=master)](https://travis-ci.org/arvestad/alv)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=arvestad_alv&metric=alert_status)](https://sonarcloud.io/dashboard?id=arvestad_alv)
 
 # alv: a command-line alignment viewer
 
@@ -15,7 +16,7 @@ tested.
 ### Features
 
 * Command-line based, no GUI, so easy to script viewing of many (typically small) MSAs.
-* Reads alignments in FASTA, Clustal, PHYLIP, NEXUS, and Stockholm formats. 
+* Reads alignments in FASTA, Clustal, PHYLIP, NEXUS, and Stockholm formats.
 * Output is formatted to suit your terminal. You can also set the alignment width with option `-w`.
 * Can color alignments of coding DNA by codon's translations to amino acids.
 * Guesses sequence type (DNA/RNA/AA/coding) by default. You can override with option `-t`.
@@ -30,7 +31,7 @@ pip install --upgrade pip
 pip install alv
 ```
 
-If you have a half-modern BioPython installed, Python v3.4 _should_ work. 
+If you have a half-modern BioPython installed, Python v3.4 _should_ work.
 BioPython is a dependency and will only get installed automatially with `pip install alv`
 if you are using Python v3.6 or later, because BioPython was apparently not on PyPi before that.
 
@@ -78,5 +79,3 @@ All of the sequences in PFAM's seed alignment for PF00005
 Using the option `-sm YEAST`, we reduce the alignment to the ones with a matching accession.
 
 ![Small MSA from PF00005](https://github.com/arvestad/alv/raw/master/doc/PF00005_yeast.png)
-
-

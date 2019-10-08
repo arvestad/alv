@@ -10,9 +10,9 @@ import alv.alignmentterminal as at
 import alv.colorize
 import alv.exceptions
 
-class TestIO_etc(unittest.TestCase):
+class TestIOetc(unittest.TestCase):
     def test_guess_seq_type(self):
-        
+
         coding = MultipleSeqAlignment([
              SeqRecord(Seq("AAGCTGATCAGC", generic_dna), id="Alpha"),
              SeqRecord(Seq("CTGAAGATCAGC", generic_dna), id="Beta"),
@@ -40,7 +40,7 @@ class TestFormats(unittest.TestCase):
         self.sthlm_filename= 'tests/t4.sthlm'
         self.pfam_file = 'tests/PF00005_seed.txt'
         self.nexus_filename = 'tests/test.nex'
-            
+
     def test_reading_fasta_files(self):
         al, painter = alv.io.read_alignment(self.dna_filename, 'dna', 'fasta', '', 'standard')
         self.assertIsInstance(al, dnaAlignment)
@@ -92,7 +92,7 @@ class TestFormats(unittest.TestCase):
             al, painter = alv.io.read_alignment(self.nexus_filename, 'aa', 'clustal', '', 'standard')
         with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.nexus_filename, 'aa', 'stockholm', '', 'standard')
-        
+
 
     def test_guessing_seq_type(self):
         '''
@@ -143,7 +143,7 @@ class TestIndexBar(unittest.TestCase):
             self.assertEqual(s, '    0↑                 20↑                 40↑')
         else:
             self.assertEqual(s, '    0^                 20^                 40^')
-                            
+
         s = at.make_tick_string(7, 35, 100, 20, 10)
         if self.tickmark == '↑':
             self.assertEqual(s, '     35↑                      60↑                 80↑')
@@ -153,4 +153,3 @@ class TestIndexBar(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-    

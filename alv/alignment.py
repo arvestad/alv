@@ -22,7 +22,7 @@ class BaseAlignment:
 
     def _update_seq_index(self):
         self.seq_indices = { r.id : i for i, r in enumerate(self.al)} # Get a dictionary mapping accession to row index in alignment
-        
+
     def al_width(self):
         '''
         The number of columns in the alignment.
@@ -42,7 +42,7 @@ class BaseAlignment:
             new_acc = acc[0:n_chars] + '*' + acc[-n_chars:]
             record.id = new_acc
         self._update_seq_index()
-        
+
     def accessions(self):
         '''
         The accessions in arbitrary order?
@@ -75,9 +75,8 @@ class BaseAlignment:
         '''
         max_accession_length = 5        # initial guess, or minimum
         for record in self.al:
-            if not accessions or record.id in accessions:
-                if len(record.id) > max_accession_length:
-                    max_accession_length = len(record.id)
+            if (not accessions or record.id in accessions) and len(record.id) > max_accession_length:
+                max_accession_length = len(record.id)
         return max_accession_length
 
 
@@ -85,7 +84,7 @@ class BaseAlignment:
         '''
         For wide alignments, we need to break it up in blocks.
         This method calculates how many characters to output in a block.
-        
+
         Take the margin size (for accessions) into account and avoid ending up
         with blocks of size 1.
         '''
@@ -132,7 +131,7 @@ class BaseAlignment:
         for col_no, c in enumerate(seq_record.seq):
             colored_seq += painter.colorizer(c, self.columns[block.start + col_no])
         return painter.sol() + colored_seq + painter.eol()
-        
+
     def _summarize_columns(self):
         '''
         Count the different elements in each column.
@@ -173,7 +172,7 @@ class codonAlignment(BaseAlignment):
 
     def block_width(self, terminal_width, args):
         '''
-        Refinement of the superclass' implemention to ensure that all blocks have 
+        Refinement of the superclass' implemention to ensure that all blocks have
         a width that is a multiple of three.
         '''
         nominal_width = super().block_width(terminal_width, args)
@@ -194,7 +193,7 @@ class codonAlignment(BaseAlignment):
             c = seq[pos:pos+3]
             colored_seq += painter.colorizer(c, self.columns[block.start // 3 + codon_col])
         return painter.sol() + colored_seq + painter.eol()
-        
+
     def _summarize_columns(self):
         '''
         Specialization of base method for codon columns. Do not focus on the amino acids, but look at
@@ -228,7 +227,7 @@ class AlignmentBlock:
     def __init__(self, start, end):
         self.start = start
         self.end = end
-        
+
 
 def percent_identity(seq1, seq2):
     identical = 0

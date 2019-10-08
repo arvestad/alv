@@ -27,17 +27,17 @@ def guess_format(filename):
                 raise AlvPossibleFormatError(filename) # Don't recognize the format
             else:
                 try:
-                    a = int(tokens[0])
-                    b = int(tokens[1])
+                    _ = int(tokens[0])
+                    _ = int(tokens[1])
                 except:
                     raise AlvPossibleFormatError(filename)
                 # Came this far? Success!
                 return 'phylip'
-            
+
 
 def read_alignment(file, seqtype, input_format, color_scheme, genetic_code):
     '''
-    Factory function. Read the alignment with BioPython's support, and 
+    Factory function. Read the alignment with BioPython's support, and
     return an appropriate alv alignment.
     '''
     if file == '-':
@@ -46,7 +46,7 @@ def read_alignment(file, seqtype, input_format, color_scheme, genetic_code):
 
     if seqtype == 'guess':
         seqtype = guess_seq_type(alignment)
-        
+
     if color_scheme == 'taylor':
         painter = aaTaylorPainter()
     elif color_scheme == 'hydrophobicity':
@@ -76,7 +76,7 @@ def output_al_info(alignment):
 
 
 
-            
+
 def guess_seq_type(al):
     '''
     Guess whether alignment al is AA, DNA, coding DNA, or RNA and
@@ -95,7 +95,7 @@ def guess_seq_type(al):
             return 'dna'
         else:
             return 'codon'
-        
+
 def _likelihood_of_seq(al, distr):
     log_p = 0.0
     tiny_prob = min(distr.values()) # For indels etc
@@ -214,7 +214,7 @@ _codon_distr = {
     'CGC': log(0.0109),
     'CGA': log(0.0063),
     'CGG': log(0.0119),
-    
+
     'ATT': log(0.0157),
     'ATC': log(0.0214),
     'ATA': log(0.0071),

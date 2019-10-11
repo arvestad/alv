@@ -1,5 +1,21 @@
 import setuptools
-import sys 
+import sys
+
+
+def read_version_string(filename):
+    versionstring = None
+    with open(filename) as h:
+        for line in h:
+            try:
+                identifier, equalsign, versionstring = line.split()
+                if identifier == '__version__' and equalsign == '=':
+                    return versionstring.strip("'")
+            except:
+                continue        # Just read past lines to fitting the pattern
+    if versionstring is None:
+        return 'unknown_version'
+
+
 
 with open("README.md", "r") as fh:
     at_top = True
@@ -12,9 +28,8 @@ with open("README.md", "r") as fh:
             long_description += line
 
 
-with open('alv/version.py') as fh:
-    exec(fh.read())
-    
+__version__ = read_version_string('alv/version.py')
+
 if sys.version_info.major < 3:
     sys.exit('\n'
              'Sorry, Python 2 is not supported\n'
@@ -23,7 +38,7 @@ if sys.version_info.major < 3:
 
 elif sys.version_info.minor < 2:
     sys.exit('\nSorry, Python < 3.2 is not supported\n')
-    
+
 setuptools.setup(
     name="alv",
     version=__version__,
@@ -48,5 +63,3 @@ setuptools.setup(
         "Topic :: Scientific/Engineering :: Bio-Informatics",
     ),
 )
-
-

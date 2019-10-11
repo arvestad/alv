@@ -149,17 +149,17 @@ class BaseAlignment:
         for descr, val in self.basic_info.items():
             yield descr, val
 
-class aaAlignment(BaseAlignment):
+class AminoAcidAlignment(BaseAlignment):
     def __init__(self, alignment):
        	super().__init__(alignment)
         self.type = 'aa'
 
-class dnaAlignment(BaseAlignment):
+class DnaAlignment(BaseAlignment):
     def __init__(self, alignment):
        	super().__init__(alignment)
         self.type = 'dna'
 
-class codonAlignment(BaseAlignment):
+class CodonAlignment(BaseAlignment):
     '''
     Alignment of coding DNA. A column has a width of three nucleotides.
     '''

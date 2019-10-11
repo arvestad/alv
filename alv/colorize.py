@@ -30,7 +30,7 @@ class Painter:
 
     def eol(self):
         return Style.RESET_ALL
-    
+
     def sol(self):
         return Fore.BLACK
 
@@ -49,15 +49,15 @@ def restrict_to_majority(column):
 def restrict_to_no_indels(column):
     return column['-'] == 0
 
-        
 
-class aaPainter(Painter):
+
+class AminoAcidPainter(Painter):
     '''
     Put paint of amino acids.
     '''
     def __init__(self):
         super().__init__()
-        
+
     def _color_lookup(self, c):
         if c in 'AILMFWVCailmfwvc':
             return Back.BLUE, Back.WHITE
@@ -101,14 +101,14 @@ class aaPainter(Painter):
                 return before_color + c + after_color
             else:
                 return before_color + c
-        
-class aaTaylorPainter(aaPainter):
+
+class AminoAcidTaylorPainter(AminoAcidPainter):
     '''
     Put paint to amino acids, an approximation of the "Taylor" style.
     '''
     def __init__(self):
         super().__init__()
-        
+
     def _color_lookup(self, c):
         if c in 'AILMFVCailMFVC':
             return Back.GREEN, Back.WHITE
@@ -133,13 +133,13 @@ class aaTaylorPainter(aaPainter):
         else:
             return Back.WHITE, None
 
-class aaHydrophobicity(aaPainter):
+class AminoAcidHydrophobicity(AminoAcidPainter):
     '''
     Put paint to amino acids, indicating hydrophobicity.
     '''
     def __init__(self):
         super().__init__()
-        
+
     def _color_lookup(self, c):
         if c in 'AILMFVPGailmfvpg':
             return Back.RED, Back.WHITE
@@ -159,13 +159,13 @@ class aaHydrophobicity(aaPainter):
             return Back.WHITE, None
 
 
-class dnaPainter(Painter):
+class DnaPainter(Painter):
     '''
     Put paint of nucleotides.
     '''
     def __init__(self):
         super().__init__()
-        
+
     def colorizer(self, c, column):
         if c in 'TUtu':           # Handles RNA too
             return Back.BLUE + c
@@ -187,13 +187,13 @@ class dnaPainter(Painter):
         else:
             return Back.WHITE + c
 
-class dnaClassPainter(Painter):
+class DnaClassPainter(Painter):
     '''
     Put paint of nucleotides.
     '''
     def __init__(self):
         super().__init__()
-        
+
     def colorizer(self, c, column):
         if c in 'TUtuCcYy':           # Handles RNA too
             return Back.Cyan + c
@@ -212,7 +212,7 @@ class dnaClassPainter(Painter):
             return Back.WHITE + c
 
 
-class codonPainter(Painter):
+class CodonPainter(Painter):
     '''
     Put paint of codons.
     '''
@@ -249,11 +249,9 @@ class codonPainter(Painter):
                     return before_color + c + after_color
                 else:
                     return before_color + c
-                
+
         except Bio.Data.CodonTable.TranslationError:
             return c
         except Exception as e:
             print('Alv warning:', str(e), file=sys.stderr)
             return c                # Temporarily. Adding colors later
-
-

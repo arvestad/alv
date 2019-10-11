@@ -5,7 +5,7 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
 import alv.io
-from alv.alignment import aaAlignment, dnaAlignment, codonAlignment, BaseAlignment
+from alv.alignment import AminoAcidAlignment, DnaAlignment, CodonAlignment, BaseAlignment
 import alv.alignmentterminal as at
 import alv.colorize
 import alv.exceptions
@@ -43,29 +43,29 @@ class TestFormats(unittest.TestCase):
 
     def test_reading_fasta_files(self):
         al, painter = alv.io.read_alignment(self.dna_filename, 'dna', 'fasta', '', 'standard')
-        self.assertIsInstance(al, dnaAlignment)
-        self.assertIsInstance(painter, alv.colorize.dnaPainter)
+        self.assertIsInstance(al, DnaAlignment)
+        self.assertIsInstance(painter, alv.colorize.DnaPainter)
 
         al, painter = alv.io.read_alignment(self.dna_filename, 'aa', 'fasta', 'clustal', 'standard')
-        self.assertIsInstance(al, aaAlignment)
-        self.assertIsInstance(painter, alv.colorize.aaPainter)
+        self.assertIsInstance(al, AminoAcidAlignment)
+        self.assertIsInstance(painter, alv.colorize.AminoAcidPainter)
 
         al, painter = alv.io.read_alignment(self.dna_filename, 'codon', 'fasta', 'clustal', 'standard')
-        self.assertIsInstance(al, codonAlignment)
-        self.assertIsInstance(painter, alv.colorize.codonPainter)
+        self.assertIsInstance(al, CodonAlignment)
+        self.assertIsInstance(painter, alv.colorize.CodonPainter)
 
     def test_reading_stockholm_files(self):
         al, painter = alv.io.read_alignment(self.sthlm_filename, 'aa', 'stockholm', '', 'standard')
-        self.assertIsInstance(al, aaAlignment)
-        self.assertIsInstance(painter, alv.colorize.aaPainter)
+        self.assertIsInstance(al, AminoAcidAlignment)
+        self.assertIsInstance(painter, alv.colorize.AminoAcidPainter)
         al, painter = alv.io.read_alignment(self.pfam_file, 'aa', 'stockholm', '', 'standard')
-        self.assertIsInstance(al, aaAlignment)
-        self.assertIsInstance(painter, alv.colorize.aaPainter)
+        self.assertIsInstance(al, AminoAcidAlignment)
+        self.assertIsInstance(painter, alv.colorize.AminoAcidPainter)
 
     def test_reading_nexus_files(self):
         al, painter = alv.io.read_alignment(self.nexus_filename, 'aa', 'nexus', '', 'standard')
-        self.assertIsInstance(al, aaAlignment)
-        self.assertIsInstance(painter, alv.colorize.aaPainter)
+        self.assertIsInstance(al, AminoAcidAlignment)
+        self.assertIsInstance(painter, alv.colorize.AminoAcidPainter)
 
     def test_reading_wrong_format(self):
         with self.assertRaises(ValueError):
@@ -99,11 +99,11 @@ class TestFormats(unittest.TestCase):
         Given simple DNA or AA input, is the sequence typ (DNA/AA) guessed correctly?
         '''
         al, painter = alv.io.read_alignment(self.dna_filename, 'guess', 'fasta', '', 'standard')
-        self.assertIsInstance(al, dnaAlignment)
+        self.assertIsInstance(al, DnaAlignment)
         al, painter = alv.io.read_alignment(self.aa_filename, 'guess', 'fasta', '', 'standard')
-        self.assertIsInstance(al, aaAlignment)
+        self.assertIsInstance(al, AminoAcidAlignment)
         al, painter = alv.io.read_alignment(self.nexus_filename, 'guess', 'nexus', '', 'standard')
-        self.assertIsInstance(al, codonAlignment)
+        self.assertIsInstance(al, CodonAlignment)
 
 
 class TestIndexBar(unittest.TestCase):

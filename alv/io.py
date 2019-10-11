@@ -2,8 +2,8 @@ from Bio import AlignIO
 from math import log
 import sys
 
-from .alignment import aaAlignment, dnaAlignment, codonAlignment
-from .colorize import aaPainter, dnaPainter, codonPainter, aaHydrophobicity, aaTaylorPainter
+from .alignment import AminoAcidAlignment, DnaAlignment, CodonAlignment
+from .colorize import AminoAcidPainter, DnaPainter, CodonPainter
 from .exceptions import AlvPossibleFormatError
 
 
@@ -48,20 +48,20 @@ def read_alignment(file, seqtype, input_format, color_scheme, genetic_code):
         seqtype = guess_seq_type(alignment)
 
     if color_scheme == 'taylor':
-        painter = aaTaylorPainter()
+        painter = AminoAcidTaylorPainter()
     elif color_scheme == 'hydrophobicity':
-        painter = aaHydrophobicity()
+        painter = AminoAcidHydrophobicity()
     else:
-        painter = aaPainter()
+        painter = AminoAcidPainter()
 
     if seqtype == 'aa':
-        return aaAlignment(alignment), painter
+        return AminoAcidAlignment(alignment), painter
     if seqtype == 'dna' or seqtype == 'rna':
-        return dnaAlignment(alignment), dnaPainter()
+        return DnaAlignment(alignment), DnaPainter()
     elif seqtype == 'codon':
-        al = codonAlignment(alignment)
+        al = CodonAlignment(alignment)
         al.set_genetic_code(genetic_code)
-        return codonAlignment(alignment), codonPainter(painter)
+        return CodonAlignment(alignment), CodonPainter(painter)
     else:
         raise Exception('Unknown option')
 
@@ -90,7 +90,6 @@ def guess_seq_type(al):
         return 'aa'
     else:
         p_coding = _likelihood_of_codons(al)
-        print(p_dna, p_coding)
         if p_dna > p_coding:
             return 'dna'
         else:

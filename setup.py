@@ -15,6 +15,7 @@ def read_version_string(filename):
     if versionstring is None:
         return 'unknown_version'
 
+__version__ = read_version_string('alv/version.py')
 
 
 with open("README.md", "r") as fh:
@@ -27,8 +28,6 @@ with open("README.md", "r") as fh:
             at_top = False      # Now starts the "real" README.md
             long_description += line
 
-
-__version__ = read_version_string('alv/version.py')
 
 if sys.version_info.major < 3:
     sys.exit('\n'

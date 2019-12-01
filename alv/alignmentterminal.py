@@ -148,7 +148,6 @@ def make_tick_string(left_margin, start, end, distance, min_distance):
     last_pos = start
     for pos in even_indices:
         spacer = pos - last_pos - 1
-        # Variable tickmark is stored globally, for convenience
         index_block = '{0:>{width}}{tickmark}'.format(pos, width=spacer, tickmark=tickmark)
         index_bar += index_block
         last_pos = pos

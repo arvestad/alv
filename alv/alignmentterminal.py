@@ -1,3 +1,5 @@
+from .alignment import AlignmentBlock
+import random
 import sys
 import shutil
 
@@ -6,7 +8,8 @@ class AlignmentTerminal:
     This class encapsulates knowledge about the terminal and how to draw on it.
     '''
     def __init__(self, args):
-        self.width = shutil.get_terminal_size()[0] # First item in this tuple is the width, the other is the height.
+        self.width, self.height = shutil.get_terminal_size() # First item in this tuple is the width, the other is the height.
+        self.random_sample_size = args.random_accessions
         self.sorting = args.sorting
         if args.sort_by_id:
             self.sorting = 'by identity'
@@ -21,9 +24,9 @@ class AlignmentTerminal:
         else:
             self.selection = False
 
-    def output_alignment(self, al, painter, width):
+    def get_accession_list(self, al):
         '''
-        Output alignment al to stdout in blocks of width at most w with colors from painter.
+        Choose accessions and their order based on the user-choices.
         '''
         if self.sorting == 'alpha':
             accessions = al.sorted_accessions()
@@ -39,26 +42,65 @@ class AlignmentTerminal:
             for acc in accessions:
                 if self.selection in acc:
                     chosen_accessions.append(acc)
+            return chosen_accessions
         else:
-            chosen_accessions = list(accessions)
+            return list(accessions)
 
+
+    def _output_block(self, al, painter, width, chosen_accessions, block):
+        '''
+        Write one block of an aligmnent to the terminal.
+        The accessions to the left, sequences to the right, and at the bottom a tick string.
+        '''
+        for acc in chosen_accessions:
+            colored_subseq = al.apply_painter(acc, block, painter)
+            print("{0:{width}}{1}".format(acc, colored_subseq, width=self.left_margin))
+        print(make_tick_string(self.left_margin, block.start, block.end, 20, 7))
+
+
+    def _setup_left_margin(self, al, chosen_accessions):
+        '''
+        Compute the width of the left margin from the accession lengths
+        '''
         self.left_margin = 1 + al.accession_widths(chosen_accessions)
         assert self.left_margin < self.width - 10
-            
+
+
+    def output_alignment(self, al, painter, width):
+        '''
+        Output alignment al to stdout in blocks of width at most w with colors from painter.
+        '''
+        chosen_accessions =  self.get_accession_list(al)
+
+        if self.random_sample_size and len(chosen_accessions) > self.random_sample_size:
+            chosen_accessions = random.sample(chosen_accessions, self.random_sample_size)
+
+        self._setup_left_margin(al, chosen_accessions)
+
         columns_per_block = al.block_width(self.width, width)
         for block in al.blocks(columns_per_block):
-            for acc in chosen_accessions:
-                colored_subseq = al.apply_painter(acc, block, painter)
-                print("{0:{width}}{1}".format(acc, colored_subseq, width=self.left_margin))
-            print(make_tick_string(self.left_margin, block.start, block.end, 20, 7))
+            self._output_block(al, painter, width, chosen_accessions, block)
 
 
-    # def print_one_sequence_block(self, record, left_margin, start, block_width):
-    #     colored_string = colorize_sequence_string(rec.seq[start : start + block_width])
-    #     print("{0:{width}}{1}".format(rec.id, colored_string, width=left_margin))
+    def output_glimpse(self, al, painter, width):
+        '''
+        Output a single-screen glimpse of the alignment. An attempt at finding
+        the most interesting (guessed to be the most conserved part of a random
+        sample of sequences) of the alignment is done.
+        '''
+        chosen_accessions =  self.get_accession_list(al)
+
+        n_seqs_to_view = min(len(chosen_accessions), self.height - 2) # -2 to make room for tick line and next prompt
+        chosen_accessions = random.sample(chosen_accessions, n_seqs_to_view)
+
+        self._setup_left_margin(al, chosen_accessions)
+
+        n_columns = al.block_width(self.width, width) # This many alignment columns
+        conserved_block = al.get_conserved_block(n_columns)
+
+        self._output_block(al, painter, width, chosen_accessions, conserved_block)
 
 
-        
 def calc_tick_indices(start, end, distance, min_distance):
     '''
     Return a list of indices for which we want a tick mark at the bottom of the alignment.
@@ -79,7 +121,7 @@ def make_one_tick(position, space, tickmark):
     Return a string which is 'space' wide and contains a number (the position)
     followed by an up-arrow.
     '''
-    return '{0:>{width}}{tickmark}'.format(position, width=space-1,tickmark=tickmark) 
+    return '{0:>{width}}{tickmark}'.format(position, width=space-1,tickmark=tickmark)
 
 def make_tick_string(left_margin, start, end, distance, min_distance):
     '''

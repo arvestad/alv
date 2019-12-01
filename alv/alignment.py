@@ -1,5 +1,7 @@
 import Bio.Seq
 import itertools
+import math
+import random
 from collections import Counter
 from .exceptions import AlvEmptyAlignment
 
@@ -18,7 +20,7 @@ class BaseAlignment:
         self.columns = self._summarize_columns()
         self.basic_info = {'Number of sequences': len(self.al),
                            'Alignment width': self.al_length}
-
+        self.indels=['.', '-', ' ']
 
     def _update_seq_index(self):
         self.seq_indices = { r.id : i for i, r in enumerate(self.al)} # Get a dictionary mapping accession to row index in alignment
@@ -67,6 +69,12 @@ class BaseAlignment:
                                        key=lambda rec: percent_identity(pivot_sequence_record.seq, rec),
                                        reverse=True))
         return sorted_accessions
+
+    def random_accessions(self, n):
+        '''
+        Return a random sample of accessions, sample size = n.
+        '''
+        return random.choice(list(self.accessions()))
 
     def accession_widths(self, accessions=None):
         '''
@@ -120,6 +128,7 @@ class BaseAlignment:
                 end = min(al_width, start + block_width)
                 yield AlignmentBlock(start, end)
 
+
     def apply_painter(self, acc, block, painter):
         '''
         Colorize a subsequence according to some style (painter).
@@ -148,6 +157,47 @@ class BaseAlignment:
         self.basic_info['Sequence type'] = self.type
         for descr, val in self.basic_info.items():
             yield descr, val
+
+    def get_column_conservation(self):
+        '''
+        Return a list of floats representing how conserved the columns are.
+        In this first version of the method, conservation equals fraction of elements
+        identical to the majority element.
+        '''
+        result = []       # For the return value
+        column_summaries = self._summarize_columns()
+        for c in column_summaries:
+            for indel in self.indels:
+                del c[indel]
+            if len(c) == 0:
+                result.append(0)
+            else:
+                majority = c.most_common(1)[0][1]
+                conservation = majority / len(self.al)
+                result.append(conservation)
+        return result
+
+
+    def get_conserved_block(self, n_columns):
+        '''
+        Return a block that is a suitable representation of the alignment.
+        Used for alignment glimpses.
+        '''
+        conservation = self.get_column_conservation()   # A list of conservation scores. Want a maximised "window"
+        accumulated_conservation = []
+        acc = 0
+        for c in conservation:
+            acc += c
+            accumulated_conservation.append(acc)
+
+        if self.al_width() <= n_columns:
+            return AlignmentBlock(0, self.al_width())
+        else:
+            best_start = max(range(self.al_width() - n_columns),
+                             key=lambda i: accumulated_conservation[i+n_columns] - accumulated_conservation[i])
+            return AlignmentBlock(best_start, best_start + n_columns)
+
+
 
 class AminoAcidAlignment(BaseAlignment):
     def __init__(self, alignment):
@@ -204,15 +254,42 @@ class CodonAlignment(BaseAlignment):
             codon_column = map(lambda r: str(r.seq), self.al[:, pos:pos+3])
             aa_column = map(lambda codon: self._translate(codon), codon_column)
             columns.append(Counter(aa_column))
-            #columns.append(Counter(codon_column))
         return columns
+
+
+    def get_conserved_block(self, n_columns):
+        '''
+        Return a block that is a suitable representation of the alignment.
+        Used for alignment glimpses.
+        Specialised for codon alignments.
+        '''
+        conservation = self.get_column_conservation()   # A list of conservation scores. Want a maximised "window"
+        accumulated_conservation = []
+        acc = 0
+        for c in conservation:
+            acc += c
+            accumulated_conservation.append(acc)
+
+        n_columns = n_columns // 3  # We want codon columns now
+
+        codon_al_width = math.floor(self.al_width() / 3)
+        if codon_al_width <= n_columns:
+            return AlignmentBlock(0, codon_al_width)
+        else:
+            best_start = max(range(0, codon_al_width - n_columns),
+                             key=lambda i: accumulated_conservation[i+n_columns] - accumulated_conservation[i])
+            return AlignmentBlock(3*best_start, 3*(best_start + n_columns))
+
 
     def _translate(self, codon):
         try:
             if codon == '---':
                 return '-'
             else:
-                aa = Bio.Seq.translate(codon, table = self.genetic_code)
+                if len(codon) == 3:
+                    aa = Bio.Seq.translate(codon, table = self.genetic_code)
+                else:
+                    aa = '?'
                 return aa
         except:
             # For when we have weird codons/alignments

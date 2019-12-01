@@ -5,6 +5,7 @@
 [![Build Status](https://travis-ci.org/arvestad/alv.svg?branch=master)](https://travis-ci.org/arvestad/alv)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=arvestad_alv&metric=alert_status)](https://sonarcloud.io/dashboard?id=arvestad_alv)
 
+
 # alv: a command-line alignment viewer
 
 View your DNA or protein multiple-sequence alignments right at your command line. No need to launch a
@@ -13,7 +14,15 @@ GUI!
 Note: `alv` requires Python v3.4 or later. Earlier versions may also work, but this has not been
 tested.
 
-### Features
+## Latest feature addition
+
+* The command `alv -g huge_msa.fa` displays cut-out of the MSA, guaranteed to fit
+  one terminal page without scrolling or MSA line breaking, that is supposed to
+  give you an idea of alignment quality and contents.
+* Write `alv -r 20 huge_msa.fa` to get a view of the MSA containing only 20 randomly
+  selected sequences.
+
+## Features
 
 * Command-line based, no GUI, so easy to script viewing of many (typically small) MSAs.
 * Reads alignments in FASTA, Clustal, PHYLIP, NEXUS, and Stockholm formats.

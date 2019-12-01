@@ -29,6 +29,10 @@ class TestAlignment(unittest.TestCase):
         self.assertEqual(info[0][1], 3)
         self.assertEqual(info[1][1], 2)
 
+    def test_column_conservation(self):
+        conservation = self.al.get_column_conservation()
+        self.assertEqual(conservation[0], 1.0)
+        self.assertEqual(conservation[1], 2/3)
 
 if __name__ == '__main__':
     unittest.main()

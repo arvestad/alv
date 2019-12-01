@@ -65,8 +65,6 @@ def read_alignment(file, seqtype, input_format, color_scheme, genetic_code):
     else:
         raise Exception('Unknown option')
 
-    return alignment, painter
-
 
 
 def output_al_info(alignment):

@@ -3,7 +3,7 @@ from math import log
 import sys
 
 from .alignment import AminoAcidAlignment, DnaAlignment, CodonAlignment
-from .colorize import AminoAcidPainter, DnaPainter, CodonPainter
+from .colorize import AminoAcidPainter, DnaPainter, CodonPainter, AminoAcidTaylorPainter, AminoAcidHydrophobicity
 from .exceptions import AlvPossibleFormatError
 
 

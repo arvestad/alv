@@ -1,5 +1,11 @@
 # Changes since last version
 
+## v1.4.0
+
+* New option: `-r k` or `--random-accessions k` for only showing a sample of _k_ sequences.
+* New option: `-g` or `--glimpse`: display an informative cut-out of the input MSA, if it does
+  not fit without scrolling or line-breaking.
+
 ## v1.3.4
 
 * For some reason, setup.py was/is not putting proper Markdown to PyPi. Solved it halfway. Weird issue.
@@ -16,7 +22,7 @@
 
 ## v1.3.1
 
-* Adding self-promoting --cite and --methods options, noting that there is now a paper 
+* Adding self-promoting --cite and --methods options, noting that there is now a paper
   about `alv` in J Open Source Software.
 
 ## v1.3
@@ -46,5 +52,3 @@
 * Explicitly start with "/usr/bin/env python3" instead of "/usr/bin/env python". Hoping that will
   help users that have not yet migrated to v3.
 * Added v3 requirement in setup.py as well, using advice from Tobias Jakobi. Solves issue #1 on github.com.
-
-

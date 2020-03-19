@@ -1,5 +1,11 @@
 # Changes since last version
 
+## v1.5.0
+
+* New option: `-d` or `--dotted`: the first sequence in the output alignment is used as a template and for positions
+  in subsequent sequences that are identical, a period ('.') is output instead of a symbol. 
+* Adjustment: replacing blue with cyan in the DNA coloring scheme.
+
 ## v1.4.0
 
 * New option: `-r k` or `--random-accessions k` for only showing a sample of _k_ sequences.

@@ -168,7 +168,7 @@ class DnaPainter(Painter):
 
     def colorizer(self, c, column):
         if c in 'TUtu':           # Handles RNA too
-            return Back.BLUE + c
+            return Back.CYAN + c
         elif c in 'Aa':
             return Back.GREEN + c
         elif c in 'Cc':

@@ -141,6 +141,27 @@ class BaseAlignment:
             colored_seq += painter.colorizer(c, self.columns[block.start + col_no])
         return painter.sol() + colored_seq + painter.eol()
 
+    def apply_dotter(self, acc, block, painter, template_acc):
+        '''
+        Colorize and adapt a subsequence according to some style (painter) and
+        following accession for a template sequence. Write '.' if the site is conserved.
+        This implementation works for aa and plain DNA/RNA.
+        '''
+        idx = self.seq_indices[acc]
+        seq_record = self.al[idx, block.start:block.end]
+
+        template_idx = self.seq_indices[template_acc]
+        template_record = self.al[template_idx]
+        template_seq = template_record.seq
+
+        colored_seq = ''
+        for col_no, c in enumerate(seq_record.seq):
+            if c == template_seq[col_no]:
+                colored_seq += '.'
+            else:
+                colored_seq += painter.colorizer(c, self.columns[block.start + col_no])
+        return painter.sol() + colored_seq + painter.eol()
+
     def _summarize_columns(self):
         '''
         Count the different elements in each column.
@@ -231,7 +252,7 @@ class CodonAlignment(BaseAlignment):
 
     def apply_painter(self, acc, block, painter):
         '''
-        Colorize a subsequence according to some style (painter).
+        Colorize a CODON (!) subsequence according to some style (painter).
         This implementation works for codons.
         '''
         idx = self.seq_indices[acc]
@@ -244,6 +265,31 @@ class CodonAlignment(BaseAlignment):
             colored_seq += painter.colorizer(c, self.columns[block.start // 3 + codon_col])
         return painter.sol() + colored_seq + painter.eol()
 
+    def apply_dotter(self, acc, block, painter, template_acc):
+        '''
+        Colorize and adapt a CODON(!) subsequence according to some style (painter) and
+        following accession for a template sequence. Write '.' if the site is conserved.
+        This implementation works for aa and plain DNA/RNA.
+        '''
+        idx = self.seq_indices[acc]
+        seq_record = self.al[idx, block.start:block.end]
+        seq = str(seq_record.seq)
+
+        template_idx = self.seq_indices[template_acc]
+        template_record = self.al[template_idx, block.start:block.end]
+        template_seq = template_record.seq
+
+        colored_seq = ''
+        for codon_col_no, pos in enumerate(range(0, len(seq), 3)):
+            c = seq[pos:pos+3]
+            if c == template_seq[pos:pos+3]:
+                colored_seq += '...'
+            else:
+                colored_seq += painter.colorizer(c, self.columns[block.start // 3 + codon_col_no])
+        return painter.sol() + colored_seq + painter.eol()
+
+
+    
     def _summarize_columns(self):
         '''
         Specialization of base method for codon columns. Do not focus on the amino acids, but look at
@@ -304,6 +350,9 @@ class AlignmentBlock:
     def __init__(self, start, end):
         self.start = start
         self.end = end
+
+    def __str__(self):
+        return f'<AlignmentBlock start={self.start} end={self.end}>'
 
 
 def percent_identity(seq1, seq2):

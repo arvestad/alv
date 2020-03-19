@@ -47,13 +47,22 @@ class AlignmentTerminal:
             return list(accessions)
 
 
-    def _output_block(self, al, painter, width, chosen_accessions, block):
+    def _output_block(self, al, painter, width, chosen_accessions, block, dotted):
         '''
         Write one block of an aligmnent to the terminal.
         The accessions to the left, sequences to the right, and at the bottom a tick string.
         '''
+        if dotted:
+            template_acc=chosen_accessions[0]
+            chosen_accessions = chosen_accessions[1:]
+            colored_subseq = al.apply_painter(template_acc, block, painter)
+            print("{0:{width}}{1}".format(template_acc, colored_subseq, width=self.left_margin))
+            
         for acc in chosen_accessions:
-            colored_subseq = al.apply_painter(acc, block, painter)
+            if dotted:
+                colored_subseq = al.apply_dotter(acc, block, painter, template_acc)
+            else:
+                colored_subseq = al.apply_painter(acc, block, painter)
             print("{0:{width}}{1}".format(acc, colored_subseq, width=self.left_margin))
         print(make_tick_string(self.left_margin, block.start, block.end, 20, 7))
 
@@ -66,9 +75,15 @@ class AlignmentTerminal:
         assert self.left_margin < self.width - 10
 
 
-    def output_alignment(self, al, painter, width):
+    def output_alignment(self, al, painter, width, dotted=False):
         '''
         Output alignment al to stdout in blocks of width at most w with colors from painter.
+
+        Args:
+          al -- the alignment object
+          painter -- Painter object that decides colors for symbols
+          width -- How many columns to use for one alignment block
+          dotted -- Flag. Output periods (.) if position identical to first sequence?
         '''
         chosen_accessions =  self.get_accession_list(al)
 
@@ -79,10 +94,10 @@ class AlignmentTerminal:
 
         columns_per_block = al.block_width(self.width, width)
         for block in al.blocks(columns_per_block):
-            self._output_block(al, painter, width, chosen_accessions, block)
+            self._output_block(al, painter, width, chosen_accessions, block, dotted)
 
 
-    def output_glimpse(self, al, painter, width):
+    def output_glimpse(self, al, painter, width, dotted=False):
         '''
         Output a single-screen glimpse of the alignment. An attempt at finding
         the most interesting (guessed to be the most conserved part of a random
@@ -98,7 +113,7 @@ class AlignmentTerminal:
         n_columns = al.block_width(self.width, width) # This many alignment columns
         conserved_block = al.get_conserved_block(n_columns)
 
-        self._output_block(al, painter, width, chosen_accessions, conserved_block)
+        self._output_block(al, painter, width, chosen_accessions, conserved_block, dotted)
 
 
 def calc_tick_indices(start, end, distance, min_distance):

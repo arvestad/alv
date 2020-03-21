@@ -8,6 +8,8 @@ class Painter:
     '''
     def __init__(self):
         self.restrictions = []
+        self.bg_neutral = Back.WHITE
+        self.fg_neutral = Fore.BLACK
 
     def set_options(self, args):
         if args.keep_colors_when_redirecting:
@@ -19,20 +21,35 @@ class Painter:
         if args.no_indels:
             self.restrictions.append(restrict_to_no_indels)
 
+    def color_mode(self, m):
+        '''
+        Dark or light background?
+        '''
+        if m == 'light': # White background
+            self.bg_neutral = Back.WHITE
+            self.fg_neutral = Fore.BLACK
+        elif m == 'dark':   #
+            self.bg_neutral = Back.BLACK
+            self.fg_neutral = Fore.WHITE
+
     def color_for_bad_data(self):
-        return Back.WHITE + Fore.RED, Fore.BLACK + Back.WHITE
+        return self.bg_neutral + Fore.RED, self.fg_neutral + self.bg_neutral
 
     def color_for_stop(self):
-        return Back.BLACK + Fore.RED, Fore.BLACK
+        return Back.BLACK + Fore.RED, self.fg_neutral
 
     def indel_color(self):
-        return Back.WHITE, None
+        return self.bg_neutral, None
 
     def eol(self):
         return Style.RESET_ALL
 
     def sol(self):
-        return Fore.BLACK
+        '''
+        Execute at start-of-line.
+        '''
+        return self.fg_neutral
+
 
 # Restriction functions
 #
@@ -60,21 +77,21 @@ class AminoAcidPainter(Painter):
 
     def _color_lookup(self, c):
         if c in 'AILMFWVCailmfwvc':
-            return Back.BLUE, Back.WHITE
+            return Back.BLUE, self.bg_neutral
         elif c in 'KRkr':
-            return Back.RED, Back.WHITE
+            return Back.RED, self.bg_neutral
         elif c in 'EDed':
-            return Back.MAGENTA, Back.WHITE
+            return Back.MAGENTA, self.bg_neutral
         elif c in 'NQSTnqst':
-            return Back.GREEN, Back.WHITE
+            return Back.GREEN, self.bg_neutral
         elif c in 'Gg':
-            return Back.YELLOW, Back.WHITE
+            return Back.YELLOW, self.bg_neutral
         elif c in 'Pp':
-            return Back.YELLOW, Back.WHITE
+            return Back.YELLOW, self.bg_neutral
         elif c in 'HYhy':
-            return Back.CYAN, Back.WHITE
+            return Back.CYAN, self.bg_neutral
         elif c in 'Xx':
-            return Back.WHITE, Back.WHITE
+            return self.bg_neutral, self.bg_neutral
         elif c in "!?":
             return self.color_for_bad_data()
         elif c in "*":
@@ -82,7 +99,7 @@ class AminoAcidPainter(Painter):
         elif c in '-_.:':
             return self.indel_color()
         else:
-            return Back.WHITE, None
+            return self.bg_neutral, None
 
     def colorizer(self, c, column):
         if c == '!?':
@@ -102,6 +119,7 @@ class AminoAcidPainter(Painter):
             else:
                 return before_color + c
 
+
 class AminoAcidTaylorPainter(AminoAcidPainter):
     '''
     Put paint to amino acids, an approximation of the "Taylor" style.
@@ -111,19 +129,19 @@ class AminoAcidTaylorPainter(AminoAcidPainter):
 
     def _color_lookup(self, c):
         if c in 'AILMFVCailMFVC':
-            return Back.GREEN, Back.WHITE
+            return Back.GREEN, self.bg_neutral
         elif c in 'KRHkrh':
-            return Back.BLUE, Back.WHITE
+            return Back.BLUE, self.bg_neutral
         elif c in 'EDSTedst':
-            return Back.RED, Back.WHITE
+            return Back.RED, self.bg_neutral
         elif c in 'NQnq':
-            return Back.MAGENTA, Back.WHITE
+            return Back.MAGENTA, self.bg_neutral
         elif c in 'CGPcgp':
-            return Back.YELLOW, Back.WHITE
+            return Back.YELLOW, self.bg_neutral
         elif c in 'Yy':
-            return Back.CYAN, Back.WHITE
+            return Back.CYAN, self.bg_neutral
         elif c in 'X':
-            return Back.WHITE, Back.WHITE
+            return self.bg_neutral, self.bg_neutral
         elif c in "!?":
             return self.color_for_bad_data()
         elif c in "*":
@@ -131,7 +149,7 @@ class AminoAcidTaylorPainter(AminoAcidPainter):
         elif c in '-_.:':
             return self.indel_color()
         else:
-            return Back.WHITE, None
+            return self.bg_neutral, None
 
 class AminoAcidHydrophobicity(AminoAcidPainter):
     '''
@@ -142,13 +160,13 @@ class AminoAcidHydrophobicity(AminoAcidPainter):
 
     def _color_lookup(self, c):
         if c in 'AILMFVPGailmfvpg':
-            return Back.RED, Back.WHITE
+            return Back.RED, self.bg_neutral
         elif c in 'QNHSTYCWqnhstycw':
-            return Back.BLUE, Back.WHITE
+            return Back.BLUE, self.bg_neutral
         elif c in 'RKDErkde':
-            return Back.GREEN, Back.WHITE
+            return Back.GREEN, self.bg_neutral
         elif c in 'X':
-            return Back.WHITE, Back.WHITE
+            return self.bg_neutral, self.bg_neutral
         elif c in "!?":
             return self.color_for_bad_data()
         elif c in "*":
@@ -156,7 +174,7 @@ class AminoAcidHydrophobicity(AminoAcidPainter):
         elif c in '-_.:':
             return self.indel_color()
         else:
-            return Back.WHITE, None
+            return self.bg_neutral, None
 
 
 class DnaPainter(Painter):
@@ -185,16 +203,16 @@ class DnaPainter(Painter):
             else:
                 return before + c
         else:
-            return Back.WHITE + c
+            return self.bg_neutral + c
 
 class DnaClassPainter(Painter):
     '''
-    Put paint of nucleotides.
+    Put paint of nucleotides, even RNA sequences. (Is this one even used??)
     '''
     def __init__(self):
         super().__init__()
 
-    def colorizer(self, c, column):
+    def colorizer(self, c, column=[]):
         if c in 'TUtuCcYy':           # Handles RNA too
             return Back.Cyan + c
         elif c in 'AaGgRr':
@@ -204,12 +222,13 @@ class DnaClassPainter(Painter):
             return before + c + after
         elif c in '-.:':
             before, after = self.indel_color()
+            print(before_color, after_color)
             if after:
                 return before + c + after
             else:
                 return before + c
         else:
-            return Back.WHITE + c
+            return self.bg_neutral + c
 
 
 class CodonPainter(Painter):
@@ -232,7 +251,7 @@ class CodonPainter(Painter):
                 return before_color + c + after_color
             elif all(map(lambda r: r(column), self.restrictions)): # True also if the list self.restrictions is empty
                 if len(c) != 3:
-                    return Back.WHITE + Fore.RED + Style.BRIGHT + c + Fore.BLACK + Style.NORMAL
+                    return self_bg_neutral + Fore.RED + Style.BRIGHT + c + self.fg_neutral + Style.NORMAL
                 elif c == '---':
                     before_color, after_color = self.indel_color()
                 else:

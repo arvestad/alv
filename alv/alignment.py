@@ -157,7 +157,7 @@ class BaseAlignment:
         colored_seq = ''
         for col_no, c in enumerate(seq_record.seq):
             if c == template_seq[col_no]:
-                colored_seq += '.'
+                colored_seq += painter.colorizer('.', self.columns[block.start + col_no])
             else:
                 colored_seq += painter.colorizer(c, self.columns[block.start + col_no])
         return painter.sol() + colored_seq + painter.eol()
@@ -283,13 +283,13 @@ class CodonAlignment(BaseAlignment):
         for codon_col_no, pos in enumerate(range(0, len(seq), 3)):
             c = seq[pos:pos+3]
             if c == template_seq[pos:pos+3]:
-                colored_seq += '...'
+                colored_seq += painter.colorizer('...', self.columns[block.start // 3 + codon_col_no])
             else:
                 colored_seq += painter.colorizer(c, self.columns[block.start // 3 + codon_col_no])
         return painter.sol() + colored_seq + painter.eol()
 
 
-    
+
     def _summarize_columns(self):
         '''
         Specialization of base method for codon columns. Do not focus on the amino acids, but look at

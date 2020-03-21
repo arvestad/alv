@@ -1,9 +1,15 @@
 # Changes since last version
 
+## v1.5.1
+
+* Added two color modes: light (default) and dark. Control with option -m or with the environment
+  variable ALV_COLOR_MODE. Set it with `export ALV_COLOR_MODE=dark` for example.
+* Fixed coloring bug introduced with the `--dotted` option.
+
 ## v1.5.0
 
 * New option: `-d` or `--dotted`: the first sequence in the output alignment is used as a template and for positions
-  in subsequent sequences that are identical, a period ('.') is output instead of a symbol. 
+  in subsequent sequences that are identical, a period ('.') is output instead of a symbol.
 * Adjustment: replacing blue with cyan in the DNA coloring scheme.
 
 ## v1.4.0

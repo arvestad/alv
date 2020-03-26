@@ -175,6 +175,7 @@ def main():
     ap = setup_argument_parsing()
     args = ap.parse_args()
 
+    print('Hello! Thank you for using alv!')
 
     # Handle option that do not require an infile
     if args.list_codes:

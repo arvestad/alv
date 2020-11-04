@@ -18,6 +18,10 @@ class Painter:
             self.restrictions.append(restrict_to_majority)
         if args.no_indels:
             self.restrictions.append(restrict_to_no_indels)
+        if args.only_variable:
+            self.restrictions.append(restrict_to_variable)
+        if args.only_variable_excluding_indels:
+            self.restrictions.append(restrict_to_variable_excluding_indels)
 
     def color_for_bad_data(self):
         return Back.WHITE + Fore.RED, Fore.BLACK + Back.WHITE
@@ -49,6 +53,14 @@ def restrict_to_majority(column):
 def restrict_to_no_indels(column):
     return column['-'] == 0
 
+def restrict_to_variable(column):
+    return len(column) > 1
+
+def restrict_to_variable_excluding_indels(column):
+    if '-' in column:
+        return len(column) > 2
+    else:
+        return len(column) > 1
 
 
 class AminoAcidPainter(Painter):

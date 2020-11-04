@@ -115,6 +115,10 @@ def setup_argument_parsing():
                                   help='Only color those column where the most common amino acid is found in 50 percent of sequences.')
     restriction_args.add_argument('--no-indels', action='store_true',
                                   help='Only color column without indels.')
+    restriction_args.add_argument('--only-variable', action='store_true',
+                                  help='Only color columns that contain variation.')
+    restriction_args.add_argument('--only-variable-excluding-indels', action='store_true',
+                                  help='Only color columns that contain variation, ignoring indels.')
 
     # Options for removing parts of the accession
     accession_args = ap.add_argument_group('Accession trimming')

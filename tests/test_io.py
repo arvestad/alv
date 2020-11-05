@@ -1,6 +1,5 @@
 import unittest
 import argparse
-from Bio.Alphabet import generic_dna, generic_protein
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
@@ -14,19 +13,19 @@ class TestIOetc(unittest.TestCase):
     def test_guess_seq_type(self):
 
         coding = MultipleSeqAlignment([
-             SeqRecord(Seq("AAGCTGATCAGC", generic_dna), id="Alpha"),
-             SeqRecord(Seq("CTGAAGATCAGC", generic_dna), id="Beta"),
-             SeqRecord(Seq("AAGCTGATCAGG", generic_dna), id="Gamma"),
+             SeqRecord(Seq("AAGCTGATCAGC"), annotations={'molecule_type':'DNA'}, id="Alpha"),
+             SeqRecord(Seq("CTGAAGATCAGC"), annotations={'molecule_type':'DNA'}, id="Beta"),
+             SeqRecord(Seq("AAGCTGATCAGG"), annotations={'molecule_type':'DNA'}, id="Gamma"),
          ])
         noncoding = MultipleSeqAlignment([
-             SeqRecord(Seq("CGTCGTCGTCGT", generic_dna), id="Alpha"),
-             SeqRecord(Seq("CGACGACGACGA", generic_dna), id="Beta"),
-             SeqRecord(Seq("ATAATAATAATA", generic_dna), id="Gamma"),
+             SeqRecord(Seq("CGTCGTCGTCGT"), annotations={'molecule_type':'DNA'}, id="Alpha"),
+             SeqRecord(Seq("CGACGACGACGA"), annotations={'molecule_type':'DNA'}, id="Beta"),
+             SeqRecord(Seq("ATAATAATAATA"), annotations={'molecule_type':'DNA'}, id="Gamma"),
          ])
         peptide = MultipleSeqAlignment([
-             SeqRecord(Seq("ARNDCEQHIKL*", generic_protein), id="Alpha"),
-             SeqRecord(Seq("ARNDCEQHIKL*", generic_protein), id="Beta"),
-             SeqRecord(Seq("ARNDCEQHIKLM", generic_protein), id="Gamma"),
+             SeqRecord(Seq("ARNDCEQHIKL*"), annotations={'molecule_type':'protein'}, id="Alpha"),
+             SeqRecord(Seq("ARNDCEQHIKL*"), annotations={'molecule_type':'protein'}, id="Beta"),
+             SeqRecord(Seq("ARNDCEQHIKLM"), annotations={'molecule_type':'protein'}, id="Gamma"),
          ])
         self.assertEqual(alv.io.guess_seq_type(coding), 'codon')
         self.assertEqual(alv.io.guess_seq_type(noncoding), 'dna')

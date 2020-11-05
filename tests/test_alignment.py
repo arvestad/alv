@@ -1,5 +1,4 @@
 import unittest
-from Bio.Alphabet import generic_dna, generic_protein
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
@@ -8,9 +7,9 @@ from alv.alignment import AminoAcidAlignment
 class TestAlignment(unittest.TestCase):
     def setUp(self):
         simple_al = MultipleSeqAlignment([
-             SeqRecord(Seq("AR", generic_protein), id="Alpha"),
-             SeqRecord(Seq("AR", generic_protein), id="Beta_"),
-             SeqRecord(Seq("AS", generic_protein), id="Gamma"),
+             SeqRecord(Seq("AR"), id="Alpha", annotations={'molecule_type': 'protein'}),
+             SeqRecord(Seq("AR"), id="Beta_", annotations={'molecule_type': 'protein'}),
+             SeqRecord(Seq("AS"), id="Gamma", annotations={'molecule_type': 'protein'}),
          ])
         self.al = AminoAcidAlignment(simple_al)
 

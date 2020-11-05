@@ -156,7 +156,7 @@ class BaseAlignment:
 
         colored_seq = ''
         for col_no, c in enumerate(seq_record.seq):
-            if c == template_seq[col_no]:
+            if c == template_seq[block.start + col_no]:
                 colored_seq += '.'
             else:
                 colored_seq += painter.colorizer(c, self.columns[block.start + col_no])

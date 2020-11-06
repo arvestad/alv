@@ -151,12 +151,12 @@ class BaseAlignment:
         seq_record = self.al[idx, block.start:block.end]
 
         template_idx = self.seq_indices[template_acc]
-        template_record = self.al[template_idx]
+        template_record = self.al[template_idx, block.start:block.end]
         template_seq = template_record.seq
 
         colored_seq = ''
         for col_no, c in enumerate(seq_record.seq):
-            if c == template_seq[block.start + col_no]:
+            if c == template_seq[col_no]:
                 colored_seq += '.'
             else:
                 colored_seq += painter.colorizer(c, self.columns[block.start + col_no])
@@ -235,10 +235,10 @@ class CodonAlignment(BaseAlignment):
     Alignment of coding DNA. A column has a width of three nucleotides.
     '''
     def __init__(self, alignment):
-        super().__init__(alignment)
         self.type = 'codon'
         self.column_width = 3
         self.genetic_code = 1   # The standard code
+        super().__init__(alignment)
         self.basic_info['Genetic code'] = self.genetic_code
 
     def block_width(self, terminal_width, args):
@@ -269,7 +269,7 @@ class CodonAlignment(BaseAlignment):
         '''
         Colorize and adapt a CODON(!) subsequence according to some style (painter) and
         following accession for a template sequence. Write '.' if the site is conserved.
-        This implementation works for aa and plain DNA/RNA.
+        This implementation works for codon sequences.
         '''
         idx = self.seq_indices[acc]
         seq_record = self.al[idx, block.start:block.end]
@@ -282,14 +282,14 @@ class CodonAlignment(BaseAlignment):
         colored_seq = ''
         for codon_col_no, pos in enumerate(range(0, len(seq), 3)):
             c = seq[pos:pos+3]
-            if c == template_seq[block.start + pos:block.start + pos+3]:
+            if c == template_seq[pos:pos+3]:
                 colored_seq += '...'
             else:
                 colored_seq += painter.colorizer(c, self.columns[block.start // 3 + codon_col_no])
         return painter.sol() + colored_seq + painter.eol()
 
 
-    
+
     def _summarize_columns(self):
         '''
         Specialization of base method for codon columns. Do not focus on the amino acids, but look at
@@ -333,11 +333,11 @@ class CodonAlignment(BaseAlignment):
                 return '-'
             else:
                 if len(codon) == 3:
-                    aa = Bio.Seq.translate(codon, table = self.genetic_code)
+                    aa = Bio.Seq.translate(codon, table=self.genetic_code)
                 else:
                     aa = '?'
                 return aa
-        except:
+        except Bio.Data.CodonTable.TranslationError:
             # For when we have weird codons/alignments
             return 'X'
 

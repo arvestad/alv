@@ -30,13 +30,32 @@ class Painter:
         return Back.BLACK + Fore.RED, Fore.BLACK
 
     def indel_color(self):
-        return Back.WHITE, None
+        return Back.WHITE, Back.WHITE
 
     def eol(self):
         return Style.RESET_ALL
 
     def sol(self):
-        return Fore.BLACK
+        return Fore.BLACK + Back.WHITE
+
+    def colorizer(self, c, column):
+        if c == '!?':
+            before_color, after_color = self.color_for_bad_data()
+            return before_color + c + after_color
+        elif all(map(lambda r: r(column), self.restrictions)): # True also if the list self.restrictions is empty
+            before_color, after_color = self._color_lookup(c)
+            colored_item = before_color + c
+            if after_color:
+                return colored_item + after_color
+            else:
+                return colored_item
+        else:
+            before_color, after_color = self.indel_color()
+            if after_color:
+                return before_color + c + after_color
+            else:
+                return before_color + c
+
 
 # Restriction functions
 #
@@ -96,23 +115,6 @@ class AminoAcidPainter(Painter):
         else:
             return Back.WHITE, None
 
-    def colorizer(self, c, column):
-        if c == '!?':
-            before_color, after_color = self.color_for_bad_data()
-            return before_color + c + after_color
-        elif all(map(lambda r: r(column), self.restrictions)): # True also if the list self.restrictions is empty
-            before_color, after_color = self._color_lookup(c)
-            colored_item = before_color + c
-            if after_color:
-                return colored_item + after_color
-            else:
-                return colored_item
-        else:
-            before_color, after_color = self.indel_color()
-            if after_color:
-                return before_color + c + after_color
-            else:
-                return before_color + c
 
 class AminoAcidTaylorPainter(AminoAcidPainter):
     '''
@@ -178,26 +180,22 @@ class DnaPainter(Painter):
     def __init__(self):
         super().__init__()
 
-    def colorizer(self, c, column):
+    def _color_lookup(self, c):
         if c in 'TUtu':           # Handles RNA too
-            return Back.CYAN + c
+            return Back.CYAN, Back.WHITE
         elif c in 'Aa':
-            return Back.GREEN + c
+            return Back.GREEN, Back.WHITE
         elif c in 'Cc':
-            return Back.YELLOW + c
+            return Back.YELLOW , Back.WHITE
         elif c in 'Gg':
-            return Back.RED + c
+            return Back.RED, Back.WHITE
         elif c in '!*':
-            before, after = self.color_for_bad_data()
-            return before + c + after
+            return self.color_for_bad_data()
         elif c in '-.:':
-            before, after = self.indel_color()
-            if after:
-                return before + c + after
-            else:
-                return before + c
+            return self.indel_color()
         else:
-            return Back.WHITE + c
+            return Back.WHITE
+
 
 class DnaClassPainter(Painter):
     '''
@@ -206,22 +204,18 @@ class DnaClassPainter(Painter):
     def __init__(self):
         super().__init__()
 
-    def colorizer(self, c, column):
+    def _color_lookup(self, c):
         if c in 'TUtuCcYy':           # Handles RNA too
-            return Back.Cyan + c
+            return Back.Cyan, Back.White
         elif c in 'AaGgRr':
-            return Back.Magenta + c
+            return Back.Magenta, Back.White
         elif c in '!*':
-            before, after = self.color_for_bad_data()
-            return before + c + after
+            return self.color_for_bad_data()
         elif c in '-.:':
-            before, after = self.indel_color()
-            if after:
-                return before + c + after
-            else:
-                return before + c
+            return self.indel_color()
         else:
-            return Back.WHITE + c
+            return Back.WHITE
+
 
 
 class CodonPainter(Painter):

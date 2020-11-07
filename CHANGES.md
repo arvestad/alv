@@ -1,9 +1,17 @@
 # Changes since last version
 
+
+## v1.6.0
+
+* New options: --only-variable and --only-variable-excluding-indels, contributed by nikostr. Constrains coloring
+  to columns with variation and variation not counting indels.
+* Fixed the --dotted option, which only worked with the first block for DNA sequences. Also improved the coloring
+  which was too ugly in dotted mode (due to laziness).
+
 ## v1.5.0
 
 * New option: `-d` or `--dotted`: the first sequence in the output alignment is used as a template and for positions
-  in subsequent sequences that are identical, a period ('.') is output instead of a symbol. 
+  in subsequent sequences that are identical, a period ('.') is output instead of a symbol.
 * Adjustment: replacing blue with cyan in the DNA coloring scheme.
 
 ## v1.4.0

@@ -1,14 +1,13 @@
 # Planned fixes and features
 
 * Better screenshots
-* Review how colors work in different terminals. 
+* Review how colors work in different terminals.
     - Need to differentiate between dark and bright backgrounds.
     - Accession color should be explicit
     - Differentiate between coloring of sequences and "context" (accessions, indices, etc).
 * Add support for restricting to a sub-alignment.
-* Add option --glimpse.
 * Explicitly choose parts of an alignment to view/color.
-* Pypi.org does not handle MarkDown in the README. Should look for a solution. 
+* Pypi.org does not handle MarkDown in the README. Should look for a solution.
 
 # Considered features
 

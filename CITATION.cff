@@ -1,0 +1,10 @@
+cff-version: 1.1.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Arvestad
+    given-names: Lars
+    orcid: https://orcid.org/0000-0001-5341-1733
+title: "alv: a console-based viewer for molecular sequence alignments"
+version: 1.0.5
+doi: https://doi.org/10.21105/joss.00955
+date-released: 2018-08-12

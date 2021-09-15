@@ -1,6 +1,11 @@
 # Changes since last version
 
 
+## v1.6.1
+
+* Fixed accession abbreviation so that short accessions are left as they are.
+* Requiring python 3.5 or later, because Colorama has droppen support for 3.4.
+
 ## v1.6.0
 
 * New options: --only-variable and --only-variable-excluding-indels, contributed by nikostr. Constrains coloring

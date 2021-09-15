@@ -35,8 +35,8 @@ if sys.version_info.major < 3:
              'Did you run pip install alv?\n'
              'Try \'pip3 install alv\'')
 
-elif sys.version_info.minor < 2:
-    sys.exit('\nSorry, Python < 3.2 is not supported\n')
+elif sys.version_info.minor < 5:
+    sys.exit('\nSorry, Python < 3.5 is not supported\n')
 
 setuptools.setup(
     name="alv",
@@ -50,7 +50,7 @@ setuptools.setup(
     url="https://github.com/arvestad/alv",
     test_suite = "tests",
     packages=setuptools.find_packages(),
-    python_requires='>=3.2',
+    python_requires='>=3.5',
     install_requires=[
         'biopython>=1.70',
         'colorama>=0.3.8',

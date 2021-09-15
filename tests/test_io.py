@@ -105,6 +105,19 @@ class TestFormats(unittest.TestCase):
         self.assertIsInstance(al, CodonAlignment)
 
 
+class TestBlockCalculation(unittest.TestCase):
+    def setUp(self):
+        self.al1, _ = alv.io.read_alignment('tests/t2.fa', 'dna', 'fasta','', 'standard')
+        self.al2, _ = alv.io.read_alignment('tests/t2_longaccessions.fa', 'dna', 'fasta','', 'standard')
+
+
+    def test_block_width_calculation(self):
+        self.assertEqual(10, self.al1.block_width(100, 0))
+        self.assertEqual(10, self.al1.block_width(100, 10))
+        self.assertEqual(5, self.al1.block_width(100, 5))
+        self.assertEqual(10, self.al1.block_width(10, 10))
+
+
 class TestIndexBar(unittest.TestCase):
     def setUp(self):
         self.tickmark = '^'

@@ -2,7 +2,7 @@
 [![DOI](http://joss.theoj.org/papers/10.21105/joss.00955/status.svg)](https://doi.org/10.21105/joss.00955)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1477804.svg)](https://doi.org/10.5281/zenodo.1477804)
 [![Downloads](http://pepy.tech/badge/alv)](http://pepy.tech/project/alv)
-[![Build Status](https://travis-ci.org/arvestad/alv.svg?branch=master)](https://travis-ci.org/arvestad/alv)
+![Tests](https://github.com/arvestad/alv/actions/workflows/alv_testing.yml/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=arvestad_alv&metric=alert_status)](https://sonarcloud.io/dashboard?id=arvestad_alv)
 
 

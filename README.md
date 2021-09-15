@@ -14,8 +14,11 @@ GUI!
 Note: `alv` requires Python v3.4 or later. Earlier versions may also work, but this has not been
 tested.
 
-## Latest feature addition
+## Latest feature additions
 
+* Focus on variable columns with the options `--only-variable` and
+  `--only-variable-excluding-indels`, contributed by nikostr, that constrains
+  coloring to columns with variation and variation not counting indels.
 * The command `alv -g huge_msa.fa` displays cut-out of the MSA, guaranteed to fit
   one terminal page without scrolling or MSA line breaking, that is supposed to
   give you an idea of alignment quality and contents.

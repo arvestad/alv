@@ -44,6 +44,14 @@ def read_alignment(file, seqtype, input_format, color_scheme, genetic_code):
         file = sys.stdin        # Start reading from stdin if "magic filename"
     alignment = AlignIO.read(file, input_format)
 
+    return get_alv_objects(alignment, seqtype, input_format, color_scheme, genetic_code)
+
+
+def get_alv_objects(alignment, seqtype, input_format, color_scheme, genetic_code):
+    '''
+    Take the alignment object and return a suitable Alv alignment object, with respect
+    to sequence type, and colorization object ("painter").
+    '''
     if seqtype == 'guess':
         seqtype = guess_seq_type(alignment)
 
@@ -63,7 +71,7 @@ def read_alignment(file, seqtype, input_format, color_scheme, genetic_code):
         al.set_genetic_code(genetic_code)
         return CodonAlignment(alignment), CodonPainter(painter)
     else:
-        raise Exception('Unknown option')
+        raise Exception(f'Unknown sequence type: "{seqtype}"')
 
 
 

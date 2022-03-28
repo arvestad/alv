@@ -220,7 +220,7 @@ class DnaClassPainter(Painter):
 
 class CodonPainter(Painter):
     '''
-    Put paint of codons.
+    Put paint on codons.
     '''
     def __init__(self, aa_painter):
         super().__init__()

@@ -3,26 +3,19 @@ import random
 import sys
 import shutil
 
+
+
 class AlignmentTerminal:
     '''
     This class encapsulates knowledge about the terminal and how to draw on it.
     '''
-    def __init__(self, args):
-        self.width, self.height = shutil.get_terminal_size() # First item in this tuple is the width, the other is the height.
-        self.random_sample_size = args.random_accessions
-        self.sorting = args.sorting
-        if args.sort_by_id:
-            self.sorting = 'by identity'
-            self.order = args.sort_by_id
-        elif args.sorting_order:
-            self.sorting = 'fixed'
-            self.order = args.sorting_order.split(',')
-            if len(self.order) == 0:
-                raise Exception('Bad order specification: no accessions in input')
-        if args.select_matching:
-            self.selection = args.select_matching
-        else:
-            self.selection = False
+    def __init__(self, terminal_width, random_sample_size=0, sorting=None, order=None, accession_pattern=False):
+        self.width = terminal_width
+        self.random_sample_size = random_sample_size
+        self.sorting = sorting
+        self.order = order
+        self.selection = accession_pattern
+
 
     def get_accession_list(self, al):
         '''
@@ -75,14 +68,14 @@ class AlignmentTerminal:
         assert self.left_margin < self.width - 10
 
 
-    def output_alignment(self, al, painter, width, dotted=False):
+    def output_alignment(self, al, painter, chosen_width, dotted=False):
         '''
         Output alignment al to stdout in blocks of width at most w with colors from painter.
 
         Args:
           al -- the alignment object
           painter -- Painter object that decides colors for symbols
-          width -- How many columns to use for one alignment block
+          chosen_width -- How many columns to use for one alignment block
           dotted -- Flag. Output periods (.) if position identical to first sequence?
         '''
         chosen_accessions =  self.get_accession_list(al)
@@ -92,12 +85,12 @@ class AlignmentTerminal:
 
         self._setup_left_margin(al, chosen_accessions)
 
-        columns_per_block = al.block_width(self.width, width)
+        columns_per_block = al.block_width(self.width, chosen_width)
         for block in al.blocks(columns_per_block):
-            self._output_block(al, painter, width, chosen_accessions, block, dotted)
+            self._output_block(al, painter, chosen_width, chosen_accessions, block, dotted)
 
 
-    def output_glimpse(self, al, painter, width, dotted=False):
+    def output_glimpse(self, al, painter, chosen_width, dotted=False):
         '''
         Output a single-screen glimpse of the alignment. An attempt at finding
         the most interesting (guessed to be the most conserved part of a random
@@ -105,15 +98,18 @@ class AlignmentTerminal:
         '''
         chosen_accessions =  self.get_accession_list(al)
 
-        n_seqs_to_view = min(len(chosen_accessions), self.height - 2) # -2 to make room for tick line and next prompt
+        if self.height:
+            n_seqs_to_view = min(len(chosen_accessions), self.height - 2) # -2 to make room for tick line and next prompt on terminals
+        else:
+            n_seqs_to_view = min(len(chosen_accessions), 20)
         chosen_accessions = random.sample(chosen_accessions, n_seqs_to_view)
 
         self._setup_left_margin(al, chosen_accessions)
 
-        n_columns = al.block_width(self.width, width) # This many alignment columns
+        n_columns = al.block_width(self.width, chosen_width) # This many alignment columns
         conserved_block = al.get_conserved_block(n_columns)
 
-        self._output_block(al, painter, width, chosen_accessions, conserved_block, dotted)
+        self._output_block(al, painter, chosen_width, chosen_accessions, conserved_block, dotted)
 
 
 def calc_tick_indices(start, end, distance, min_distance):
@@ -167,3 +163,33 @@ def make_tick_string(left_margin, start, end, distance, min_distance):
         index_bar += index_block
         last_pos = pos
     return index_bar
+
+
+class AlignmentShellTerminal(AlignmentTerminal):
+    '''
+    This subclass gets the attributes from an argparse object and
+    checking the actual terminal size.
+    '''
+    def __init__(self, args):
+        self.random_sample_size = args.random_accessions
+
+        sorting = args.sorting
+        order = None
+        if args.sort_by_id:
+            sorting = 'by identity'
+            order = args.sort_by_id
+        elif args.sorting_order:
+            sorting = 'fixed'
+            order = args.sorting_order.split(',')
+            if len(self.order) == 0:
+                raise Exception('Bad order specification: no accessions in input')
+        if args.select_matching:
+            accession_pattern = args.select_matching
+        else:
+            accession_pattern = False
+
+        terminal_width, terminal_height = shutil.get_terminal_size()
+        super().__init__(terminal_width, args.random_accessions, sorting, order, accession_pattern)
+        self.height = terminal_height
+
+

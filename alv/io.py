@@ -13,6 +13,8 @@ def guess_format(filename):
     '''
     with open(filename) as h:
         first_line = h.readline()
+        if len(first_line) < 2:
+            raise ValueError('Empty file')
         if first_line[:15] == '# STOCKHOLM 1.0':
             return 'stockholm'
         elif first_line == 'CLUSTAL':
@@ -35,19 +37,24 @@ def guess_format(filename):
                 return 'phylip'
 
 
-def read_alignment(file, seqtype, input_format, color_scheme, genetic_code):
+def read_alignment(file, seqtype, input_format, color_scheme, genetic_code, alignment_no=0):
     '''
     Factory function. Read the alignment with BioPython's support, and
     return an appropriate alv alignment.
     '''
     if file == '-':
         file = sys.stdin        # Start reading from stdin if "magic filename"
-    alignment = AlignIO.read(file, input_format)
+    alignments = list(AlignIO.parse(file, input_format))
 
-    return get_alv_objects(alignment, seqtype, input_format, color_scheme, genetic_code)
+    if alignments:
+        n_msas = len(alignments)
+        if alignment_no >= n_msas:
+            raise IOError(f'Alignment index too large, only {n_msas} alignment(s) in the file.')
+        return get_alv_objects(alignments[alignment_no], seqtype, color_scheme, genetic_code)
+    else:
+        raise ValueError('No alignment in input')
 
-
-def get_alv_objects(alignment, seqtype, input_format, color_scheme, genetic_code):
+def get_alv_objects(alignment, seqtype, color_scheme, genetic_code):
     '''
     Take the alignment object and return a suitable Alv alignment object, with respect
     to sequence type, and colorization object ("painter").
@@ -71,7 +78,7 @@ def get_alv_objects(alignment, seqtype, input_format, color_scheme, genetic_code
         al.set_genetic_code(genetic_code)
         return CodonAlignment(alignment), CodonPainter(painter)
     else:
-        raise Exception(f'Unknown sequence type: "{seqtype}"')
+        raise IOError(f'Unknown sequence type: "{seqtype}"')
 
 
 

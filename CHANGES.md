@@ -1,6 +1,11 @@
 # Changes since last version
 
 
+## v1.7.0
+
+* Added the option --alignment-index to support files with multiple MSAs.
+* Added two functions, view and glimpse, to enable use of alv in notebook environments.
+
 ## v1.6.1
 
 * Fixed accession abbreviation so that short accessions are left as they are.

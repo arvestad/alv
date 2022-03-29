@@ -16,14 +16,27 @@ tested.
 
 ## Latest feature additions
 
-* Focus on variable columns with the options `--only-variable` and
-  `--only-variable-excluding-indels`, contributed by nikostr, that constrains
-  coloring to columns with variation and variation not counting indels.
-* The command `alv -g huge_msa.fa` displays cut-out of the MSA, guaranteed to fit
-  one terminal page without scrolling or MSA line breaking, that is supposed to
-  give you an idea of alignment quality and contents.
-* Write `alv -r 20 huge_msa.fa` to get a view of the MSA containing only 20 randomly
-  selected sequences.
+* If you have more than one alignment in your input file, then the first alignment is output unless you 
+  use the --alignment-index (-ai) option to choose another.
+* `alv` is now adapted for use in Python notebooks (tested on Jupyter) through two convenience functions
+  'view' and 'glimpse'.  Both functions take a BioPython alignment object and outputs a view of the
+  alignment.
+
+  Writing
+  ```
+  from Bio import AlignIO
+  msa = AlignIO.read('PF00005.fa', 'fasta')
+  import alv
+  alv.view(msa)
+  ```
+  in a Jupyter notebook cell and evaluating will yield a colored alignment in the `alv` style.
+
+  For large alignments, the glimpse function is convenient since a subset of the alignment, selected
+  as an easily detected conserved region, is shown.
+  ```
+  alv.glimpse(msa)
+  ```
+  Look for more usage information view `help(alv.view)` in a notebook cell. 
 
 ## Features
 
@@ -34,6 +47,14 @@ tested.
 * Guesses sequence type (DNA/RNA/AA/coding) by default. You can override with option `-t`.
 * Order sequence explicitly, alphabetically, or by sequence similarity.
 * Restrict coloring to where you don't have indels or where there is a lot of conservation.
+* Focus on variable columns with the options `--only-variable` and
+  `--only-variable-excluding-indels`, contributed by nikostr, that constrains
+  coloring to columns with variation and variation not counting indels.
+* The command `alv -g huge_msa.fa` displays cut-out of the MSA, guaranteed to fit
+  one terminal page without scrolling or MSA line breaking, that is supposed to
+  give you an idea of alignment quality and contents.
+* Write `alv -r 20 huge_msa.fa` to get a view of the MSA containing only 20 randomly
+  selected sequences.
 
 ## Install
 

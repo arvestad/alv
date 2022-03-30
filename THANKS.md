@@ -1,6 +1,6 @@
 # Project support
 
-* Nikos Tsardakas Renhult helped fixing an unfortunate color choice. He also fixed bugs in
+* Nikos Tsardakas Renhuldt helped fixing an unfortunate color choice. He also fixed bugs in
   --dotted mode, and contributed options --only-variable and --only-variable-excluding-indels.
 * Karin Lagesen @karinlag and Juan Villada @juanvillada had constructive suggestions when reviewing
   the paper for JOSS.

@@ -189,6 +189,8 @@ class DnaPainter(Painter):
             return Back.YELLOW , Back.WHITE
         elif c in 'Gg':
             return Back.RED, Back.WHITE
+        elif c in 'Nn':
+            return Back.WHITE, Back.WHITE
         elif c in '!*':
             return self.color_for_bad_data()
         elif c in '-.:':

@@ -196,28 +196,7 @@ class DnaPainter(Painter):
         elif c in '-.:':
             return self.indel_color()
         else:
-            return Back.WHITE
-
-
-class DnaClassPainter(Painter):
-    '''
-    Put paint of nucleotides.
-    '''
-    def __init__(self):
-        super().__init__()
-
-    def _color_lookup(self, c):
-        if c in 'TUtuCcYy':           # Handles RNA too
-            return Back.Cyan, Back.White
-        elif c in 'AaGgRr':
-            return Back.Magenta, Back.White
-        elif c in '!*':
-            return self.color_for_bad_data()
-        elif c in '-.:':
-            return self.indel_color()
-        else:
-            return Back.WHITE
-
+            return Back.WHITE, None
 
 
 class CodonPainter(Painter):

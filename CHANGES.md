@@ -1,5 +1,12 @@
 # Changes since last version
 
+## v1.7.2
+
+* Ed Davies fixed a bug: sorting using option -so was broken
+
+## v1.7.1
+
+* What??
 
 ## v1.7.0
 

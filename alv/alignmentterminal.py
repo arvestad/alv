@@ -181,7 +181,7 @@ class AlignmentShellTerminal(AlignmentTerminal):
         elif args.sorting_order:
             sorting = 'fixed'
             order = args.sorting_order.split(',')
-            if len(self.order) == 0:
+            if len(order) == 0:
                 raise Exception('Bad order specification: no accessions in input')
         if args.select_matching:
             accession_pattern = args.select_matching

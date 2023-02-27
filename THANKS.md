@@ -10,3 +10,4 @@
   completely without "codons".
 * Michael Milton suggested the --alignment-index option.
 * Marina Herrera Sarrias suggested the notebook functionality.
+* Ed Davies fixed a bug: sorting using option -so was broken

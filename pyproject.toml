@@ -1,0 +1,44 @@
+[project]
+name = "alv"
+authors = [
+    {name = "Lars Arvestad", email = "arve@math.su.se"}
+]
+maintainers = [
+    {name = "Lars Arvestad", email = "arve@math.su.se"},
+]
+description = "A console-based sequence alignment viewer"
+readme = "README.md"
+license = {text = "GNU General Public License v3 (GPLv3)"}
+classifiers = [
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "Operating System :: OS Independent",
+        "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dynamic = ["version"]
+
+dependencies = [
+    "colorama>=0.3.8",
+    "biopython>=1.81",
+]
+requires-python = ">= 3.6"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+[project.scripts]
+alv = "alv.main:main"
+
+
+[project.urls]
+homepage = "https://github.com/arvestad/alv"
+
+
+[tool.setuptools]
+packages = ["alv"]
+
+
+[tool.setuptools.dynamic]
+version = {attr = "alv.version.__version__"}

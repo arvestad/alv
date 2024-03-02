@@ -1,15 +1,12 @@
-#!/usr/bin/env python3
-
 import alv
 import argparse
 import os
 import sys
-from traceback import print_exc
 
-from alv.version import __version__
-from alv.alignmentterminal import AlignmentShellTerminal
-import alv.io as io
-from alv.exceptions import AlvPossibleFormatError, AlvEmptyAlignment
+from .version import __version__
+from .alignmentterminal import AlignmentShellTerminal
+import .io as io
+from .exceptions import AlvPossibleFormatError, AlvEmptyAlignment
 
 # Plain text citation
 citation = 'Arvestad, (2018). alv: a console-based viewer for molecular sequence alignments. Journal of Open Source Software, 3(31), 955, https://doi.org/10.21105/joss.00955'
@@ -174,9 +171,9 @@ def input_and_option_adaption(args):
             msg = str(e)
         print('alv error:', msg, file=sys.stderr)
         sys.exit(2)
-    # except Exception:
-    #     print('alv bug: Unknown error when reading input.', file=sys.stderr)
-    #     sys.exit(3)
+    except Exception:
+        print('alv bug: Unknown error when reading input.', file=sys.stderr)
+        sys.exit(3)
 
 
 def main():
@@ -259,7 +256,6 @@ def main():
         print('alv:', e, file=sys.stderr)
         ap.exit(3)
     except Exception as e:
-        print_exc()
         print('Alv bug! Please report!', file=sys.stderr)
         print(e, file=sys.stderr)
         ap.exit(2)

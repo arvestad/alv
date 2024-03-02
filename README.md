@@ -11,7 +11,7 @@
 View your DNA or protein multiple-sequence alignments right at your command line. No need to launch a
 GUI!
 
-Note: `alv` requires Python v3.4 or later. Earlier versions may also work, but this has not been
+Note: `alv` requires Python v3.6 or later. Earlier versions may also work, but this has not been
 tested.
 
 ## Latest feature additions
@@ -105,7 +105,9 @@ This selects and views columns 30 to 59 of msa.fa, keeping track of the "origina
 
 ## For developers
 
-Run `python setup.py develop test` for development install and to execute tests.
+* Run `pip install -e .` to get an "editable" install, while coding.
+* Run `python -m build` to prepare a distributable file.
+
 
 ## Screenshots
 

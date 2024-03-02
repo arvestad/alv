@@ -11,10 +11,14 @@ class BaseAlignment:
     to access all alignments, and implementations for the subclasses
     with single-letter column widths.
     '''
-    def __init__(self, alignment):
+    def __init__(self, alignment, start=0, end=-1):
         self.al = alignment   # Holder of the BioPython alignment object
-        self.al_length = alignment.get_alignment_length()
         self.type = None
+        self._start = start
+        self._end = alignment.get_alignment_length()
+        if end != -1:
+            self._end = min(end, self._end)
+        self.al_length = self._end - self._start
         self.column_width = 1
         self._update_seq_index()
         self.columns = self._summarize_columns()
@@ -121,13 +125,12 @@ class BaseAlignment:
             return terminal_width - left_margin - sacrifice
 
     def blocks(self, block_width):
-        al_width = self.al_length
-        if al_width == 0:
+        if self.al_length == 0:
             raise AlvEmptyAlignment()
         else:
-            for start in range(0, al_width, block_width):
-                end = min(al_width, start + block_width)
-                yield AlignmentBlock(start, end)
+            for block_start in range(self._start, self._end, block_width):
+                block_end = min(self._end, block_start + block_width)
+                yield AlignmentBlock(block_start, block_end)
 
 
     def apply_painter(self, acc, block, painter):
@@ -167,9 +170,9 @@ class BaseAlignment:
         '''
         Count the different elements in each column.
         '''
-        columns = []
-        for col_no in range(self.al_length):
-            columns.append(Counter(self.al[:, col_no]))
+        columns = {}
+        for col_no in range(self._start, self._end):
+            columns[col_no] = Counter(self.al[:, col_no])
         return columns
 
     def get_basic_info(self):
@@ -188,7 +191,7 @@ class BaseAlignment:
         '''
         result = []       # For the return value
         column_summaries = self._summarize_columns()
-        for c in column_summaries:
+        for idx, c in column_summaries.items():
             for indel in self.indels:
                 del c[indel]
             if len(c) == 0:
@@ -222,24 +225,24 @@ class BaseAlignment:
 
 
 class AminoAcidAlignment(BaseAlignment):
-    def __init__(self, alignment):
-       	super().__init__(alignment)
+    def __init__(self, alignment, start=0, end=-1):
+       	super().__init__(alignment, start, end)
         self.type = 'aa'
 
 class DnaAlignment(BaseAlignment):
-    def __init__(self, alignment):
-       	super().__init__(alignment)
+    def __init__(self, alignment, start=0, end=-1):
+       	super().__init__(alignment, start, end)
         self.type = 'dna'
 
 class CodonAlignment(BaseAlignment):
     '''
     Alignment of coding DNA. A column has a width of three nucleotides.
     '''
-    def __init__(self, alignment):
+    def __init__(self, alignment, start=0, end=-1):
         self.type = 'codon'
         self.column_width = 3
         self.genetic_code = 1   # The standard code
-        super().__init__(alignment)
+        super().__init__(alignment, start, end)
         self.basic_info['Genetic code'] = self.genetic_code
 
     def block_width(self, terminal_width, args):
@@ -261,9 +264,9 @@ class CodonAlignment(BaseAlignment):
         seq = str(seq_record.seq)
         colored_seq = ''
 
-        for codon_col, pos in enumerate(range(0, len(seq), 3)):
-            c = seq[pos:pos+3]
-            colored_seq += painter.colorizer(c, self.columns[block.start // 3 + codon_col])
+        for codon_col, pos in enumerate(range(block.start, block.end, 3)):
+            c = seq[codon_col:codon_col+3]
+            colored_seq += painter.colorizer(c, self.columns[pos])
         return painter.sol() + colored_seq + painter.eol()
 
     def apply_dotter(self, acc, block, painter, template_acc):
@@ -281,12 +284,12 @@ class CodonAlignment(BaseAlignment):
         template_seq = template_record.seq
 
         colored_seq = ''
-        for codon_col_no, pos in enumerate(range(0, len(seq), 3)):
+        for codon_col, pos in enumerate(range(block.start, block.end, 3)):
             c = seq[pos:pos+3]
             if c == template_seq[pos:pos+3]:
                 colored_seq += '...'
             else:
-                colored_seq += painter.colorizer(c, self.columns[block.start // 3 + codon_col_no])
+                colored_seq += painter.colorizer(c, self.columns[pos])
         return painter.sol() + colored_seq + painter.eol()
 
 
@@ -296,11 +299,11 @@ class CodonAlignment(BaseAlignment):
         Specialization of base method for codon columns. Do not focus on the amino acids, but look at
         amino acid columns.
         '''
-        columns = []
-        for pos in range(0, self.al_length, 3):
+        columns = {}
+        for pos in range(self._start, self._end, 3):
             codon_column = map(lambda r: str(r.seq), self.al[:, pos:pos+3])
             aa_column = map(lambda codon: self._translate(codon), codon_column)
-            columns.append(Counter(aa_column))
+            columns[pos] = Counter(aa_column)
         return columns
 
 
@@ -310,7 +313,7 @@ class CodonAlignment(BaseAlignment):
         Used for alignment glimpses.
         Specialised for codon alignments.
         '''
-        conservation = self.get_column_conservation()   # A list of conservation scores. Want a maximised "window"
+        conservation = self.get_column_conservation()   # A dict of conservation scores. Want a maximised "window"
         accumulated_conservation = []
         acc = 0
         for c in conservation:
@@ -321,7 +324,7 @@ class CodonAlignment(BaseAlignment):
 
         codon_al_width = math.floor(self.al_width() / 3)
         if codon_al_width <= n_columns:
-            return AlignmentBlock(0, codon_al_width)
+            return AlignmentBlock(0, self._end)
         else:
             best_start = max(range(0, codon_al_width - n_columns),
                              key=lambda i: accumulated_conservation[i+n_columns] - accumulated_conservation[i])

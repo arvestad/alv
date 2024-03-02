@@ -37,10 +37,12 @@ def guess_format(filename):
                 return 'phylip'
 
 
-def read_alignment(file, seqtype, input_format, color_scheme, genetic_code, alignment_no=0):
+def read_alignment(file, seqtype, input_format, color_scheme, genetic_code, al_start=0, al_end=-1, alignment_no=0):
     '''
     Factory function. Read the alignment with BioPython's support, and
     return an appropriate alv alignment.
+
+    al_start and al_end: restrict the alignment to a subalignment defined by these indices
     '''
     if file == '-':
         file = sys.stdin        # Start reading from stdin if "magic filename"
@@ -50,11 +52,11 @@ def read_alignment(file, seqtype, input_format, color_scheme, genetic_code, alig
         n_msas = len(alignments)
         if alignment_no >= n_msas:
             raise IOError(f'Alignment index too large, only {n_msas} alignment(s) in the file.')
-        return get_alv_objects(alignments[alignment_no], seqtype, color_scheme, genetic_code)
+        return get_alv_objects(alignments[alignment_no], seqtype, color_scheme, genetic_code, al_start, al_end)
     else:
         raise ValueError('No alignment in input')
 
-def get_alv_objects(alignment, seqtype, color_scheme, genetic_code):
+def get_alv_objects(alignment, seqtype, color_scheme, genetic_code, al_start, al_end):
     '''
     Take the alignment object and return a suitable Alv alignment object, with respect
     to sequence type, and colorization object ("painter").
@@ -70,13 +72,13 @@ def get_alv_objects(alignment, seqtype, color_scheme, genetic_code):
         painter = AminoAcidPainter()
 
     if seqtype == 'aa':
-        return AminoAcidAlignment(alignment), painter
+        return AminoAcidAlignment(alignment, al_start, al_end), painter
     if seqtype == 'dna' or seqtype == 'rna':
-        return DnaAlignment(alignment), DnaPainter()
+        return DnaAlignment(alignment, al_start, al_end), DnaPainter()
     elif seqtype == 'codon':
         al = CodonAlignment(alignment)
         al.set_genetic_code(genetic_code)
-        return CodonAlignment(alignment), CodonPainter(painter)
+        return CodonAlignment(alignment, al_start, al_end), CodonPainter(painter)
     else:
         raise IOError(f'Unknown sequence type: "{seqtype}"')
 

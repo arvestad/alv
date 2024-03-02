@@ -4,7 +4,6 @@ import sys
 import shutil
 
 
-
 class AlignmentTerminal:
     '''
     This class encapsulates knowledge about the terminal and how to draw on it.

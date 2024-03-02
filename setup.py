@@ -55,10 +55,10 @@ setuptools.setup(
         'biopython>=1.70',
         'colorama>=0.3.8',
     ],
-    classifiers=(
+    classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
         "Topic :: Scientific/Engineering :: Bio-Informatics",
-    ),
+    ],
 )

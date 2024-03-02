@@ -95,6 +95,14 @@ alv -k msa.fa | less -R
 The `-k` option ensures that `alv` keeps coloring the alignment (by default, piping
 and redirection removes colors), and the `-R` option instructs `less` to interpret color codes.
 
+
+Choose to view a sub-alignment:
+```
+alv -sa 30 60 msa.fa
+```
+This selects and views columns 30 to 59 of msa.fa, keeping track of the "original" columns indexes in the output.
+
+
 ## For developers
 
 Run `python setup.py develop test` for development install and to execute tests.

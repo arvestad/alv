@@ -4,7 +4,7 @@ import alv
 import argparse
 import os
 import sys
-from traceback import print_last
+from traceback import print_exc
 
 from alv.version import __version__
 from alv.alignmentterminal import AlignmentShellTerminal
@@ -110,6 +110,8 @@ def setup_argument_parsing():
                                help='Comma-separated list of accessions. Sequences will be presented in this order. Also note that one can choose which sequences to present with this opion. Overrides -s and -si.')
     ordering_args.add_argument('-sm', '--select-matching', metavar='ACCESSION_PATTERN', type=str,
                                help='Only show sequences with accessions containing ACCESSION_PATTERN.')
+    ordering_args.add_argument('-sa', '--sub-alignment', nargs=2, metavar='INT', type=int,
+                               help='Only show alignment columns given by FROM and UPTO indices.')
 
     # Options for limiting colorization
     restriction_args = ap.add_argument_group('Restricting colorization')
@@ -147,7 +149,11 @@ def input_and_option_adaption(args):
             format = 'fasta'    # Hard guess, because a bit complicated when reading from pipe (sys.stdin)
         else:
             format = args.format
-        alignment, painter = io.read_alignment(args.infile, args.type, format, args.color_scheme, args.code, args.alignment_index)
+        if args.sub_alignment:  # Are we restricting the alignment?
+            start_col, end_col = args.sub_alignment
+        else:
+            start_col, end_col = 0, -1
+        alignment, painter = io.read_alignment(args.infile, args.type, format, args.color_scheme, args.code, start_col, end_col, args.alignment_index)
         return alignment, painter
 
     except KeyboardInterrupt:
@@ -253,6 +259,7 @@ def main():
         print('alv:', e, file=sys.stderr)
         ap.exit(3)
     except Exception as e:
+        print_exc()
         print('Alv bug! Please report!', file=sys.stderr)
         print(e, file=sys.stderr)
         ap.exit(2)

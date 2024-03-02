@@ -1,22 +1,32 @@
 # Changes since last version
 
+
+## v1.8.0
+
+* Added support for selecting sub-alignments. See option `-sa`
+
+
 ## v1.7.2
 
 * Ed Davies fixed a bug: sorting using option -so was broken
 
+
 ## v1.7.1
 
 * What??
+
 
 ## v1.7.0
 
 * Added the option --alignment-index to support files with multiple MSAs.
 * Added two functions, view and glimpse, to enable use of alv in notebook environments.
 
+
 ## v1.6.1
 
 * Fixed accession abbreviation so that short accessions are left as they are.
 * Requiring python 3.5 or later, because Colorama has droppen support for 3.4.
+
 
 ## v1.6.0
 
@@ -25,17 +35,20 @@
 * Fixed the --dotted option, which only worked with the first block for DNA sequences. Also improved the coloring
   which was too ugly in dotted mode (due to laziness).
 
+
 ## v1.5.0
 
 * New option: `-d` or `--dotted`: the first sequence in the output alignment is used as a template and for positions
   in subsequent sequences that are identical, a period ('.') is output instead of a symbol.
 * Adjustment: replacing blue with cyan in the DNA coloring scheme.
 
+
 ## v1.4.0
 
 * New option: `-r k` or `--random-accessions k` for only showing a sample of _k_ sequences.
 * New option: `-g` or `--glimpse`: display an informative cut-out of the input MSA, if it does
   not fit without scrolling or line-breaking.
+
 
 ## v1.3.4
 

@@ -10,4 +10,5 @@
   completely without "codons".
 * Michael Milton suggested the --alignment-index option.
 * Marina Herrera Sarrias suggested the notebook functionality.
-* Ed Davies fixed a bug: sorting using option -so was broken
+* Ed Davies fixed a bug: sorting using option -so was broken.
+* Artem Kushner pointed out the missing support for sub-alignments.

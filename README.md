@@ -16,9 +16,29 @@ tested.
 
 ## Latest feature additions
 
+* A new option `--sub-alignment` (or `-sa`) can control what columns, given as a pair column indices,
+  viewed. 
+
+## Features
+
+* Command-line based, no GUI, so easy to script viewing of many (typically small) MSAs.
+* Reads alignments in FASTA, Clustal, PHYLIP, NEXUS, and Stockholm formats, from file or `stdin`.
+* Output is formatted to suit your terminal. You can also set the alignment width with option `-w`.
+* Can color alignments of coding DNA by codon's translations to amino acids.
+* Guesses sequence type (DNA/RNA/AA/coding) by default. You can override with option `-t`.
+* Order sequence explicitly, alphabetically, or by sequence similarity.
+* Restrict coloring to where you don't have indels or where there is a lot of conservation.
+* Focus on variable columns with the options `--only-variable` and
+  `--only-variable-excluding-indels`, contributed by nikostr, that constrains
+  coloring to columns with variation and variation not counting indels.
+* The command `alv -g huge_msa.fa` displays cut-out of the MSA, guaranteed to fit
+  one terminal page without scrolling or MSA line breaking, that is supposed to
+  give you an idea of alignment quality and contents.
+* Write `alv -r 20 huge_msa.fa` to get a view of the MSA containing only 20 randomly
+  selected sequences.
 * If you have more than one alignment in your input file, then the first alignment is output unless you 
   use the --alignment-index (-ai) option to choose another.
-* `alv` is now adapted for use in Python notebooks (tested on Jupyter) through two convenience functions
+* `alv` is adapted for use in Python notebooks (tested on Jupyter) through two convenience functions
   'view' and 'glimpse'.  Both functions take a BioPython alignment object and outputs a view of the
   alignment.
 
@@ -38,23 +58,6 @@ tested.
   ```
   Look for more usage information view `help(alv.view)` in a notebook cell. 
 
-## Features
-
-* Command-line based, no GUI, so easy to script viewing of many (typically small) MSAs.
-* Reads alignments in FASTA, Clustal, PHYLIP, NEXUS, and Stockholm formats, from file or `stdin`.
-* Output is formatted to suit your terminal. You can also set the alignment width with option `-w`.
-* Can color alignments of coding DNA by codon's translations to amino acids.
-* Guesses sequence type (DNA/RNA/AA/coding) by default. You can override with option `-t`.
-* Order sequence explicitly, alphabetically, or by sequence similarity.
-* Restrict coloring to where you don't have indels or where there is a lot of conservation.
-* Focus on variable columns with the options `--only-variable` and
-  `--only-variable-excluding-indels`, contributed by nikostr, that constrains
-  coloring to columns with variation and variation not counting indels.
-* The command `alv -g huge_msa.fa` displays cut-out of the MSA, guaranteed to fit
-  one terminal page without scrolling or MSA line breaking, that is supposed to
-  give you an idea of alignment quality and contents.
-* Write `alv -r 20 huge_msa.fa` to get a view of the MSA containing only 20 randomly
-  selected sequences.
 
 ## Install
 
@@ -64,7 +67,10 @@ pip install --upgrade pip
 pip install alv
 ```
 
-If you have a half-modern BioPython installed, Python v3.4 _should_ work.
+Python v3.6 or later is required "out of the box", and in particular for installs via PyPI.org.
+
+If you install from source and have a half-modern BioPython installed, Python v3.4 _should_ work.
+You will need to edit the version requirement in pyproject.toml by hand though. 
 BioPython is a dependency and will only get installed automatially with `pip install alv`
 if you are using Python v3.6 or later, because BioPython was apparently not on PyPi before that.
 

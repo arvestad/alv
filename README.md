@@ -68,6 +68,26 @@ If you have a half-modern BioPython installed, Python v3.4 _should_ work.
 BioPython is a dependency and will only get installed automatially with `pip install alv`
 if you are using Python v3.6 or later, because BioPython was apparently not on PyPi before that.
 
+### Install the commandline tool system-wide
+
+If you would like to install the `alv` commandline tool system-wide, so that it
+is accessible regardless of which python environment you have loaded, or if you
+have loaded one at all, one way to do this is using the
+[pipx](https://github.com/pypa/pipx) installer.
+
+After installing pipx using it's [official installation
+instructions](https://github.com/pypa/pipx?tab=readme-ov-file#install-pipx) you
+can install `alv` with:
+
+```
+pipx install alv
+```
+
+After this, `alv` should be available as a command regardless of Python
+environment.
+
+(Note that this only works for installing the `alv` commandline tool, not the
+Python library!)
 
 ## Examples
 

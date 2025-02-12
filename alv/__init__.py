@@ -1,32 +1,34 @@
 from .io import get_alv_objects
 from .alignmentterminal import AlignmentTerminal
 
-def view(msa, seqtype='guess', color_scheme='guess', genetic_code=1, width=80, dotted=False):
+def view(msa, seqtype='guess', color_scheme='guess', genetic_code=1, width=80, dotted=False, al_start=0, al_end=-1):
     '''
     Present a colorised version of a multiple sequence alignment (MSA).
 
     Options:
     * msa           An alignment as BioPython object (from AlignIO).
     * seqtype       String describing the type of sequence. One of 'aa', 'dna',
-                    'rna', 'codon', or 'guess' (which almost always works). 
+                    'rna', 'codon', or 'guess' (which almost always works).
     * color_scheme  String indicating what coloring scheme to use. Ignore unless
                     you want to use 'taylor' or 'hydrophobicity'.
-    * genetic_code  An integer indicating which genetic code to use. In the 
+    * genetic_code  An integer indicating which genetic code to use. In the
                     range 1 to 33 as of this writing, with 1 being the standard
-                    code. See NCBI's list at 
+                    code. See NCBI's list at
                        https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi
-    * width         Integer indicating the desired width of alignment view. 
+    * width         Integer indicating the desired width of alignment view.
                     Default: 60 characters.
     * dotted        If True, all characters in the first sequence of the MSA is
                     written and remaining sequences are dotted everwhere except
                     for where they differ from the first sequence.
+    * al_start      Integer indicating the start of the alignment to display.
+    * al_end        Integer indicating the end of the alignment to display.
     '''
-    alignment, painter = get_alv_objects(msa, seqtype, color_scheme, genetic_code)
+    alignment, painter = get_alv_objects(msa, seqtype, color_scheme, genetic_code, al_start, al_end)
     terminal = AlignmentTerminal(width)
     terminal.output_alignment(alignment, painter, width - 12, dotted)
 
 
-def glimpse(msa, n_seq=20, seqtype='guess', color_scheme='guess', genetic_code=1, width=60, dotted=False):
+def glimpse(msa, n_seq=20, seqtype='guess', color_scheme='guess', genetic_code=1, width=60, dotted=False,  al_start=0, al_end=-1):
     '''
     Works like "view", but extracts a conserved region and outputs a random sample of the sequences or all of them if it is a small alignment.
 
@@ -34,20 +36,22 @@ def glimpse(msa, n_seq=20, seqtype='guess', color_scheme='guess', genetic_code=1
     * msa           An alignment as BioPython object (from AlignIO).
     * n_seq         The number of sequences to output.
     * seqtype       String describing the type of sequence. One of 'aa', 'dna',
-                    'rna', 'codon', or 'guess' (which almost always works). 
+                    'rna', 'codon', or 'guess' (which almost always works).
     * color_scheme  String indicating what coloring scheme to use. Ignore unless
                     you want to use 'taylor' or 'hydrophobicity'.
-    * genetic_code  An integer indicating which genetic code to use. In the 
+    * genetic_code  An integer indicating which genetic code to use. In the
                     range 1 to 33 as of this writing, with 1 being the standard
-                    code. See NCBI's list at 
+                    code. See NCBI's list at
                        https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi
-    * width         Integer indicating the desired width of alignment view. 
+    * width         Integer indicating the desired width of alignment view.
                     Default: 60 characters.
     * dotted        If True, all characters in the first sequence of the MSA is
                     written and remaining sequences are dotted everwhere except
                     for where they differ from the first sequence.
+    * al_start      Integer indicating the start of the alignment to display.
+    * al_end        Integer indicating the end of the alignment to display.
     '''
-    alignment, painter = get_alv_objects(msa, seqtype, color_scheme, genetic_code)
+    alignment, painter = get_alv_objects(msa, seqtype, color_scheme, genetic_code, al_start, al_end)
     terminal = AlignmentTerminal(width)
     terminal.height = n_seq + 2
     terminal.output_glimpse(alignment, painter, width, dotted)

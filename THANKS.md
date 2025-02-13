@@ -12,3 +12,4 @@
 * Marina Herrera Sarrias suggested the notebook functionality.
 * Ed Davies fixed a bug: sorting using option -so was broken.
 * Artem Kushner pointed out the missing support for sub-alignments.
+* @Joon-Klaps fixed bug related to notebook usage (issue #32).

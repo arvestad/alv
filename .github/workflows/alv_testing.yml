@@ -2,9 +2,9 @@ name: Alv testing
 
 on:
   push:
-    branches: [ $default-branch ]
+    branches: [ master ]
   pull_request:
-    branches: [ $default-branch ]
+    branches: [ master ]
 
 jobs:
   build:
@@ -27,4 +27,4 @@ jobs:
         python setup.py develop
     - name: Test with unittest
       run: |
-        python setup.py test
+        python -m pytest tests/ -v

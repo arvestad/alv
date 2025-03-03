@@ -21,10 +21,11 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+    - name: 'Update pip'
+      run: python -m pip install --upgrade pip
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        python setup.py develop
+        pip install .
     - name: Test on ${{ matrix.os }} - ${{ matrix.python-version }}
       run: |
         python -m pytest tests/ -v

@@ -4,6 +4,7 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
 import alv.io
+from alv.io import get_alv_objects
 from alv.alignment import AminoAcidAlignment, DnaAlignment, CodonAlignment, BaseAlignment
 import alv.alignmentterminal as at
 import alv.colorize
@@ -161,6 +162,19 @@ class TestIndexBar(unittest.TestCase):
             self.assertEqual(s, '     35↑                      60↑                 80↑')
         else:
             self.assertEqual(s, '     35^                      60^                 80^')
+
+
+class TestAlvView(unittest.TestCase):
+    def test_get_alv_objects(self):
+        # get_alv_objects is essential for alv.view (the Jupyter Notebook utility) to work
+        al = MultipleSeqAlignment([
+            SeqRecord(Seq("ARNDCEQHIKL*"), annotations={'molecule_type':'protein'}, id="Alpha"),
+            SeqRecord(Seq("ARNDCEQHIKL*"), annotations={'molecule_type':'protein'}, id="Beta"),
+            SeqRecord(Seq("ARNDCEQHIKLM"), annotations={'molecule_type':'protein'}, id="Gamma")])
+            
+        alv_al, color_obj = get_alv_objects(al, 'aa', 'taylor', None)
+        self.assertTrue(isinstance(alv_al, AminoAcidAlignment))
+        self.assertEqual(alv_al.al_length, 12)
 
 
 if __name__ == '__main__':

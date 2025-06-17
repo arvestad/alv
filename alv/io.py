@@ -52,11 +52,12 @@ def read_alignment(file, seqtype, input_format, color_scheme, genetic_code, al_s
         n_msas = len(alignments)
         if alignment_no >= n_msas:
             raise IOError(f'Alignment index too large, only {n_msas} alignment(s) in the file.')
-        return get_alv_objects(alignments[alignment_no], seqtype, color_scheme, genetic_code, al_start, al_end)
+        al = alignments[alignment_no]
+        return get_alv_objects(al, seqtype, color_scheme, genetic_code)
     else:
         raise ValueError('No alignment in input')
 
-def get_alv_objects(alignment, seqtype, color_scheme, genetic_code, al_start, al_end):
+def get_alv_objects(alignment, seqtype, color_scheme, genetic_code):
     '''
     Take the alignment object and return a suitable Alv alignment object, with respect
     to sequence type, and colorization object ("painter").
@@ -72,13 +73,13 @@ def get_alv_objects(alignment, seqtype, color_scheme, genetic_code, al_start, al
         painter = AminoAcidPainter()
 
     if seqtype == 'aa':
-        return AminoAcidAlignment(alignment, al_start, al_end), painter
+        return AminoAcidAlignment(alignment), painter
     if seqtype == 'dna' or seqtype == 'rna':
-        return DnaAlignment(alignment, al_start, al_end), DnaPainter()
+        return DnaAlignment(alignment), DnaPainter()
     elif seqtype == 'codon':
         al = CodonAlignment(alignment)
         al.set_genetic_code(genetic_code)
-        return CodonAlignment(alignment, al_start, al_end), CodonPainter(painter)
+        return CodonAlignment(alignment), CodonPainter(painter)
     else:
         raise IOError(f'Unknown sequence type: "{seqtype}"')
 

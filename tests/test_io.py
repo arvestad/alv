@@ -11,7 +11,6 @@ import alv.exceptions
 
 class TestIOetc(unittest.TestCase):
     def test_guess_seq_type(self):
-
         coding = MultipleSeqAlignment([
              SeqRecord(Seq("AAGCTGATCAGC"), annotations={'molecule_type':'DNA'}, id="Alpha"),
              SeqRecord(Seq("CTGAAGATCAGC"), annotations={'molecule_type':'DNA'}, id="Beta"),
@@ -27,9 +26,54 @@ class TestIOetc(unittest.TestCase):
              SeqRecord(Seq("ARNDCEQHIKL*"), annotations={'molecule_type':'protein'}, id="Beta"),
              SeqRecord(Seq("ARNDCEQHIKLM"), annotations={'molecule_type':'protein'}, id="Gamma"),
          ])
+
         self.assertEqual(alv.io.guess_seq_type(coding), 'codon')
         self.assertEqual(alv.io.guess_seq_type(noncoding), 'dna')
         self.assertEqual(alv.io.guess_seq_type(peptide), 'aa')
+
+    def test_guess_seq_type_lower_case(self):
+        lower_coding = MultipleSeqAlignment([
+             SeqRecord(Seq("aagctgatcagc"), annotations={'molecule_type':'DNA'}, id="Alpha"),
+             SeqRecord(Seq("ctgaagatcagc"), annotations={'molecule_type':'DNA'}, id="Beta"),
+             SeqRecord(Seq("aagctgatcagg"), annotations={'molecule_type':'DNA'}, id="Gamma"),
+         ])
+        lower_noncoding = MultipleSeqAlignment([
+             SeqRecord(Seq("cgtcgtcgtcgt"), annotations={'molecule_type':'DNA'}, id="Alpha"),
+             SeqRecord(Seq("cgacgacgacga"), annotations={'molecule_type':'DNA'}, id="Beta"),
+             SeqRecord(Seq("ataataataata"), annotations={'molecule_type':'DNA'}, id="Gamma"),
+         ])       
+        lower_peptide = MultipleSeqAlignment([
+             SeqRecord(Seq("arndceqhikl*"), annotations={'molecule_type':'protein'}, id="Alpha"),
+             SeqRecord(Seq("arndceqhikl*"), annotations={'molecule_type':'protein'}, id="Beta"),
+             SeqRecord(Seq("arndceqhiklm"), annotations={'molecule_type':'protein'}, id="Gamma"),
+         ])
+
+        self.assertEqual(alv.io.guess_seq_type(lower_coding), 'codon')
+        self.assertEqual(alv.io.guess_seq_type(lower_noncoding), 'dna')
+        self.assertEqual(alv.io.guess_seq_type(lower_peptide), 'aa')
+
+    def test_guess_seq_type_with_indels(self):
+        indels_coding = MultipleSeqAlignment([
+             SeqRecord(Seq("AAG---ATCAGC"), annotations={'molecule_type':'DNA'}, id="Alpha"),
+             SeqRecord(Seq("CTG---ATCAGC"), annotations={'molecule_type':'DNA'}, id="Beta"),
+             SeqRecord(Seq("AAG---ATCAGG"), annotations={'molecule_type':'DNA'}, id="Gamma"),
+         ])                     # Note that single indels is not handled gracefully as codon sequences. Bug or feature?
+        indels_noncoding = MultipleSeqAlignment([
+             SeqRecord(Seq("CG-CGTCGTCGT"), annotations={'molecule_type':'DNA'}, id="Alpha"),
+             SeqRecord(Seq("C-ACGACGACGA"), annotations={'molecule_type':'DNA'}, id="Beta"),
+             SeqRecord(Seq("-TAATAATAATA"), annotations={'molecule_type':'DNA'}, id="Gamma"),
+         ])
+        indels_peptide = MultipleSeqAlignment([
+             SeqRecord(Seq("AR-DCEQHIKL*"), annotations={'molecule_type':'protein'}, id="Alpha"),
+             SeqRecord(Seq("AR-DCEQHIKL*"), annotations={'molecule_type':'protein'}, id="Beta"),
+             SeqRecord(Seq("ARNDC-QHIKLM"), annotations={'molecule_type':'protein'}, id="Gamma"),
+         ])
+
+        self.assertEqual(alv.io.guess_seq_type(indels_coding), 'codon')
+        self.assertEqual(alv.io.guess_seq_type(indels_noncoding), 'dna')
+        self.assertEqual(alv.io.guess_seq_type(indels_peptide), 'aa')
+
+
 
 
 class TestFormats(unittest.TestCase):
@@ -76,21 +120,26 @@ class TestFormats(unittest.TestCase):
         with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.aa_filename, 'aa', 'nexus', '', 'standard')
         with self.assertRaises(ValueError):
-            al, painter = alv.io.read_alignment(self.sthlm_filename, 'aa', 'fasta', '', 'standard')
-        with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.sthlm_filename, 'aa', 'clustal', '', 'standard')
         with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.sthlm_filename, 'aa', 'phylip', '', 'standard')
         with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.sthlm_filename, 'aa', 'nexus', '', 'standard')
         with self.assertRaises(ValueError):
-            al, painter = alv.io.read_alignment(self.nexus_filename, 'aa', 'fasta', '', 'standard')
-        with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.nexus_filename, 'aa', 'phylip', '', 'standard')
         with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.nexus_filename, 'aa', 'clustal', '', 'standard')
         with self.assertRaises(ValueError):
             al, painter = alv.io.read_alignment(self.nexus_filename, 'aa', 'stockholm', '', 'standard')
+        #
+        # Remove the comments on the two tests below when BioPython has removed the deprecation warning
+        # "BiopythonDeprecationWarning: Previously, the FASTA parser silently ignored comments at the
+        #  beginning of the FASTA file (before the first sequence)." which is found in v1.86
+        # 
+        # with self.assertRaises(ValueError):
+        #     al, painter = alv.io.read_alignment(self.sthlm_filename, 'aa', 'fasta', '', 'standard')
+        # with self.assertRaises(ValueError):
+        #     al, painter = alv.io.read_alignment(self.nexus_filename, 'aa', 'fasta', '', 'standard')
 
 
     def test_guessing_seq_type(self):

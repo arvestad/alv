@@ -179,7 +179,7 @@ class BaseAlignment:
         '''
         Generator for pairs of description and value, e.g., "alignment width" and an integer.
         '''
-        self.basic_info['Sequence type'] = self.type
+#        self.basic_info['Sequence type'] = self.type
         for descr, val in self.basic_info.items():
             yield descr, val
 
@@ -228,11 +228,13 @@ class AminoAcidAlignment(BaseAlignment):
     def __init__(self, alignment, start=0, end=-1):
        	super().__init__(alignment, start, end)
         self.type = 'aa'
+        self.basic_info['Sequence type'] = 'aa'
 
 class DnaAlignment(BaseAlignment):
     def __init__(self, alignment, start=0, end=-1):
        	super().__init__(alignment, start, end)
         self.type = 'dna'
+        self.basic_info['Sequence type'] = 'dna'
 
 class CodonAlignment(BaseAlignment):
     '''
@@ -243,6 +245,7 @@ class CodonAlignment(BaseAlignment):
         self.column_width = 3
         self.genetic_code = 1   # The standard code
         super().__init__(alignment, start, end)
+        self.basic_info['Sequence type'] = 'codon'
         self.basic_info['Genetic code'] = self.genetic_code
 
     def block_width(self, terminal_width, args):

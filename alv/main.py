@@ -3,10 +3,10 @@ import argparse
 import os
 import sys
 
-from .version import __version__
-from .alignmentterminal import AlignmentShellTerminal
-import .io as io
-from .exceptions import AlvPossibleFormatError, AlvEmptyAlignment
+from alv.version import __version__
+from alv.alignmentterminal import AlignmentShellTerminal
+import alv.io as io
+from alv.exceptions import AlvPossibleFormatError, AlvEmptyAlignment
 
 # Plain text citation
 citation = 'Arvestad, (2018). alv: a console-based viewer for molecular sequence alignments. Journal of Open Source Software, 3(31), 955, https://doi.org/10.21105/joss.00955'

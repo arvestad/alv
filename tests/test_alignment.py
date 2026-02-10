@@ -5,6 +5,7 @@ from Bio.Align import MultipleSeqAlignment
 from alv.alignment import AminoAcidAlignment
 
 class TestAlignment(unittest.TestCase):
+    pass
     def setUp(self):
         simple_al = MultipleSeqAlignment([
              SeqRecord(Seq("AR"), id="Alpha", annotations={'molecule_type': 'protein'}),
@@ -24,9 +25,11 @@ class TestAlignment(unittest.TestCase):
             self.assertEqual(len(acc), 5)
 
     def test_basic_info(self):
-        info = list(self.al.get_basic_info())
-        self.assertEqual(info[0][1], 3)
-        self.assertEqual(info[1][1], 2)
+        info = dict(self.al.get_basic_info())
+        self.assertEqual(info['Number of sequences'], 3)
+        self.assertEqual(info['Alignment width'], 2)
+        self.assertEqual(info['Sequence type'], 'aa')
+
 
     def test_column_conservation(self):
         conservation = self.al.get_column_conservation()

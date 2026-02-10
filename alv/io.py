@@ -46,6 +46,7 @@ def read_alignment(file, seqtype, input_format, color_scheme, genetic_code, al_s
     '''
     if file == '-':
         file = sys.stdin        # Start reading from stdin if "magic filename"
+        
     alignments = list(AlignIO.parse(file, input_format))
 
     if alignments:
@@ -55,6 +56,7 @@ def read_alignment(file, seqtype, input_format, color_scheme, genetic_code, al_s
         return get_alv_objects(alignments[alignment_no], seqtype, color_scheme, genetic_code, al_start, al_end)
     else:
         raise ValueError('No alignment in input')
+
 
 def get_alv_objects(alignment, seqtype, color_scheme, genetic_code, al_start, al_end):
     '''
@@ -76,20 +78,16 @@ def get_alv_objects(alignment, seqtype, color_scheme, genetic_code, al_start, al
     if seqtype == 'dna' or seqtype == 'rna':
         return DnaAlignment(alignment, al_start, al_end), DnaPainter()
     elif seqtype == 'codon':
-        al = CodonAlignment(alignment)
+        al = CodonAlignment(alignment, al_start, al_end)
         al.set_genetic_code(genetic_code)
-        return CodonAlignment(alignment, al_start, al_end), CodonPainter(painter)
+        return al, CodonPainter(painter)
     else:
         raise IOError(f'Unknown sequence type: "{seqtype}"')
-
 
 
 def output_al_info(alignment):
     for headline, data in alignment.get_basic_info():
         print(headline+':', data)
-
-
-
 
 
 def guess_seq_type(al):
@@ -110,6 +108,7 @@ def guess_seq_type(al):
         else:
             return 'codon'
 
+
 def _likelihood_of_seq(al, distr):
     log_p = 0.0
     tiny_prob = min(distr.values()) # For indels etc
@@ -120,6 +119,7 @@ def _likelihood_of_seq(al, distr):
             else:
                 log_p += tiny_prob # Need to penalize the indels, otherwise codons are never chosen
     return log_p
+
 
 def _likelihood_of_codons(al):
     log_p = 0.0
@@ -133,6 +133,7 @@ def _likelihood_of_codons(al):
             else:
                 log_p += tiny_prob # Need to penalize the lack of proper codon with a small penalty
     return log_p
+
 
 # Overkill: using amino acid frequencies given for vertebrates, found somewhere on the internet.
 _aa_distr = {
@@ -157,6 +158,29 @@ _aa_distr = {
     'Y': log(0.033),
     'V': log(0.066),            # Should be 0.068, but I am giving away 0.1+0.1 to X and *
     'X': log(0.01),
+    # And now lower case!
+    'a': log(0.074),
+    'r': log(0.042),
+    'n': log(0.044),
+    'd': log(0.059),
+    'c': log(0.033),
+    'e': log(0.058),
+    'q': log(0.037),
+    'g': log(0.074),
+    'h': log(0.029),
+    'i': log(0.038),
+    'l': log(0.076),
+    'k': log(0.072),
+    'm': log(0.018),
+    'f': log(0.04),
+    'p': log(0.05),
+    's': log(0.081),
+    't': log(0.062),
+    'w': log(0.013),
+    'y': log(0.033),
+    'v': log(0.066),            # Should be 0.068, but I am giving away 0.1+0.1 to X and *
+    'x': log(0.01),
+
     '*': log(0.01)
     }
 _dna_distr = {
@@ -167,6 +191,13 @@ _dna_distr = {
     'T': log(0.22),
     'U': log(0.22),             # It is either DNA or RNA and at this point I don't care.
 
+    # And in lower case
+    'a': log(0.30),
+    'c': log(0.21),
+    'g': log(0.26),
+    't': log(0.22),
+    'u': log(0.22),             # It is either DNA or RNA and at this point I don't care.
+    
     # Remaining (?) letters
     'B': log(0.0011),
     'R': log(0.0011),
@@ -186,6 +217,25 @@ _dna_distr = {
     'Y': log(0.0011),
     'V': log(0.0011),
     'X': log(0.0011),
+
+    'b': log(0.0011),
+    'r': log(0.0011),
+    'n': log(0.0011),
+    'd': log(0.0011),
+    'e': log(0.0011),
+    'q': log(0.0011),
+    'h': log(0.0011),
+    'i': log(0.0011),
+    'l': log(0.0011),
+    'k': log(0.0011),
+    'm': log(0.0011),
+    'f': log(0.0011),
+    'p': log(0.0011),
+    's': log(0.0011),
+    'w': log(0.0011),
+    'y': log(0.0011),
+    'v': log(0.0011),
+    'x': log(0.0011),
     }
 
 _codon_distr = {
@@ -268,4 +318,86 @@ _codon_distr = {
     'GGC': log(0.0228),
     'GGA': log(0.0163),
     'GGG': log(0.0164),
+
+    # Lower case starts here
+    'ttt': log(0.0169),
+    'ttc': log(0.0204),
+    'tta': log(0.0072),
+    'ttg': log(0.0126),
+
+    'tct': log(0.0146),
+    'tcc': log(0.0174),
+    'tca': log(0.0117),
+    'tcg': log(0.0045),
+
+    'tat': log(0.012),
+    'tac': log(0.0156),
+    'taa': log(0.0007),         # STOP
+    'tag': log(0.0005),         # STOP
+
+    'tgt': log(0.0099),
+    'tgc': log(0.0122),
+    'tga': log(0.0013),         # STOP
+    'tgg': log(0.0128),
+
+    'ctt': log(0.0128),
+    'ctc': log(0.0194),
+    'cta': log(0.0069),
+    'ctg': log(0.0403),
+
+    'cct': log(0.0173),
+    'ccc': log(0.020),
+    'cca': log(0.0167),
+    'ccg': log(0.007),
+
+    'cat': log(0.0104),
+    'cac': log(0.0149),
+    'caa': log(0.0118),
+    'cag': log(0.0346),
+
+    'cgt': log(0.0047),
+    'cgc': log(0.0109),
+    'cga': log(0.0063),
+    'cgg': log(0.0119),
+
+    'att': log(0.0157),
+    'atc': log(0.0214),
+    'ata': log(0.0071),
+    'atg': log(0.0223),
+
+    'act': log(0.0128),
+    'acc': log(0.0192),
+    'aca': log(0.0148),
+    'acg': log(0.0062),
+
+    'aat': log(0.0167),
+    'aac': log(0.0195),
+    'aaa': log(0.024),
+    'aag': log(0.0329),
+
+    'agt': log(0.0119),
+    'agc': log(0.0194),
+    'aga': log(0.0115),
+    'agg': log(0.0114),
+
+    'gtt': log(0.0109),
+    'gtc': log(0.0146),
+    'gta': log(0.007),
+    'gtg': log(0.0289),
+
+    'gct': log(0.0186),
+    'gcc': log(0.0285),
+    'gca': log(0.016),
+    'gcg': log(0.0076),
+
+    'gat': log(0.0223),
+    'gac': log(0.026),
+    'gaa': log(0.029),
+    'gag': log(0.0408),
+
+    'ggt': log(0.0108),
+    'ggc': log(0.0228),
+    'gga': log(0.0163),
+    'ggg': log(0.0164),
+    
     }

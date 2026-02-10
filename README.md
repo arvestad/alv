@@ -127,7 +127,7 @@ This selects and views columns 30 to 59 of msa.fa, keeping track of the "origina
 
 * Run `pip install -e .` to get an "editable" install, while coding.
 * Run `python -m build` to prepare a distributable file.
-
+* Run `python -m unittest discover` to run unit tests. 
 
 ## Screenshots
 

@@ -13,3 +13,4 @@
 * Ed Davies fixed a bug: sorting using option -so was broken.
 * Artem Kushner pointed out the missing support for sub-alignments.
 * @Joon-Klaps fixed bug related to notebook usage (issue #32).
+* Johan Nylander noticed that sequence type detection was broken (issue #35).

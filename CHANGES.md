@@ -1,5 +1,9 @@
 # Changes since last version
 
+## v1.8.1
+
+* Fixed broken inference of sequence type. (Issue #35)
+* Faster codon alignments because they were read twice. Duh.
 
 ## v1.8.0
 

@@ -1,4 +1,7 @@
+import io
 import unittest
+from contextlib import redirect_stdout
+
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
@@ -16,7 +19,9 @@ class TestInitFunctions(unittest.TestCase):
     def test_view_basic(self):
         # Test basic functionality without errors
         try:
-            alv.view(self.test_alignment)
+            f = io.StringIO()
+            with redirect_stdout(f):
+                alv.view(self.test_alignment)
         except Exception as e:
             self.fail(f"view() raised unexpected exception: {e}")
 
@@ -31,16 +36,22 @@ class TestInitFunctions(unittest.TestCase):
 
         for params in test_cases:
             try:
-                alv.view(self.test_alignment, **params)
+                f = io.StringIO()
+                with redirect_stdout(f):
+                    alv.view(self.test_alignment, **params)
             except Exception as e:
                 self.fail(f"view() with params {params} raised unexpected exception: {e}")
+
 
     def test_glimpse_basic(self):
         # Test basic functionality without errors
         try:
-            alv.glimpse(self.test_alignment)
+            f = io.StringIO()
+            with redirect_stdout(f):
+                alv.glimpse(self.test_alignment)
         except Exception as e:
             self.fail(f"glimpse() raised unexpected exception: {e}")
+
 
     def test_glimpse_parameters(self):
         # Test glimpse with different parameters
@@ -53,7 +64,9 @@ class TestInitFunctions(unittest.TestCase):
 
         for params in test_cases:
             try:
-                alv.glimpse(self.test_alignment, **params)
+                f = io.StringIO()
+                with redirect_stdout(f):
+                    alv.glimpse(self.test_alignment, **params)
             except Exception as e:
                 self.fail(f"glimpse() with params {params} raised unexpected exception: {e}")
 

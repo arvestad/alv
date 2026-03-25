@@ -1,5 +1,11 @@
 # Changes since last version
 
+## v1.8.2
+
+* Option --sorting-order was sensitive to mistakes in the comma-separated
+  list. A useful error is now provided.
+
+
 ## v1.8.1
 
 * Fixed broken inference of sequence type. (Issue #35)

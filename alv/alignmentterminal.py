@@ -31,9 +31,11 @@ class AlignmentTerminal:
 
         if self.selection:
             chosen_accessions = []
+            print(f'{self.selection=}')
             for acc in accessions:
                 if self.selection in acc:
                     chosen_accessions.append(acc)
+            print(f'{chosen_accessions}')
             return chosen_accessions
         else:
             return list(accessions)
@@ -179,9 +181,8 @@ class AlignmentShellTerminal(AlignmentTerminal):
             order = args.sort_by_id
         elif args.sorting_order:
             sorting = 'fixed'
-            order = args.sorting_order.split(',')
-            if len(order) == 0:
-                raise Exception('Bad order specification: no accessions in input')
+            order = extract_accession_order(args.sorting_order)
+
         if args.select_matching:
             accession_pattern = args.select_matching
         else:
@@ -192,3 +193,16 @@ class AlignmentShellTerminal(AlignmentTerminal):
         self.height = terminal_height
 
 
+def extract_accession_order(acc_str):
+    '''
+    Given a string with comma-separated acessions, 
+    return a list with those accessions. Also catch some possible
+    user mistakes.
+    '''
+    order = acc_str.split(',')
+    if len(order) == 0:
+        raise ValueError('Bad order specification: no accessions in input')
+    for elem in order:
+        if len(elem) == 0:
+            raise ValueError('Zero-length element in accession list. Check your argument to --sorting-order!')
+    return order

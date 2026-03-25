@@ -231,9 +231,9 @@ def main():
         args.width = alignment.al_width()
         args.keep_colors_when_redirecting = True
 
-    terminal = AlignmentShellTerminal(args)
-    painter.set_options(args)
     try:
+        terminal = AlignmentShellTerminal(args)
+        painter.set_options(args)
         if args.glimpse:
             terminal.output_glimpse(alignment, painter, args.width, args.dotted)
         else:
@@ -254,6 +254,9 @@ def main():
         ap.exit(7)
     except ValueError as e:
         print('alv:', e, file=sys.stderr)
+        ap.exit(3)
+    except KeyError as e:
+        print('Alv bug! Please report!', file=sys.stderr)
         ap.exit(3)
     except Exception as e:
         print('Alv bug! Please report!', file=sys.stderr)

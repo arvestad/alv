@@ -45,7 +45,7 @@ class BaseAlignment:
     def abbreviate_accessions(self, n_chars):
         for record in self.al:
             acc = record.id
-            if len(acc) > n_chars:
+            if len(acc) > 2 * n_chars:
                 new_acc = acc[0:n_chars] + '*' + acc[-n_chars:]
                 record.id = new_acc
         self._update_seq_index()

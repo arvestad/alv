@@ -6,6 +6,8 @@
   - One bug had a bad effect on codon alignments and the wrong sequences
     could be shown. Fixed!
   - Other harmless bugs and code smells also removed.
+* Fixed the -aa option to not repeat accession characters on short accessions.
+* Updated the color choices and added more color schemes. Prettier now.
 
 
 ## v1.8.2

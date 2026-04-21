@@ -66,11 +66,11 @@ def get_alv_objects(alignment, seqtype, color_scheme, genetic_code, al_start, al
     if seqtype == 'guess':
         seqtype = guess_seq_type(alignment)
 
-    if not color_scheme or color_scheme == 'guess':
-        color_scheme = 'clustal'
-
     # Codon coloring is AA-based; RNA coloring is DNA-based.
     scheme_type = 'dna' if seqtype in ('dna', 'rna') else 'aa'
+
+    if not color_scheme or color_scheme == 'guess':
+        color_scheme = 'ucsc' if scheme_type == 'dna' else 'clustal'
     if color_scheme not in COLOR_SCHEMES:
         raise ValueError(f"Unknown color scheme: '{color_scheme}'")
     if scheme_type not in COLOR_SCHEMES[color_scheme]:

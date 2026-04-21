@@ -100,8 +100,8 @@ def setup_argument_parsing():
                     help="Specify what sequence type to assume. Coding DNA/RNA is assumed with the 'codon' option. Guessing the format only chooses between 'aa' and 'dna', but assumes the standard genetic code.  Default: %(default)s")
     ap.add_argument('-g', '--glimpse', action='store_true',
                     help='Give a glimpse of an alignment. If the alignment fits without any scrolling and without line breaks, then just view the alignment. Otherwise, identify a conserved part of the MSA and show a random sample of the sequences that fits the screen.')
-    ap.add_argument('-c', '--color-scheme', choices=list(COLOR_SCHEMES.keys()), default='clustal',
-                    help='Color scheme. Not all schemes are available for all sequence types — alv will error if the combination is invalid. Default: %(default)s')
+    ap.add_argument('-c', '--color-scheme', choices=list(COLOR_SCHEMES.keys()), default=None,
+                    help='Color scheme. Not all schemes are available for all sequence types — alv will error if the combination is invalid. Default: ucsc for DNA/RNA, clustal for AA.')
     ap.add_argument('--code', choices=[1,2,3,4,5,6,9,10,11, 12, 13, 14, 16,21,22,23,24,25,26,27,28,29,30,31], type=int, default=1,
                     help="Genetic code to use, based on NCBI's code list, see details below. Show alternatives with the --list-codes option. Default: %(default)s.")
     ap.add_argument('-d', '--dotted', action='store_true',

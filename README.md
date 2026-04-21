@@ -122,6 +122,28 @@ alv -sa 30 60 msa.fa
 This selects and views columns 30 to 59 of msa.fa, keeping track of the "original" columns indexes in the output.
 
 
+## Colors 
+
+A number of color schemes are available and more will be added. Use "--list-colors" (or the abbreviation 
+"-lc" (previously used for "--list-codes", which is probably less used)) to see what is offered.
+
+Consider using "-c okabe-ito" if you are color blind. This is a scheme suggested by Okabe and Ito (2008).
+
+If you are not happy with the suggested defaults, or simply _need_, the Hello Kitty option, consider setting
+up an alias:
+```
+alias alv="alv -c hellokitty"
+```
+This ensures that `alv` is run with the desired option. Note that, if you temporarily want to use another 
+scheme, the aliased call `alv -c stockholm dna.fa` effectively means `alv -c hellokitty -c stockholm dna.fa`
+which ignores the `-c hellokitty` part in favor of the latest choice (here: `stockholm`).
+
+- Okabe, M. & Ito, K. (2008). Color Universal Design (CUD): How to make figures and presentations
+  that are friendly to colorblind people. Joint Research Center for Science Education*,
+  Tokyo. https://jfly.uni-koeln.de/color/
+
+
+
 ## For developers
 
 * Run `pip install -e .` to get an "editable" install, while coding.
@@ -141,3 +163,5 @@ All of the sequences in PFAM's seed alignment for PF00005
 Using the option `-sm YEAST`, we reduce the alignment to the ones with a matching accession.
 
 ![Small MSA from PF00005](https://github.com/arvestad/alv/raw/master/doc/PF00005_yeast.png)
+
+

@@ -6,6 +6,7 @@ import sys
 from alv.version import __version__
 from alv.alignmentterminal import AlignmentShellTerminal
 import alv.io as io
+from alv.colorize import COLOR_SCHEMES
 from alv.exceptions import AlvPossibleFormatError, AlvEmptyAlignment
 
 # Plain text citation
@@ -25,6 +26,31 @@ bibitem = '''@Article{alv2018,
 
 # For the --method option
 method_text = 'Alignments were viewed using alv (github.com/arvestad/alv).'
+
+def list_color_schemes():
+    col_name  = 14
+    col_types = 20
+    header = f"{'Scheme':{col_name}}  {'Sequence types':{col_types}}  Description"
+    print()
+    print(header)
+    print('-' * len(header))
+    descriptions = {
+        'clustal':       'ClustalX canonical RGB colors',
+        'terminal':      'Named terminal colors (8-color fallback)',
+        'taylor':        'Taylor (1997) spectral AA colors',
+        'cinema':        'CINEMA standard (Parry-Smith et al. 1997)',
+        'zappo':         'Zappo physicochemical AA colors',
+        'hydrophobicity':'Colored by hydrophobicity',
+        'okabe-ito':     'Okabe & Ito (2008) colorblind-safe; Using Clustal groupings for AA',
+        'ucsc':          'UCSC Genome Browser DNA colors',
+        'hellokitty':    'Hello Kitty themed DNA colors',
+        'stockholm':     'Stockholm University profile colors for DNA',
+    }
+    for name, entry in COLOR_SCHEMES.items():
+        types = ', '.join(sorted(entry.keys()))
+        desc  = descriptions.get(name, '')
+        print(f'{name:{col_name}}  {types:{col_types}}  {desc}')
+    print()
 
 def list_genetic_codes():
     additional_help_text='''
@@ -74,14 +100,16 @@ def setup_argument_parsing():
                     help="Specify what sequence type to assume. Coding DNA/RNA is assumed with the 'codon' option. Guessing the format only chooses between 'aa' and 'dna', but assumes the standard genetic code.  Default: %(default)s")
     ap.add_argument('-g', '--glimpse', action='store_true',
                     help='Give a glimpse of an alignment. If the alignment fits without any scrolling and without line breaks, then just view the alignment. Otherwise, identify a conserved part of the MSA and show a random sample of the sequences that fits the screen.')
-    ap.add_argument('-c', '--color-scheme', choices=['clustal', 'taylor', 'hydrophobicity', 'stockholm'], default='clustal',
-                    help='Color scheme for AA and coding DNA/RNA. The clustal coloring scheme is an approximation of the original, due to the limited color choices for consoles. The "hydrophobicity" gives red to hydrophobic, blue to polar, and green to charged residues. The "stockholm" scheme uses Stockholm University profile colors for DNA.  Default: %(default)s')
+    ap.add_argument('-c', '--color-scheme', choices=list(COLOR_SCHEMES.keys()), default='clustal',
+                    help='Color scheme. Not all schemes are available for all sequence types — alv will error if the combination is invalid. Default: %(default)s')
     ap.add_argument('--code', choices=[1,2,3,4,5,6,9,10,11, 12, 13, 14, 16,21,22,23,24,25,26,27,28,29,30,31], type=int, default=1,
                     help="Genetic code to use, based on NCBI's code list, see details below. Show alternatives with the --list-codes option. Default: %(default)s.")
     ap.add_argument('-d', '--dotted', action='store_true',
                     help="Let the first sequence in output alignment be a template and, for other sequences, show identity to template using a period. Useful for alignments with high similarity.")
-    ap.add_argument('-lc', '--list-codes', action='store_true',
+    ap.add_argument('--list-codes', action='store_true',
                     help="List the available genetic codes and exit.")
+    ap.add_argument('-lc', '--list-colors', action='store_true',
+                    help="List the available color schemes and exit.")
     ap.add_argument('-w', '--width', type=int, default=0,
                     help='Width of alignment blocks. Defaults to terminal width minus accession width, essentially.')
     ap.add_argument('-k', '--keep-colors-when-redirecting', action='store_true',
@@ -184,6 +212,10 @@ def main():
     # Handle option that do not require an infile
     if args.list_codes:
         list_genetic_codes()
+        ap.exit()
+
+    if args.list_colors:
+        list_color_schemes()
         ap.exit()
 
     if args.method:

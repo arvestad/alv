@@ -249,6 +249,8 @@ class CodonAlignment(BaseAlignment):
         a width that is a multiple of three.
         '''
         nominal_width = super().block_width(terminal_width, args)
+        if nominal_width >= self.al_length:
+            return self.al_length
         remainder = nominal_width % 3
         return nominal_width - remainder # Safe, because the superclass method guarantees width >= 10.
 

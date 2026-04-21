@@ -3,7 +3,7 @@ from math import log
 import sys
 
 from .alignment import AminoAcidAlignment, DnaAlignment, CodonAlignment
-from .colorize import AminoAcidPainter, DnaPainter, DnaStockholmPainter, CodonPainter, AminoAcidTaylorPainter, AminoAcidHydrophobicity
+from .colorize import AminoAcidPainter, DnaPainter, CodonPainter, COLOR_SCHEMES
 from .exceptions import AlvPossibleFormatError
 
 
@@ -66,22 +66,28 @@ def get_alv_objects(alignment, seqtype, color_scheme, genetic_code, al_start, al
     if seqtype == 'guess':
         seqtype = guess_seq_type(alignment)
 
-    if color_scheme == 'taylor':
-        painter = AminoAcidTaylorPainter()
-    elif color_scheme == 'hydrophobicity':
-        painter = AminoAcidHydrophobicity()
-    else:
-        painter = AminoAcidPainter()
+    if not color_scheme or color_scheme == 'guess':
+        color_scheme = 'clustal'
+
+    # Codon coloring is AA-based; RNA coloring is DNA-based.
+    scheme_type = 'dna' if seqtype in ('dna', 'rna') else 'aa'
+    if color_scheme not in COLOR_SCHEMES:
+        raise ValueError(f"Unknown color scheme: '{color_scheme}'")
+    if scheme_type not in COLOR_SCHEMES[color_scheme]:
+        available = [s for s, entry in COLOR_SCHEMES.items() if scheme_type in entry]
+        raise ValueError(
+            f"Color scheme '{color_scheme}' is not available for {seqtype} sequences. "
+            f"Available schemes for {seqtype}: {', '.join(available)}"
+        )
 
     if seqtype == 'aa':
-        return AminoAcidAlignment(alignment, al_start, al_end), painter
-    if seqtype == 'dna' or seqtype == 'rna':
-        dna_painter = DnaStockholmPainter() if color_scheme == 'stockholm' else DnaPainter()
-        return DnaAlignment(alignment, al_start, al_end), dna_painter
+        return AminoAcidAlignment(alignment, al_start, al_end), AminoAcidPainter(color_scheme)
+    elif seqtype in ('dna', 'rna'):
+        return DnaAlignment(alignment, al_start, al_end), DnaPainter(color_scheme)
     elif seqtype == 'codon':
         al = CodonAlignment(alignment, al_start, al_end)
         al.set_genetic_code(genetic_code)
-        return al, CodonPainter(painter)
+        return al, CodonPainter(AminoAcidPainter(color_scheme))
     else:
         raise IOError(f'Unknown sequence type: "{seqtype}"')
 

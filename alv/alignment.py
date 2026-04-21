@@ -75,11 +75,6 @@ class BaseAlignment:
                                        reverse=True))
         return sorted_accessions
 
-    def random_accessions(self, n):
-        '''
-        Return a random sample of accessions, sample size = n.
-        '''
-        return random.choice(list(self.accessions()))
 
     def accession_widths(self, accessions=None):
         '''
@@ -268,7 +263,7 @@ class CodonAlignment(BaseAlignment):
         colored_seq = ''
 
         for codon_col, pos in enumerate(range(block.start, block.end, 3)):
-            c = seq[codon_col:codon_col+3]
+            c = seq[codon_col * 3 : codon_col * 3 + 3]
             colored_seq += painter.colorizer(c, self.columns[pos])
         return painter.sol() + colored_seq + painter.eol()
 
@@ -288,8 +283,9 @@ class CodonAlignment(BaseAlignment):
 
         colored_seq = ''
         for codon_col, pos in enumerate(range(block.start, block.end, 3)):
-            c = seq[pos:pos+3]
-            if c == template_seq[pos:pos+3]:
+            local_start = codon_col * 3
+            c = seq[local_start : local_start + 3]
+            if c == template_seq[local_start : local_start + 3]:
                 colored_seq += '...'
             else:
                 colored_seq += painter.colorizer(c, self.columns[pos])

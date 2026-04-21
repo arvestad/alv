@@ -10,6 +10,7 @@ class AlignmentTerminal:
     '''
     def __init__(self, terminal_width, random_sample_size=0, sorting=None, order=None, accession_pattern=False):
         self.width = terminal_width
+        self.height = 0
         self.random_sample_size = random_sample_size
         self.sorting = sorting
         self.order = order
@@ -31,11 +32,9 @@ class AlignmentTerminal:
 
         if self.selection:
             chosen_accessions = []
-            print(f'{self.selection=}')
             for acc in accessions:
                 if self.selection in acc:
                     chosen_accessions.append(acc)
-            print(f'{chosen_accessions}')
             return chosen_accessions
         else:
             return list(accessions)
@@ -66,7 +65,6 @@ class AlignmentTerminal:
         Compute the width of the left margin from the accession lengths
         '''
         self.left_margin = 1 + al.accession_widths(chosen_accessions)
-        assert self.left_margin < self.width - 10
 
 
     def output_alignment(self, al, painter, chosen_width, dotted=False):

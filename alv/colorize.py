@@ -173,6 +173,41 @@ class AminoAcidHydrophobicity(AminoAcidPainter):
             return Back.WHITE, None
 
 
+def _rgb_bg(r, g, b):
+    return f'\033[48;2;{r};{g};{b}m'
+
+def _rgb_fg(r, g, b):
+    return f'\033[38;2;{r};{g};{b}m'
+
+
+class DnaStockholmPainter(Painter):
+    '''
+    DNA painter using Stockholm University profile colors.
+    A: University Blue (#002F5F), T/U: Sky (#ACDEE6),
+    G: Olive (#A3A86B), C: Fire (#EB7125).
+    '''
+    def __init__(self):
+        super().__init__()
+
+    def _color_lookup(self, c):
+        if c in 'Aa':
+            return _rgb_bg(0, 47, 95) + _rgb_fg(218, 218, 218), Back.WHITE + Fore.BLACK
+        elif c in 'TUtu':
+            return _rgb_bg(172, 222, 230), Back.WHITE
+        elif c in 'Gg':
+            return _rgb_bg(163, 168, 107), Back.WHITE
+        elif c in 'Cc':
+            return _rgb_bg(235, 113, 37), Back.WHITE
+        elif c in 'Nn':
+            return Back.WHITE, Back.WHITE
+        elif c in '!*':
+            return self.color_for_bad_data()
+        elif c in '-.:':
+            return self.indel_color()
+        else:
+            return Back.WHITE, None
+
+
 class DnaPainter(Painter):
     '''
     Put paint of nucleotides.

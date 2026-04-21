@@ -74,8 +74,8 @@ def setup_argument_parsing():
                     help="Specify what sequence type to assume. Coding DNA/RNA is assumed with the 'codon' option. Guessing the format only chooses between 'aa' and 'dna', but assumes the standard genetic code.  Default: %(default)s")
     ap.add_argument('-g', '--glimpse', action='store_true',
                     help='Give a glimpse of an alignment. If the alignment fits without any scrolling and without line breaks, then just view the alignment. Otherwise, identify a conserved part of the MSA and show a random sample of the sequences that fits the screen.')
-    ap.add_argument('-c', '--color-scheme', choices=['clustal', 'taylor', 'hydrophobicity'], default='clustal',
-                    help='Color scheme for AA and coding DNA/RNA. The clustal coloring scheme is an approximation of the original, due to the limited color choices for consoles. The "hydrophobicity" gives red to hydrophobic, blue to polar, and green to charged residues.  Default: %(default)s')
+    ap.add_argument('-c', '--color-scheme', choices=['clustal', 'taylor', 'hydrophobicity', 'stockholm'], default='clustal',
+                    help='Color scheme for AA and coding DNA/RNA. The clustal coloring scheme is an approximation of the original, due to the limited color choices for consoles. The "hydrophobicity" gives red to hydrophobic, blue to polar, and green to charged residues. The "stockholm" scheme uses Stockholm University profile colors for DNA.  Default: %(default)s')
     ap.add_argument('--code', choices=[1,2,3,4,5,6,9,10,11, 12, 13, 14, 16,21,22,23,24,25,26,27,28,29,30,31], type=int, default=1,
                     help="Genetic code to use, based on NCBI's code list, see details below. Show alternatives with the --list-codes option. Default: %(default)s.")
     ap.add_argument('-d', '--dotted', action='store_true',
@@ -250,7 +250,7 @@ def main():
         sys.stderr.close()  # Without this line, python will sometimes give an error
         ap.exit(6)
     except IOError as e:
-        print(f'alv: ', file=sys.stderr)
+        print(f'alv: {e}', file=sys.stderr)
         ap.exit(7)
     except ValueError as e:
         print('alv:', e, file=sys.stderr)

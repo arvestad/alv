@@ -15,4 +15,4 @@ class TestOrdering(unittest.TestCase):
         with self.assertRaises(ValueError):
             order = extract_accession_order('a,,b')
 
-        
+

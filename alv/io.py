@@ -3,7 +3,7 @@ from math import log
 import sys
 
 from .alignment import AminoAcidAlignment, DnaAlignment, CodonAlignment
-from .colorize import AminoAcidPainter, DnaPainter, CodonPainter, AminoAcidTaylorPainter, AminoAcidHydrophobicity
+from .colorize import AminoAcidPainter, DnaPainter, DnaStockholmPainter, CodonPainter, AminoAcidTaylorPainter, AminoAcidHydrophobicity
 from .exceptions import AlvPossibleFormatError
 
 
@@ -31,7 +31,7 @@ def guess_format(filename):
                 try:
                     _ = int(tokens[0])
                     _ = int(tokens[1])
-                except:
+                except (ValueError, TypeError):
                     raise AlvPossibleFormatError(filename)
                 # Came this far? Success!
                 return 'phylip'
@@ -76,7 +76,8 @@ def get_alv_objects(alignment, seqtype, color_scheme, genetic_code, al_start, al
     if seqtype == 'aa':
         return AminoAcidAlignment(alignment, al_start, al_end), painter
     if seqtype == 'dna' or seqtype == 'rna':
-        return DnaAlignment(alignment, al_start, al_end), DnaPainter()
+        dna_painter = DnaStockholmPainter() if color_scheme == 'stockholm' else DnaPainter()
+        return DnaAlignment(alignment, al_start, al_end), dna_painter
     elif seqtype == 'codon':
         al = CodonAlignment(alignment, al_start, al_end)
         al.set_genetic_code(genetic_code)

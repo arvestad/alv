@@ -64,7 +64,6 @@ pip install --upgrade pip
 pip install alv
 ```
 
-If you have a half-modern BioPython installed, Python v3.4 _should_ work.
 BioPython is a dependency and will only get installed automatically with `pip install alv`
 if you are using Python v3.6 or later, because BioPython was apparently not on PyPi before that.
 

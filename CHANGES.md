@@ -1,5 +1,13 @@
 # Changes since last version
 
+## v1.8.3
+
+* Used Claude to find weaknesses and found three bugs and code smells
+  - One bug had a bad effect on codon alignments and the wrong sequences
+    could be shown. Fixed!
+  - Other harmless bugs and code smells also removed.
+
+
 ## v1.8.2
 
 * Option --sorting-order was sensitive to mistakes in the comma-separated
@@ -23,7 +31,7 @@
 
 ## v1.7.1
 
-* What??
+* Bug fix.
 
 
 ## v1.7.0
